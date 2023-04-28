@@ -34,4 +34,15 @@ Settings
 5. Angular CLI をインストール
 npm install -g @angular/cli
 
+## サーバー起動方法
 
+### Angular 起動
+cd client
+nx serve client
+
+### Nest 起動
+nx serve server --project=server
+
+
+cd server
+nx serve server
