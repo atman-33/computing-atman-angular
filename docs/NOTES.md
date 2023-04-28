@@ -16,3 +16,22 @@ Settings
 - stylesheet => SCCS
 - configure routing => true
 - use Standalone Components => false 
+
+4. libs フォルダを作成（必要に応じて適宜追加でOK）
+  |- libs/
+  |  |- shared/
+  |  |  |- models/
+  |  |  |- services/
+  |  |  |- components/
+  |  |  |- directives/
+  |  |  |- ...
+  |  |- core/
+  |  |  |- guards/
+  |  |  |- interceptors/
+  |  |  |- services/
+  |  |  |- ...
+
+5. Angular CLI をインストール
+npm install -g @angular/cli
+
+
