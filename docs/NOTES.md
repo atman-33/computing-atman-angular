@@ -9,4 +9,10 @@ npm install -D @nx/nest
 nx generate @nx/nest:app server
 
 3. angular フォルダを生成
+npm install -D @nx/angular
 nx generate @nx/angular:app client
+
+Settings
+- stylesheet => SCCS
+- configure routing => true
+- use Standalone Components => false 
