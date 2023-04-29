@@ -68,3 +68,11 @@ npm install bootstrap@5 --save
           "client/src/styles.scss"
           ],
 ```
+
+
+## フロントエンド（Angular）開発
+
+### コンポーネント作成
+```
+nx g @nx/angular:component __my_componet__ --project=client
+```
