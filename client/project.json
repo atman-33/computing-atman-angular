@@ -18,6 +18,7 @@
         "assets": ["client/src/favicon.ico", "client/src/assets"],
         "styles": [
           "node_modules/bootstrap/dist/css/bootstrap.min.css",
+          "client/src/assets/scss/neumorphism.scss",
           "client/src/styles.scss"
           ],
         "scripts": []

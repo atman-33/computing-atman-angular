@@ -4,9 +4,11 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { NxWelcomeComponent } from './nx-welcome.component';
+import { NavbarComponent } from './common/navbar/navbar.component';
 
 @NgModule({
-  declarations: [AppComponent, NxWelcomeComponent],
+  // 利用するコンポーネントを登録
+  declarations: [AppComponent, NxWelcomeComponent, NavbarComponent],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
