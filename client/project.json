@@ -21,7 +21,15 @@
           "client/src/assets/scss/neumorphism.scss",
           "client/src/styles.scss"
           ],
-        "scripts": []
+        "scripts": [
+          "node_modules/jquery/dist/jquery.min.js",
+          "node_modules/headroom.js/dist/headroom.js",
+          "node_modules/jquery-ui/dist/jquery-ui.min.js",
+          "node_modules/jquery.counterup/jquery.counterup.min.js",
+          "node_modules/jquery-countdown/dist/jquery.countdown.min.js",
+          "node_modules/jarallax/dist/jarallax.min.js",
+          "node_modules/smooth-scroll/dist/smooth-scroll.min.js"
+        ]
       },
       "configurations": {
         "production": {
