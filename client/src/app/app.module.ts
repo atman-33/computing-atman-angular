@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { NxWelcomeComponent } from './nx-welcome.component';
 import { NavbarComponent } from './common/navbar/navbar.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   // 利用するコンポーネントを登録
@@ -12,6 +13,7 @@ import { NavbarComponent } from './common/navbar/navbar.component';
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent],
