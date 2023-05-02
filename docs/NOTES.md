@@ -72,7 +72,15 @@ npm install bootstrap@5 --save
 
 ## フロントエンド（Angular）開発
 
-### コンポーネント作成
+### 1. ページ追加
+
+1. コンポーネント（Page）作成
 ```
 nx g @nx/angular:component __my_componet__ --project=client
 ```
+2. app-routing.module.ts にページ登録
+ページ単体の場合
+- routes に path を追加
+
+モジュールの場合
+- @NgModule の imports に追加
