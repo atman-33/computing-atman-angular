@@ -1,1 +1,21 @@
-<div style="padding:100px" markdown [src]="post"></div>
+
+
+<main>
+    <section class="section">
+        <div class="container mt-5">
+            <h1>{{title}}</h1>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">{{date}}</div>
+                    <div class="col-sm-6">
+                        <div class="text-right">tags: {{tags}}</div>
+                        <div class="text-right">categories: {{categories}}</div>
+                    </div>
+                </div>
+            </div>
+            <hr color="#808080">
+
+            <div [innerHTML]="postHtml"></div>
+        </div>
+    </section>
+</main>

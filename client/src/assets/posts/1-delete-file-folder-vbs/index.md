@@ -7,16 +7,9 @@ categories: VBS
 
 VBSでファイル、フォルダを削除する関数のサンプルソースです。
 
-![テスト画像](./assets/posts/1-delete-file-folder-vbs/img-1.jpg)
-___
-目次
-<!-- toc -->
+## サンプルソース
 
-___
-
-### サンプルソース
-
-```
+```vb
 Option Explicit
 
 DeleteFolder "C:\sample"
@@ -55,7 +48,7 @@ Sub DeleteFolder (ByVal strFolder)
 End Sub
 ```
 
-### 解説
+## 解説
 
 FileSystemObject.DeleteFile関数
 FileSystemObject.DeleteFolder関数
