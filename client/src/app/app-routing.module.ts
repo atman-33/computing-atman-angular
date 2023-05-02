@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TopPageComponent } from './top-page/top-page.component';
+import { BlogModule } from './blog/blog.module';
 //import { AuthModule } from './auth/auth.module';
 
 /**
@@ -21,6 +22,7 @@ const routes: Routes = [
     ],
     imports: [
         RouterModule.forRoot(routes),
+        BlogModule
 
         // AuthModule
     ],
