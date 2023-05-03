@@ -4,9 +4,10 @@ import { PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 import 'prismjs';
+import 'prismjs/plugins/toolbar/prism-toolbar';
+import 'prismjs/plugins/show-language/prism-show-language';
 import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
-import 'prismjs/plugins/show-language/prism-show-language';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-java';
@@ -24,7 +25,9 @@ declare const Prism: any;
 @Injectable()
 export class HighlightService {
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) { }
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: object
+  ) { }
 
   highlightAll() {
     if (isPlatformBrowser(this.platformId)) {
