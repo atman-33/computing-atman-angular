@@ -1,9 +1,9 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HighlightService } from '../../shared/services/highlight.service'
+import { AssetsService } from '../../shared/services/assets.service';
 import * as MarkdownIt from 'markdown-it';
 import * as Util from '../../shared/utils/util'
-import { AssetsService } from '../../shared/services/assets.service';
 
 @Component({
   selector: 'app-blog-post',

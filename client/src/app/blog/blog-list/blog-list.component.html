@@ -1,13 +1,29 @@
-<main>
-    <section class="section">
-        <div class="container mt-5">
+<!-- <div class="wrapper">
+    <div class="container">
+        <br />
+        <div class="row"> -->
+            <!-- ループ文の何番目をindexで取得 -->
+            <!-- <div class="col" *ngFor="let product of products; let productId = index">
+                <a [routerLink]="[product._id]">
+                    <div class="card">
 
-            <div class="links">
-                <a routerLink="/blog/1-delete-file-folder-vbs" style="margin-bottom:24px">
-                    mdファイル記事
+                        <img src="{{ product.coverImage }}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }} </h5>
+                            <p class="card-text">{{ product.description}}</p>
+                        </div>
+                    </div>
                 </a>
             </div>
-
         </div>
-    </section>
-</main>
+    </div>
+</div> -->
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<ul mt-5>
+    <li *ngFor="let post of posts">{{ post }}</li>
+  </ul>
