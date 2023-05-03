@@ -1,9 +1,9 @@
-import { HttpClient } from '@angular/common/http';
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HighlightService } from '../../shared/services/highlight.service'
 import * as MarkdownIt from 'markdown-it';
 import * as Util from '../../shared/utils/util'
+import { AssetsService } from '../../shared/services/assets.service';
 
 @Component({
   selector: 'app-blog-post',
@@ -22,7 +22,7 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
 
   constructor(
     private _route: ActivatedRoute,
-    private _http: HttpClient,
+    private _assetsService: AssetsService,
     private _highlightService: HighlightService) {
   }
 
@@ -32,9 +32,12 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
     const md = new MarkdownIt();
     Util.addMdPrefixToImageSource(md, './assets/posts/' + articleName + '/');
 
-    this._http.get('../../../assets/posts/' + articleName + '/index.md',
-      { responseType: 'text' }).subscribe(data => {
+    // 観測対象を取得
+    const fileObservable = this._assetsService.getFileContent(`../../../assets/posts/${articleName}/index.md`);
 
+    // subscribeでファイルからデータ取得
+    fileObservable.subscribe({
+      next: (data) => {
         this.title = Util.getMetadataValue(data, 'title:');
         this.date = Util.getMetadataValue(data, 'date:');
         this.tags = Util.getMetadataValue(data, 'tags:');
@@ -42,12 +45,13 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
 
         const html = md.render(Util.getMdContent(data));
         this.postHtml = Util.addClassToHtml(html, 'line-numbers', 'pre');
-
-      });
+      },
+      error: (err) => { console.error('Error: ' + err); }
+    });
   }
 
   // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method, @typescript-eslint/no-empty-function
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
   ngAfterViewChecked() {
     if (!this._highlighted && this.postHtml) {
