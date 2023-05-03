@@ -1,118 +1,77 @@
 import { HttpClient } from '@angular/common/http';
-import { AfterViewChecked, Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { HighlightService } from '../../shared/services/highlight.service'
 import * as MarkdownIt from 'markdown-it';
-import { HighlightService } from '../../services/highlight.service'
+import * as Util from '../../shared/utils/util'
+//import { PrismService } from 'ngx-prism';
 
 @Component({
   selector: 'app-blog-post',
   templateUrl: './blog-post.component.html',
-  styleUrls: ['./blog-post.component.scss'],
+  styleUrls: ['./blog-post.component.scss']
 })
-export class BlogPostComponent implements OnInit, AfterViewChecked {
+export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecked {
   public postHtml: string | undefined;
   public title: string | undefined;
   public date: string | undefined;
   public tags: string | undefined;
   public categories: string | undefined;
 
+  private _highlighted = false;
+
+  public sample: string | undefined;
+  sampleHtml = '<pre class="line-numbers"><code class="language-visual-basic">var i = 1;\nvar j = 2;<code/><pre/>';
+
   constructor(
     private _route: ActivatedRoute,
     private _http: HttpClient,
     private _renderer: Renderer2,
     private _highlightService: HighlightService,
-    private elementRef: ElementRef) { }
+    private elementRef: ElementRef) {
+
+    this.sample = this.sampleHtml;
+  }
 
   ngOnInit(): void {
     const articleName = this._route.snapshot.paramMap.get('article');
 
     const md = new MarkdownIt();
-    this.addPrefixToImageSrc(md, './assets/posts/' + articleName + '/');
+    Util.addMdPrefixToImageSource(md, './assets/posts/' + articleName + '/');
 
     this._http.get('../../../assets/posts/' + articleName + '/index.md',
       { responseType: 'text' }).subscribe(data => {
 
-        this.title = this.getMetadataValue(data, 'title:');
-        this.date = this.getMetadataValue(data, 'date:');
-        this.tags = this.getMetadataValue(data, 'tags:');
-        this.categories = this.getMetadataValue(data, 'categories:');
+        this.title = Util.getMetadataValue(data, 'title:');
+        this.date = Util.getMetadataValue(data, 'date:');
+        this.tags = Util.getMetadataValue(data, 'tags:');
+        this.categories = Util.getMetadataValue(data, 'categories:');
 
-        const html = md.render(this.getContent(data));
-        this.postHtml = html;
+        const html = md.render(Util.getMdContent(data));
+        //this.postHtml = html;
         //html = this.addClassToHtml(html, 'prism', 'pre');
-        //this.postHtml = this.addClassToHtml(html, 'prism', 'pre');
+        this.postHtml = Util.addClassToHtml(html, 'line-numbers', 'pre');
 
         // this.postHtml = this._highlightService.highlightHtml(html);
       });
   }
 
+  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method
+  ngAfterViewInit() {
+    //this._highlightService.highlightAll();
+  }
+
   ngAfterViewChecked() {
+    if (!this._highlighted && this.postHtml) {
+      //this.postHtml = this.addClassToHtml(this.postHtml, 'line-numbers', 'pre');
       this._highlightService.highlightAll();
-  }
+      this._highlighted = true;
+    }
+    // this._highlightService.highlightAll();
 
-  /**
-   * mdファイル内の画像に文字列を追加
-   * @param md 
-   * @param prefix 
-   */
-  addPrefixToImageSrc(md: MarkdownIt, prefix: string) {
-    md.renderer.rules.image = (tokens, idx, options, env, self) => {
-      const imgToken = tokens[idx];
-      const srcIndex = imgToken.attrIndex('src');
-      if (imgToken.attrs !== null) {
-        const srcValue = imgToken.attrs[srcIndex][1];
-        const newSrcValue = prefix + srcValue;
-        imgToken.attrs[srcIndex][1] = newSrcValue;
-      }
-      return self.renderToken(tokens, idx, options);
-    };
-  }
-
-  /**
-   * mdファイルのコンテンツデータを取得
-   * @param str 
-   * @returns 
-   */
-  getContent(str: string): string {
-    const startIndex = str.indexOf('---');
-    const endIndex = str.indexOf('---', startIndex + 1);
-    const content = str.slice(endIndex + 3).trim();
-
-    return content;
-  }
-
-  /**
-   * mdファイルのメタデータを取得
-   * @param str 
-   * @param key 
-   * @returns 
-   */
-  getMetadataValue(str: string, key: string): string {
-    const startIndex = str.indexOf('---');
-    const endIndex = str.indexOf('---', startIndex + 1);
-    const metadata = str.slice(startIndex + 3, endIndex).trim();
-
-    const keyStartIndex = metadata.indexOf(key);
-    const keyEndIndex = metadata.indexOf('\n', keyStartIndex);
-    const value = metadata.slice(keyStartIndex + key.length, keyEndIndex).trim();
-
-    return value;
-  }
-
-  /**
-   * htmlのタグにクラスを追加
-   * @param html 
-   * @param className 
-   * @param tagName 
-   * @returns 
-   */
-  addClassToHtml(html: string, className: string, tagName: string): string {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const elements = doc.querySelectorAll(tagName);
-    elements.forEach((el) => {
-      el.classList.add(className);
-    });
-    return doc.documentElement.innerHTML;
+    // if (!this._highlighted) {
+    //   this._highlightService.highlightAll();
+    //   this._highlighted = true;
+    // }
   }
 }

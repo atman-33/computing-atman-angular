@@ -13,7 +13,49 @@
             </div>
             <hr color="#808080">
 
-            <pre class="prism" >aaaaa</pre>
+            <pre class="line-numbers">
+                <code class="language-visual-basic" data-show-language>
+                Option Explicit
+                
+                DeleteFolder "C:\sample"
+                DeleteFile "C:\test\test.txt"
+                
+                ' ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+                ' @brief : 指定したファイルを削除する。
+                ' @note  :
+                ' ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+                Sub DeleteFile (ByVal strFile)
+                
+                 Dim objFso
+                 Set objFso = CreateObject("Scripting.FileSystemObject")
+                
+                 ' フォルダを削除
+                 objFso.DeleteFile strFile,True ' 注意：戻り値が無い場合は引数を（）で括らないこと
+                
+                 Set objFso = Nothing
+                
+                End Sub
+                
+                ' ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+                ' @brief : 指定したフォルダを削除する。
+                ' @note  :
+                ' ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
+                Sub DeleteFolder (ByVal strFolder)
+                
+                 Dim objFso
+                 Set objFso = CreateObject("Scripting.FileSystemObject")
+                
+                 ' フォルダを削除
+                 objFso.DeleteFolder strFolder,True ' 注意：戻り値が無い場合は引数を（）で括らないこと
+                
+                 Set objFso = Nothing
+                
+                End Sub
+                ```                
+            </code>
+            </pre>
+
+            <div [innerHTML]="sample"></div>
 
             <div [innerHTML]="postHtml"></div>
         </div>

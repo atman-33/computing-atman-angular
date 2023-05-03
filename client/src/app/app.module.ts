@@ -6,7 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { FooterComponent } from './common/footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
-import { HighlightService } from './services/highlight.service';
+import { HighlightService } from './shared/services/highlight.service';
 
 @NgModule({
   // 利用するコンポーネントを登録
