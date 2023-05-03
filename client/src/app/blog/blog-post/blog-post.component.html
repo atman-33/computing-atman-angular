@@ -1,59 +1,26 @@
-<main>
+<main class="blog-content">
     <section class="section">
-        <div class="container mt-5">
-            <h1>{{title}}</h1>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-6">{{date}}</div>
-                    <div class="col-sm-6">
-                        <div class="text-right">tags: {{tags}}</div>
-                        <div class="text-right">categories: {{categories}}</div>
+        <div class="container mt-4">
+            <!-- ヘッダー -->
+            <div class="row align-items-center justify-content-around">
+                <div class="col-md-6 col-xl-6 mt-4">
+                    <div class="card bg-primary shadow-soft border-light organic-radius p-3">
+                        <img class="organic-radius img-fluid" src="../../assets/img/keyboard.jpg" alt="keyboard">
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-5 text-center text-md-left">
+                    <h1 class="h1 mt-4 mb-4">{{title}}</h1>
+                    <div class="text-md-right">
+                        <p>
+                            {{date}}<br>
+                            tags: {{tags}}<br>
+                            categories: {{categories}}
+                        </p>
                     </div>
                 </div>
             </div>
-            <hr color="#808080">
 
-            <pre class="line-numbers">
-                <code class="language-visual-basic" data-show-language>
-                Option Explicit
-                
-                DeleteFolder "C:\sample"
-                DeleteFile "C:\test\test.txt"
-                
-                ' ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-                ' @brief : 指定したファイルを削除する。
-                ' @note  :
-                ' ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-                Sub DeleteFile (ByVal strFile)
-                
-                 Dim objFso
-                 Set objFso = CreateObject("Scripting.FileSystemObject")
-                
-                 ' フォルダを削除
-                 objFso.DeleteFile strFile,True ' 注意：戻り値が無い場合は引数を（）で括らないこと
-                
-                 Set objFso = Nothing
-                
-                End Sub
-                
-                ' ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-                ' @brief : 指定したフォルダを削除する。
-                ' @note  :
-                ' ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-                Sub DeleteFolder (ByVal strFolder)
-                
-                 Dim objFso
-                 Set objFso = CreateObject("Scripting.FileSystemObject")
-                
-                 ' フォルダを削除
-                 objFso.DeleteFolder strFolder,True ' 注意：戻り値が無い場合は引数を（）で括らないこと
-                
-                 Set objFso = Nothing
-                
-                End Sub
-                ```                
-            </code>
-            </pre>
+            <hr color="#808080">
 
             <div [innerHTML]="postHtml"></div>
         </div>

@@ -22,6 +22,7 @@
           "node_modules/prismjs/themes/prism.css",
           "node_modules/prismjs/plugins/toolbar/prism-toolbar.min.css",
           "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min.css",
+          "client/src/assets/scss/blog-post.scss",
           "client/src/styles.scss"
           ],
         "scripts": [
