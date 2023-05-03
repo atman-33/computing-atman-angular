@@ -1,0 +1,28 @@
+<main class="blog-content">
+    <section class="section">
+        <div class="container mt-4">
+            <!-- ヘッダー -->
+            <div class="row align-items-center justify-content-around">
+                <div class="col-md-6 col-xl-6 mt-4">
+                    <div class="card bg-primary shadow-soft border-light organic-radius p-3">
+                        <img class="organic-radius img-fluid" src="../../assets/img/keyboard.jpg" alt="keyboard">
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-5 text-center text-md-left">
+                    <h1 class="h1 mt-4 mb-4">{{title}}</h1>
+                    <div class="text-md-right">
+                        <p>
+                            {{date}}<br>
+                            tags: {{tags}}<br>
+                            categories: {{categories}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <hr color="#808080">
+
+            <div [innerHTML]="postHtml"></div>
+        </div>
+    </section>
+</main>

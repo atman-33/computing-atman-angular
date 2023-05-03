@@ -19,6 +19,10 @@
         "styles": [
           "node_modules/bootstrap/dist/css/bootstrap.min.css",
           "client/src/assets/scss/neumorphism.scss",
+          "node_modules/prismjs/themes/prism.css",
+          "node_modules/prismjs/plugins/toolbar/prism-toolbar.min.css",
+          "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min.css",
+          "client/src/assets/scss/blog-post.scss",
           "client/src/styles.scss"
           ],
         "scripts": [
@@ -32,7 +36,16 @@
           "node_modules/jarallax/dist/jarallax.min.js",
           "node_modules/smooth-scroll/dist/smooth-scroll.min.js",
           "node_modules/@fortawesome/fontawesome-free/js/all.min.js",
+          "node_modules/prismjs/prism.js",
+          "node_modules/prismjs/plugins/toolbar/prism-toolbar.min.js",
+          "node_modules/prismjs/plugins/show-language/prism-show-language.min.js",
+          "node_modules/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js",
+          "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min.js",
           "client/src/assets/js/neumorphism.js"
+        ],
+        "allowedCommonJsDependencies": [
+          "prismjs",
+          "prismjs/plugins/copy-to-clipboard"
         ]
       },
       "configurations": {

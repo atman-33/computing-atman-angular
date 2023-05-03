@@ -84,3 +84,9 @@ nx g @nx/angular:component __my_componet__ --project=client
 
 モジュールの場合
 - @NgModule の imports に追加
+
+
+## ブログ作成
+
+### 画像の埋め込み方法
+![image](img-1.jpg)
