@@ -19,6 +19,7 @@
         "styles": [
           "node_modules/bootstrap/dist/css/bootstrap.min.css",
           "client/src/assets/scss/neumorphism.scss",
+          "node_modules/prismjs/themes/prism.css",
           "client/src/styles.scss"
           ],
         "scripts": [
@@ -32,6 +33,7 @@
           "node_modules/jarallax/dist/jarallax.min.js",
           "node_modules/smooth-scroll/dist/smooth-scroll.min.js",
           "node_modules/@fortawesome/fontawesome-free/js/all.min.js",
+          "node_modules/prismjs/prism.js",
           "client/src/assets/js/neumorphism.js"
         ]
       },

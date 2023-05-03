@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, OnInit, Renderer2 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import * as MarkdownIt from 'markdown-it';
+import { HighlightService } from '../../services/highlight.service'
 
 @Component({
   selector: 'app-blog-post',
   templateUrl: './blog-post.component.html',
   styleUrls: ['./blog-post.component.scss'],
 })
-export class BlogPostComponent implements OnInit {
+export class BlogPostComponent implements OnInit, AfterViewChecked {
   public postHtml: string | undefined;
   public title: string | undefined;
   public date: string | undefined;
@@ -17,7 +18,10 @@ export class BlogPostComponent implements OnInit {
 
   constructor(
     private _route: ActivatedRoute,
-    private _http: HttpClient) { }
+    private _http: HttpClient,
+    private _renderer: Renderer2,
+    private _highlightService: HighlightService,
+    private elementRef: ElementRef) { }
 
   ngOnInit(): void {
     const articleName = this._route.snapshot.paramMap.get('article');
@@ -33,8 +37,17 @@ export class BlogPostComponent implements OnInit {
         this.tags = this.getMetadataValue(data, 'tags:');
         this.categories = this.getMetadataValue(data, 'categories:');
 
-        this.postHtml = md.render(this.getContent(data));
+        const html = md.render(this.getContent(data));
+        this.postHtml = html;
+        //html = this.addClassToHtml(html, 'prism', 'pre');
+        //this.postHtml = this.addClassToHtml(html, 'prism', 'pre');
+
+        // this.postHtml = this._highlightService.highlightHtml(html);
       });
+  }
+
+  ngAfterViewChecked() {
+      this._highlightService.highlightAll();
   }
 
   /**
@@ -64,7 +77,7 @@ export class BlogPostComponent implements OnInit {
     const startIndex = str.indexOf('---');
     const endIndex = str.indexOf('---', startIndex + 1);
     const content = str.slice(endIndex + 3).trim();
-  
+
     return content;
   }
 
@@ -78,11 +91,28 @@ export class BlogPostComponent implements OnInit {
     const startIndex = str.indexOf('---');
     const endIndex = str.indexOf('---', startIndex + 1);
     const metadata = str.slice(startIndex + 3, endIndex).trim();
-  
+
     const keyStartIndex = metadata.indexOf(key);
     const keyEndIndex = metadata.indexOf('\n', keyStartIndex);
     const value = metadata.slice(keyStartIndex + key.length, keyEndIndex).trim();
-  
+
     return value;
+  }
+
+  /**
+   * htmlのタグにクラスを追加
+   * @param html 
+   * @param className 
+   * @param tagName 
+   * @returns 
+   */
+  addClassToHtml(html: string, className: string, tagName: string): string {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const elements = doc.querySelectorAll(tagName);
+    elements.forEach((el) => {
+      el.classList.add(className);
+    });
+    return doc.documentElement.innerHTML;
   }
 }

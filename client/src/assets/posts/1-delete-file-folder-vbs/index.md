@@ -9,7 +9,7 @@ VBSでファイル、フォルダを削除する関数のサンプルソース�
 
 ## サンプルソース
 
-```vb
+```visual-basic
 Option Explicit
 
 DeleteFolder "C:\sample"
@@ -50,9 +50,9 @@ End Sub
 
 ## 解説
 
-FileSystemObject.DeleteFile関数
-FileSystemObject.DeleteFolder関数
-第1パラメータ：削除するフォルダ
-第2パラメータ：
-　True：読み取り専用ファイルも削除
+FileSystemObject.DeleteFile関数  
+FileSystemObject.DeleteFolder関数  
+第1パラメータ：削除するフォルダ  
+第2パラメータ：  
+　True：読み取り専用ファイルも削除  
 　False(規定値)：読み取り専用ファイルは削除しない
