@@ -83,5 +83,5 @@ import * as MarkdownIt from "markdown-it";
         el.parentNode.insertBefore(textNode, el.nextSibling);
       }
     });
-    return doc.documentElement.innerHTML;
+    return doc.documentElement.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
   }
