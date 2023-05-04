@@ -26,13 +26,33 @@ exports.AppModule = AppModule;
 /***/ }),
 
 /***/ "./src/app/items/dto/create-item-dto.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CreateItemDto = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const class_validator_1 = __webpack_require__("class-validator");
+const class_transformer_1 = __webpack_require__("class-transformer");
 class CreateItemDto {
 }
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MaxLength)(40),
+    tslib_1.__metadata("design:type", String)
+], CreateItemDto.prototype, "name", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsInt)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_transformer_1.Type)(() => Number),
+    tslib_1.__metadata("design:type", Number)
+], CreateItemDto.prototype, "price", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    tslib_1.__metadata("design:type", String)
+], CreateItemDto.prototype, "description", void 0);
 exports.CreateItemDto = CreateItemDto;
 
 
@@ -106,7 +126,7 @@ tslib_1.__decorate([
 tslib_1.__decorate([
     (0, common_1.Get)(':id') // /items/id
     ,
-    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
     tslib_1.__metadata("design:returntype", typeof (_b = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _b : Object)
@@ -120,14 +140,14 @@ tslib_1.__decorate([
 ], ItemsController.prototype, "create", null);
 tslib_1.__decorate([
     (0, common_1.Patch)(':id'),
-    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
     tslib_1.__metadata("design:returntype", typeof (_e = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _e : Object)
 ], ItemsController.prototype, "updateStatus", null);
 tslib_1.__decorate([
     (0, common_1.Delete)(':id'),
-    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
     tslib_1.__metadata("design:returntype", void 0)
@@ -173,6 +193,7 @@ exports.ItemsService = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
+const uuid_1 = __webpack_require__("uuid");
 let ItemsService = class ItemsService {
     constructor() {
         this.items = [];
@@ -181,10 +202,14 @@ let ItemsService = class ItemsService {
         return this.items;
     }
     findById(id) {
-        return this.items.find((item) => item.id === id);
+        const found = this.items.find((item) => item.id === id);
+        if (!found) {
+            throw new common_1.NotFoundException();
+        }
+        return found;
     }
     create(createItemDto) {
-        const item = Object.assign(Object.assign({}, createItemDto), { status: item_status_enum_1.ItemStatus.ON_SALE });
+        const item = Object.assign(Object.assign({ id: (0, uuid_1.v4)() }, createItemDto), { status: item_status_enum_1.ItemStatus.ON_SALE });
         this.items.push(item);
         return item;
     }
@@ -219,10 +244,31 @@ module.exports = require("@nestjs/core");
 
 /***/ }),
 
+/***/ "class-transformer":
+/***/ ((module) => {
+
+module.exports = require("class-transformer");
+
+/***/ }),
+
+/***/ "class-validator":
+/***/ ((module) => {
+
+module.exports = require("class-validator");
+
+/***/ }),
+
 /***/ "tslib":
 /***/ ((module) => {
 
 module.exports = require("tslib");
+
+/***/ }),
+
+/***/ "uuid":
+/***/ ((module) => {
+
+module.exports = require("uuid");
 
 /***/ })
 
@@ -270,6 +316,7 @@ const app_module_1 = __webpack_require__("./src/app/app.module.ts");
 function bootstrap() {
     return tslib_1.__awaiter(this, void 0, void 0, function* () {
         const app = yield core_1.NestFactory.create(app_module_1.AppModule);
+        app.useGlobalPipes(new common_1.ValidationPipe());
         const globalPrefix = 'api';
         app.setGlobalPrefix(globalPrefix);
         const port = process.env.PORT || 3000;
