@@ -9,10 +9,10 @@ export class AssetsService {
     //private readonly assetsPath = '../../../assets/';
     // private readonly assetsPath = '../../../assets/';
 
-    constructor(private _http: HttpClient) { }
+    constructor(private http: HttpClient) { }
 
     getFileContent(path: string): Observable<string> {
-        return this._http.get(path, { responseType: 'text' });
+        return this.http.get(path, { responseType: 'text' });
     }
 
     // これらの処理はフォルダアクセスのためフロントエンドでは不可。バックエンドで実装必要

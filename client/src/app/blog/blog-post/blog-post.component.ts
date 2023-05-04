@@ -18,22 +18,22 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
   public tags: string | undefined;
   public categories: string | undefined;
 
-  private _highlighted = false;
+  private highlighted = false;
 
   constructor(
-    private _route: ActivatedRoute,
-    private _assetsService: AssetsService,
-    private _highlightService: HighlightService) {
+    private route: ActivatedRoute,
+    private assetsService: AssetsService,
+    private highlightService: HighlightService) {
   }
 
   ngOnInit() {
-    const articleName = this._route.snapshot.paramMap.get('article');
+    const articleName = this.route.snapshot.paramMap.get('article');
 
     const md = new MarkdownIt();
     Util.addMdPrefixToImageSource(md, './assets/posts/' + articleName + '/');
 
     // 観測対象を取得
-    const fileObservable = this._assetsService.getFileContent(`../../../assets/posts/${articleName}/index.md`);
+    const fileObservable = this.assetsService.getFileContent(`../../../assets/posts/${articleName}/index.md`);
 
     // subscribeでファイルからデータ取得
     fileObservable.subscribe({
@@ -54,10 +54,10 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
   ngAfterViewInit() { }
 
   ngAfterViewChecked() {
-    if (!this._highlighted && this.postHtml) {
+    if (!this.highlighted && this.postHtml) {
       //this.postHtml = this.addClassToHtml(this.postHtml, 'line-numbers', 'pre');
-      this._highlightService.highlightAll();
-      this._highlighted = true;
+      this.highlightService.highlightAll();
+      this.highlighted = true;
     }
   }
 }
