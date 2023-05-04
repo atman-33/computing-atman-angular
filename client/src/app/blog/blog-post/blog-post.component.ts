@@ -1,6 +1,6 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HighlightService } from '../../shared/services/highlight.service'
+import { PrismService } from '../../shared/services/prism.service'
 import { AssetsService } from '../../shared/services/assets.service';
 import * as MarkdownIt from 'markdown-it';
 import * as Util from '../../shared/utils/util'
@@ -23,7 +23,7 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
   constructor(
     private route: ActivatedRoute,
     private assetsService: AssetsService,
-    private highlightService: HighlightService) {
+    private prismService: PrismService) {
   }
 
   ngOnInit() {
@@ -56,7 +56,7 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
   ngAfterViewChecked() {
     if (!this.highlighted && this.postHtml) {
       //this.postHtml = this.addClassToHtml(this.postHtml, 'line-numbers', 'pre');
-      this.highlightService.highlightAll();
+      this.prismService.highlightAll();
       this.highlighted = true;
     }
   }
