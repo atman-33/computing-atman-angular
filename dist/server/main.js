@@ -25,6 +25,19 @@ exports.AppModule = AppModule;
 
 /***/ }),
 
+/***/ "./src/app/items/dto/create-item-dto.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreateItemDto = void 0;
+class CreateItemDto {
+}
+exports.CreateItemDto = CreateItemDto;
+
+
+/***/ }),
+
 /***/ "./src/app/items/item-status.enum.ts":
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -53,14 +66,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ItemsController = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
-const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
 const item_model_1 = __webpack_require__("./src/app/items/item.model.ts");
+const create_item_dto_1 = __webpack_require__("./src/app/items/dto/create-item-dto.ts");
 let ItemsController = class ItemsController {
     /**
      *
@@ -74,15 +87,8 @@ let ItemsController = class ItemsController {
     findById(id) {
         return this.itemsService.findById(id);
     }
-    create(id, name, price, description) {
-        const item = {
-            id,
-            name,
-            price,
-            description,
-            status: item_status_enum_1.ItemStatus.ON_SALE
-        };
-        return this.itemsService.create(item);
+    create(createItemDto) {
+        return this.itemsService.create(createItemDto);
     }
     updateStatus(id) {
         return this.itemsService.updateStatus(id);
@@ -107,20 +113,17 @@ tslib_1.__decorate([
 ], ItemsController.prototype, "findById", null);
 tslib_1.__decorate([
     (0, common_1.Post)(),
-    tslib_1.__param(0, (0, common_1.Body)('id')),
-    tslib_1.__param(1, (0, common_1.Body)('name')),
-    tslib_1.__param(2, (0, common_1.Body)('price')),
-    tslib_1.__param(3, (0, common_1.Body)('description')),
+    tslib_1.__param(0, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [String, String, Number, String]),
-    tslib_1.__metadata("design:returntype", typeof (_c = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _c : Object)
+    tslib_1.__metadata("design:paramtypes", [typeof (_c = typeof create_item_dto_1.CreateItemDto !== "undefined" && create_item_dto_1.CreateItemDto) === "function" ? _c : Object]),
+    tslib_1.__metadata("design:returntype", typeof (_d = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _d : Object)
 ], ItemsController.prototype, "create", null);
 tslib_1.__decorate([
     (0, common_1.Patch)(':id'),
     tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
-    tslib_1.__metadata("design:returntype", typeof (_d = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _d : Object)
+    tslib_1.__metadata("design:returntype", typeof (_e = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _e : Object)
 ], ItemsController.prototype, "updateStatus", null);
 tslib_1.__decorate([
     (0, common_1.Delete)(':id'),
@@ -180,7 +183,8 @@ let ItemsService = class ItemsService {
     findById(id) {
         return this.items.find((item) => item.id === id);
     }
-    create(item) {
+    create(createItemDto) {
+        const item = Object.assign(Object.assign({}, createItemDto), { status: item_status_enum_1.ItemStatus.ON_SALE });
         this.items.push(item);
         return item;
     }
