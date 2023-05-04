@@ -9,9 +9,9 @@ import { BlogModule } from './blog/blog.module';
  * @remark pathの先頭に/は不要（OK:detail NG:/detail）
  */
 const routes: Routes = [
-    { path: '', redirectTo: 'top-page', pathMatch: 'full' },
-    { path: 'top-page', component: TopPageComponent }
-];
+    { path: 'top-page', component: TopPageComponent },
+    { path: '', component: TopPageComponent, pathMatch: 'full' }
+  ];  
 
 /**
  * 子モジュールをimport

@@ -69,14 +69,13 @@ npm install bootstrap@5 --save
           ],
 ```
 
-
 ## フロントエンド（Angular）開発
 
 ### 1. ページ追加
 
 1. コンポーネント（Page）作成
 ```
-nx g @nx/angular:component __my_componet__ --project=client
+nx g @nx/angular:component __componet__ --project=client
 ```
 2. app-routing.module.ts にページ登録
 ページ単体の場合
@@ -85,6 +84,16 @@ nx g @nx/angular:component __my_componet__ --project=client
 モジュールの場合
 - @NgModule の imports に追加
 
+## バックエンド（NestJS）開発
+
+1. モジュール作成
+nx g @nx/nest:module app/__module__ --project=server
+
+2. コントローラー作成
+nx g @nx/nest:controller app/__controller__ --project=server
+
+3. サービス作成
+nx g @nx/nest:service app/__service__ --project=server
 
 ## ブログ作成
 

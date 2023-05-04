@@ -11,13 +11,13 @@ export class BlogListComponent implements OnInit {
   public posts: string[] = [];
 
   constructor(
-    private _assetsService: AssetsService) {
+    private assetsService: AssetsService) {
   }
 
   ngOnInit() {
 
     // 観測対象を取得
-    const postFilesObservable = this._assetsService.getAssetFolders();
+    const postFilesObservable = this.assetsService.getAssetFolders();
 
     // subscribeでファイルからデータ取得
     postFilesObservable.subscribe({

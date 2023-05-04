@@ -7,7 +7,6 @@
 	"settings": {},
 	"extensions": {
 		"recommendations": [
-			"wesbos.theme-cobalt2",
 			"eamodio.gitlens",
 			"pkief.material-icon-theme",
 			"formulahendry.auto-rename-tag",

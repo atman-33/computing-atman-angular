@@ -23,7 +23,7 @@ import 'prismjs/components/prism-ruby';
 declare const Prism: any;
 
 @Injectable()
-export class HighlightService {
+export class PrismService {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: object
