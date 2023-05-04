@@ -87,13 +87,42 @@ nx g @nx/angular:component __componet__ --project=client
 ## バックエンド（NestJS）開発
 
 1. モジュール作成
-nx g @nx/nest:module app/__module__ --project=server
+nx g @nx/nest:module app/__name__ --project=server
 
 2. コントローラー作成
-nx g @nx/nest:controller app/__controller__ --project=server
+nx g @nx/nest:controller app/__name__ --project=server
 
 3. サービス作成
-nx g @nx/nest:service app/__service__ --project=server
+nx g @nx/nest:service app/__name__ --project=server
+
+4. Docker（DB）構築
+- 1. dockerをインストール
+- 2. docker-compose.yamlを準備
+- 3. docker-compose.yamlが存在するフォルダに移動
+- 4. docker-compose up -d コマンドを実行
+- 5. ブラウザでpgAdminにログインし、postgres サーバーを作成
+
+5. マイグレーション作成
+```
+npx tsc server/src/app/**/*.entity.ts --outDir "./dist/server" --experimentalDecorators true --emitDecoratorMetadata
+npx tsc server/src/app/migrations/*.ts --outDir "./dist/server/migrations" --experimentalDecorators true --emitDecoratorMetadata
+npx typeorm migration:generate -f server/ormconfig.js -n __name__
+```
+↓  
+↓package.jsonのscriptsにコマンドを追加したため下記を利用可能  
+↓  
+- entitiesをbuildしてmigration:generate
+npm run typeorm-migration-generate CreateItem __name__
+
+- entitiesとmigrationsをbuildしてmigration:generate
+npm run typeorm-migration-generate-ex CreateItem __name__
+
+**dockerにアクセスするパーミッションがない場合、下記を実行!**
+```
+sudo su -
+chmod -R 777 /home/atman/Sites/
+exit
+```
 
 ## ブログ作成
 

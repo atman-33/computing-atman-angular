@@ -11,11 +11,15 @@ exports.AppModule = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const items_module_1 = __webpack_require__("./src/app/items/items.module.ts");
+const typeorm_1 = __webpack_require__("@nestjs/typeorm");
 let AppModule = class AppModule {
 };
 AppModule = tslib_1.__decorate([
     (0, common_1.Module)({
-        imports: [items_module_1.ItemsModule],
+        imports: [
+            items_module_1.ItemsModule,
+            typeorm_1.TypeOrmModule.forRoot()
+        ],
         controllers: [],
         providers: [],
     })
@@ -241,6 +245,13 @@ module.exports = require("@nestjs/common");
 /***/ ((module) => {
 
 module.exports = require("@nestjs/core");
+
+/***/ }),
+
+/***/ "@nestjs/typeorm":
+/***/ ((module) => {
+
+module.exports = require("@nestjs/typeorm");
 
 /***/ }),
 

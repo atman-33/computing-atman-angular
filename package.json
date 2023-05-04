@@ -1,4 +1,10 @@
 {
+  "scripts": {
+    "typeorm-build-entites": "npx tsc server/src/app/**/*.entity.ts --outDir ./dist/server --experimentalDecorators true --emitDecoratorMetadata",
+    "typeorm-build-migrations": "npx tsc server/src/app/migrations/*.ts --outDir ./dist/server/migrations --experimentalDecorators true --emitDecoratorMetadata",
+    "typeorm-migration-generate": "npm run typeorm-build-entites && npx typeorm migration:generate -f server/ormconfig.js -n",
+    "typeorm-migration-generate-ex": "npm run typeorm-build-entites && npm run typeorm-build-migrations && npx typeorm migration:generate -f server/ormconfig.js -n"
+  },
   "devDependencies": {
     "@angular-devkit/build-angular": "~15.2.0",
     "@angular-devkit/core": "~15.2.0",
@@ -24,7 +30,7 @@
     "@schematics/angular": "~15.2.0",
     "@types/jest": "^29.4.0",
     "@types/markdown-it": "^12.2.3",
-    "@types/node": "~18.7.1",
+    "@types/node": "^18.16.3",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",
     "cypress": "^12.2.0",
@@ -53,6 +59,7 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/typeorm": "^8.0.2",
     "@ng-bootstrap/ng-bootstrap": "^14.1.0",
     "@ngx-prism/core": "^2.0.1",
     "@types/marked": "^4.3.0",
@@ -75,12 +82,14 @@
     "ngx-markdown": "^15.1.2",
     "ngx-markdown-it": "^0.1.2",
     "ngx-prism": "^0.0.1",
+    "pg": "^8.10.0",
     "popper.js": "1.16.0",
     "prismjs": "^1.29.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.0.0",
     "smooth-scroll": "^16.1.0",
     "tslib": "^2.3.0",
+    "typeorm": "^0.2.45",
     "uuid": "^9.0.0",
     "zone.js": "~0.12.0"
   }

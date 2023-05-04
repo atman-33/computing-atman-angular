@@ -6,7 +6,6 @@
         "pkief.material-icon-theme",
         "formulahendry.auto-rename-tag",
         "github.github-vscode-theme",
-        "dracula-theme.theme-dracula",
-        "yzhang.markdown-all-in-one"
+        "dracula-theme.theme-dracula"
     ]
 }
