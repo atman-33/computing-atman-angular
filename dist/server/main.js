@@ -2,39 +2,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/app/app.controller.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AppController = void 0;
-const tslib_1 = __webpack_require__("tslib");
-const common_1 = __webpack_require__("@nestjs/common");
-const app_service_1 = __webpack_require__("./src/app/app.service.ts");
-let AppController = class AppController {
-    constructor(appService) {
-        this.appService = appService;
-    }
-    getData() {
-        return this.appService.getData();
-    }
-};
-tslib_1.__decorate([
-    (0, common_1.Get)(),
-    tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", void 0)
-], AppController.prototype, "getData", null);
-AppController = tslib_1.__decorate([
-    (0, common_1.Controller)(),
-    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof app_service_1.AppService !== "undefined" && app_service_1.AppService) === "function" ? _a : Object])
-], AppController);
-exports.AppController = AppController;
-
-
-/***/ }),
-
 /***/ "./src/app/app.module.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -43,15 +10,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AppModule = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
-const app_controller_1 = __webpack_require__("./src/app/app.controller.ts");
-const app_service_1 = __webpack_require__("./src/app/app.service.ts");
+const items_module_1 = __webpack_require__("./src/app/items/items.module.ts");
 let AppModule = class AppModule {
 };
 AppModule = tslib_1.__decorate([
     (0, common_1.Module)({
-        imports: [],
-        controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        imports: [items_module_1.ItemsModule],
+        controllers: [],
+        providers: [],
     })
 ], AppModule);
 exports.AppModule = AppModule;
@@ -59,23 +25,178 @@ exports.AppModule = AppModule;
 
 /***/ }),
 
-/***/ "./src/app/app.service.ts":
+/***/ "./src/app/items/item-status.enum.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ItemStatus = void 0;
+var ItemStatus;
+(function (ItemStatus) {
+    ItemStatus["ON_SALE"] = "ON_SALE";
+    ItemStatus["SOLD_OUT"] = "SOLD_OUT";
+})(ItemStatus = exports.ItemStatus || (exports.ItemStatus = {}));
+
+
+/***/ }),
+
+/***/ "./src/app/items/item.model.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ "./src/app/items/items.controller.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a, _b, _c, _d;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ItemsController = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
+const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
+const item_model_1 = __webpack_require__("./src/app/items/item.model.ts");
+let ItemsController = class ItemsController {
+    /**
+     *
+     */
+    constructor(itemsService) {
+        this.itemsService = itemsService;
+    }
+    findAll() {
+        return this.itemsService.findAll();
+    }
+    findById(id) {
+        return this.itemsService.findById(id);
+    }
+    create(id, name, price, description) {
+        const item = {
+            id,
+            name,
+            price,
+            description,
+            status: item_status_enum_1.ItemStatus.ON_SALE
+        };
+        return this.itemsService.create(item);
+    }
+    updateStatus(id) {
+        return this.itemsService.updateStatus(id);
+    }
+    delete(id) {
+        this.itemsService.delete(id);
+    }
+};
+tslib_1.__decorate([
+    (0, common_1.Get)(),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", []),
+    tslib_1.__metadata("design:returntype", Array)
+], ItemsController.prototype, "findAll", null);
+tslib_1.__decorate([
+    (0, common_1.Get)(':id') // /items/id
+    ,
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", typeof (_b = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _b : Object)
+], ItemsController.prototype, "findById", null);
+tslib_1.__decorate([
+    (0, common_1.Post)(),
+    tslib_1.__param(0, (0, common_1.Body)('id')),
+    tslib_1.__param(1, (0, common_1.Body)('name')),
+    tslib_1.__param(2, (0, common_1.Body)('price')),
+    tslib_1.__param(3, (0, common_1.Body)('description')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String, String, Number, String]),
+    tslib_1.__metadata("design:returntype", typeof (_c = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _c : Object)
+], ItemsController.prototype, "create", null);
+tslib_1.__decorate([
+    (0, common_1.Patch)(':id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", typeof (_d = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _d : Object)
+], ItemsController.prototype, "updateStatus", null);
+tslib_1.__decorate([
+    (0, common_1.Delete)(':id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", void 0)
+], ItemsController.prototype, "delete", null);
+ItemsController = tslib_1.__decorate([
+    (0, common_1.Controller)('items'),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof items_service_1.ItemsService !== "undefined" && items_service_1.ItemsService) === "function" ? _a : Object])
+], ItemsController);
+exports.ItemsController = ItemsController;
+
+
+/***/ }),
+
+/***/ "./src/app/items/items.module.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AppService = void 0;
+exports.ItemsModule = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
-let AppService = class AppService {
-    getData() {
-        return { message: 'Hello API' };
+const items_controller_1 = __webpack_require__("./src/app/items/items.controller.ts");
+const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
+let ItemsModule = class ItemsModule {
+};
+ItemsModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        controllers: [items_controller_1.ItemsController],
+        providers: [items_service_1.ItemsService],
+    })
+], ItemsModule);
+exports.ItemsModule = ItemsModule;
+
+
+/***/ }),
+
+/***/ "./src/app/items/items.service.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ItemsService = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
+let ItemsService = class ItemsService {
+    constructor() {
+        this.items = [];
+    }
+    findAll() {
+        return this.items;
+    }
+    findById(id) {
+        return this.items.find((item) => item.id === id);
+    }
+    create(item) {
+        this.items.push(item);
+        return item;
+    }
+    updateStatus(id) {
+        const item = this.items.find((item) => item.id === id);
+        item.status = item_status_enum_1.ItemStatus.SOLD_OUT;
+        return item;
+    }
+    delete(id) {
+        this.items = this.items.filter((item) => item.id !== id);
     }
 };
-AppService = tslib_1.__decorate([
+ItemsService = tslib_1.__decorate([
     (0, common_1.Injectable)()
-], AppService);
-exports.AppService = AppService;
+], ItemsService);
+exports.ItemsService = ItemsService;
 
 
 /***/ }),
