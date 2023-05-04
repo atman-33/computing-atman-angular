@@ -4,5 +4,14 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {},
+	"extensions": {
+		"recommendations": [
+			"eamodio.gitlens",
+			"pkief.material-icon-theme",
+			"formulahendry.auto-rename-tag",
+			"github.github-vscode-theme",
+			"dracula-theme.theme-dracula"
+		]
+	}
 }

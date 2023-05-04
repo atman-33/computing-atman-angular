@@ -18,9 +18,35 @@
         "assets": ["client/src/favicon.ico", "client/src/assets"],
         "styles": [
           "node_modules/bootstrap/dist/css/bootstrap.min.css",
+          "client/src/assets/scss/neumorphism.scss",
+          "node_modules/prismjs/themes/prism.css",
+          "node_modules/prismjs/plugins/toolbar/prism-toolbar.min.css",
+          "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min.css",
+          "client/src/assets/scss/blog-post.scss",
           "client/src/styles.scss"
           ],
-        "scripts": []
+        "scripts": [
+          "node_modules/jquery/dist/jquery.min.js",
+          "node_modules/popper.js/dist/umd/popper.min.js",
+          "node_modules/bootstrap/dist/js/bootstrap.min.js",
+          "node_modules/headroom.js/dist/headroom.js",
+          "node_modules/jquery-ui/dist/jquery-ui.min.js",
+          "node_modules/jquery.counterup/jquery.counterup.min.js",
+          "node_modules/jquery-countdown/dist/jquery.countdown.min.js",
+          "node_modules/jarallax/dist/jarallax.min.js",
+          "node_modules/smooth-scroll/dist/smooth-scroll.min.js",
+          "node_modules/@fortawesome/fontawesome-free/js/all.min.js",
+          "node_modules/prismjs/prism.js",
+          "node_modules/prismjs/plugins/toolbar/prism-toolbar.min.js",
+          "node_modules/prismjs/plugins/show-language/prism-show-language.min.js",
+          "node_modules/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js",
+          "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.min.js",
+          "client/src/assets/js/neumorphism.js"
+        ],
+        "allowedCommonJsDependencies": [
+          "prismjs",
+          "prismjs/plugins/copy-to-clipboard"
+        ]
       },
       "configurations": {
         "production": {
