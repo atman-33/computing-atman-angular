@@ -50,20 +50,196 @@ const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const items_module_1 = __webpack_require__("./src/app/items/items.module.ts");
 const typeorm_1 = __webpack_require__("@nestjs/typeorm");
+const auth_module_1 = __webpack_require__("./src/app/auth/auth.module.ts");
 const ormconfig = tslib_1.__importStar(__webpack_require__("./ormconfig.js"));
 let AppModule = class AppModule {
 };
 AppModule = tslib_1.__decorate([
     (0, common_1.Module)({
-        imports: [
-            items_module_1.ItemsModule,
-            typeorm_1.TypeOrmModule.forRoot(ormconfig)
-        ],
+        imports: [items_module_1.ItemsModule, typeorm_1.TypeOrmModule.forRoot(ormconfig), auth_module_1.AuthModule],
         controllers: [],
         providers: [],
     })
 ], AppModule);
 exports.AppModule = AppModule;
+
+
+/***/ }),
+
+/***/ "./src/app/auth/auth.controller.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+var _a, _b, _c;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AuthController = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const auth_service_1 = __webpack_require__("./src/app/auth/auth.service.ts");
+const create_user_dto_1 = __webpack_require__("./src/app/auth/dto/create-user-dto.ts");
+let AuthController = class AuthController {
+    /**
+     *
+     */
+    constructor(authService) {
+        this.authService = authService;
+    }
+    signup(createUserDto) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return this.authService.signUp(createUserDto);
+        });
+    }
+};
+tslib_1.__decorate([
+    (0, common_1.Post)('signup'),
+    tslib_1.__param(0, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof create_user_dto_1.CreateUserDto !== "undefined" && create_user_dto_1.CreateUserDto) === "function" ? _b : Object]),
+    tslib_1.__metadata("design:returntype", typeof (_c = typeof Promise !== "undefined" && Promise) === "function" ? _c : Object)
+], AuthController.prototype, "signup", null);
+AuthController = tslib_1.__decorate([
+    (0, common_1.Controller)('auth'),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof auth_service_1.AuthService !== "undefined" && auth_service_1.AuthService) === "function" ? _a : Object])
+], AuthController);
+exports.AuthController = AuthController;
+
+
+/***/ }),
+
+/***/ "./src/app/auth/auth.module.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AuthModule = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const auth_controller_1 = __webpack_require__("./src/app/auth/auth.controller.ts");
+const auth_service_1 = __webpack_require__("./src/app/auth/auth.service.ts");
+const user_repository_1 = __webpack_require__("./src/app/auth/user.repository.ts");
+const typeorm_1 = __webpack_require__("@nestjs/typeorm");
+let AuthModule = class AuthModule {
+};
+AuthModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [typeorm_1.TypeOrmModule.forFeature([user_repository_1.UserRepository])],
+        controllers: [auth_controller_1.AuthController],
+        providers: [auth_service_1.AuthService],
+    })
+], AuthModule);
+exports.AuthModule = AuthModule;
+
+
+/***/ }),
+
+/***/ "./src/app/auth/auth.service.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AuthService = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const user_repository_1 = __webpack_require__("./src/app/auth/user.repository.ts");
+let AuthService = class AuthService {
+    /**
+     *
+     */
+    constructor(userRepository) {
+        this.userRepository = userRepository;
+    }
+    signUp(createUserDto) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.userRepository.createUser(createUserDto);
+        });
+    }
+};
+AuthService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_repository_1.UserRepository !== "undefined" && user_repository_1.UserRepository) === "function" ? _a : Object])
+], AuthService);
+exports.AuthService = AuthService;
+
+
+/***/ }),
+
+/***/ "./src/app/auth/dto/create-user-dto.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CreateUserDto = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const class_validator_1 = __webpack_require__("class-validator");
+const user_status_enum_1 = __webpack_require__("./src/app/auth/user-status.enum.ts");
+class CreateUserDto {
+}
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    tslib_1.__metadata("design:type", String)
+], CreateUserDto.prototype, "username", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(8),
+    (0, class_validator_1.MaxLength)(32),
+    tslib_1.__metadata("design:type", String)
+], CreateUserDto.prototype, "password", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsEnum)(user_status_enum_1.UserStatus),
+    tslib_1.__metadata("design:type", typeof (_a = typeof user_status_enum_1.UserStatus !== "undefined" && user_status_enum_1.UserStatus) === "function" ? _a : Object)
+], CreateUserDto.prototype, "status", void 0);
+exports.CreateUserDto = CreateUserDto;
+
+
+/***/ }),
+
+/***/ "./src/app/auth/user-status.enum.ts":
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UserStatus = void 0;
+var UserStatus;
+(function (UserStatus) {
+    UserStatus["FREE"] = "FREE";
+    UserStatus["PREMIUM"] = "PREMIUM";
+})(UserStatus = exports.UserStatus || (exports.UserStatus = {}));
+
+
+/***/ }),
+
+/***/ "./src/app/auth/user.repository.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UserRepository = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const typeorm_1 = __webpack_require__("typeorm");
+const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
+let UserRepository = class UserRepository extends typeorm_1.Repository {
+    createUser(createUserDto) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const { username, password, status } = createUserDto;
+            const user = this.create({ username, password, status });
+            yield this.save(user);
+            return user;
+        });
+    }
+};
+UserRepository = tslib_1.__decorate([
+    (0, typeorm_1.EntityRepository)(user_entity_1.User)
+], UserRepository);
+exports.UserRepository = UserRepository;
 
 
 /***/ }),
@@ -127,6 +303,46 @@ Item = tslib_1.__decorate([
     (0, typeorm_1.Entity)({ name: 'item' })
 ], Item);
 exports.Item = Item;
+
+
+/***/ }),
+
+/***/ "./src/app/entities/user.entity.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.User = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const typeorm_1 = __webpack_require__("typeorm");
+const user_status_enum_1 = __webpack_require__("./src/app/auth/user-status.enum.ts");
+let User = class User {
+};
+tslib_1.__decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    tslib_1.__metadata("design:type", String)
+], User.prototype, "id", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)({ unique: true }),
+    tslib_1.__metadata("design:type", String)
+], User.prototype, "username", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)(),
+    tslib_1.__metadata("design:type", String)
+], User.prototype, "password", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)({
+        type: 'enum',
+        enum: user_status_enum_1.UserStatus
+    }),
+    tslib_1.__metadata("design:type", typeof (_a = typeof user_status_enum_1.UserStatus !== "undefined" && user_status_enum_1.UserStatus) === "function" ? _a : Object)
+], User.prototype, "status", void 0);
+User = tslib_1.__decorate([
+    (0, typeorm_1.Entity)({ name: 'user' })
+], User);
+exports.User = User;
 
 
 /***/ }),

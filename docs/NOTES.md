@@ -115,7 +115,7 @@ npx typeorm migration:run -f server/ormconfig.js
   ↓package.jsonのscriptsにコマンドを追加したため下記を利用可能  
   ↓  
 **entitiesをbuildしてmigration:generate**
-npm run typeorm-migration-generate CreateItem __name__
+npm run typeorm-migration-generate __name__
 
 **migrationsをbuildしてmigration:run**
 npm run typeorm-migration-run
