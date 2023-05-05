@@ -10,8 +10,9 @@
  *    ex. imports: [TypeOrmModule.forFeature([ItemRepository])],
  */
 
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ItemStatus } from '../items/item-status.enum';
+import { User } from './user.entity';
 
 @Entity({ name: 'item' })
 export class Item {
@@ -38,4 +39,10 @@ export class Item {
 
     @Column()
     updatedAt: string;
+
+    @Column()
+    userId: string;
+
+    @ManyToOne(() => User, (user) => user.items)
+    user: User;
 }
