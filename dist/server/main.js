@@ -226,11 +226,14 @@ exports.UserRepository = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const typeorm_1 = __webpack_require__("typeorm");
 const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
+const bcrypt = tslib_1.__importStar(__webpack_require__("bcrypt"));
 let UserRepository = class UserRepository extends typeorm_1.Repository {
     createUser(createUserDto) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const { username, password, status } = createUserDto;
-            const user = this.create({ username, password, status });
+            const salt = yield bcrypt.genSalt(); // salt: Hash値の強度を高める文字列
+            const hashPassword = yield bcrypt.hash(password, salt);
+            const user = this.create({ username, password: hashPassword, status });
             yield this.save(user);
             return user;
         });
@@ -646,6 +649,14 @@ module.exports = require("@nestjs/core");
 
 "use strict";
 module.exports = require("@nestjs/typeorm");
+
+/***/ }),
+
+/***/ "bcrypt":
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("bcrypt");
 
 /***/ }),
 

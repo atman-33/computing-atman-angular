@@ -103,6 +103,8 @@ nx g @nx/nest:service app/__name__ --project=server
 - 5. ブラウザ（http://localhost:81）でpgAdminにログインし、postgres サーバーを作成
 
 5. マイグレーション
+**typeormの最新verはormconfigの読み込み方法やcliが変更されているため、下記verを利用すること!**  
+npm install typeorm@0.2.45 @nestjs/typeorm@8.0.2  
 
 * マイグレーション作成
 npx tsc server/src/app/**/*.entity.ts --outDir "./dist/server" --experimentalDecorators true --emitDecoratorMetadata
