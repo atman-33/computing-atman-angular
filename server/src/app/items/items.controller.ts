@@ -3,6 +3,8 @@ import { ItemsService } from './items.service';
 import { Item } from '../entities/item.entity';
 import { CreateItemDto } from './dto/create-item-dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { GetUser } from '../auth/decorator/get-user.decorator';
+import { User } from '../entities/user.entity';
 
 @Controller('items') // /items というpathに紐づけ
 export class ItemsController {
@@ -25,7 +27,10 @@ export class ItemsController {
 
     @Post()
     @UseGuards(JwtAuthGuard)    // JwtAuthGuard適用 ※@Controller('xxx')直下に記載すればコントローラー全体に適用
-    async create(@Body() createItemDto: CreateItemDto): Promise<Item> {
+    async create(
+        @Body() createItemDto: CreateItemDto,
+        @GetUser() user: User): Promise<Item> {
+        // console.log(user);
         return await this.itemsService.create(createItemDto);
     }
 

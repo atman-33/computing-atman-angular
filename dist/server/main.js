@@ -213,6 +213,23 @@ exports.AuthService = AuthService;
 
 /***/ }),
 
+/***/ "./src/app/auth/decorator/get-user.decorator.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GetUser = void 0;
+const common_1 = __webpack_require__("@nestjs/common");
+exports.GetUser = (0, common_1.createParamDecorator)((_, ctx) => {
+    // Httpのコンテキストが必要なことを明示
+    const request = ctx.switchToHttp().getRequest();
+    return request.user;
+});
+
+
+/***/ }),
+
 /***/ "./src/app/auth/dto/create-user-dto.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -409,12 +426,13 @@ exports.UserRepository = UserRepository;
  * 7. moduleのimportsに、repositoryを登録
  *    ex. imports: [TypeOrmModule.forFeature([ItemRepository])],
  */
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Item = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const typeorm_1 = __webpack_require__("typeorm");
 const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
+const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
 let Item = class Item {
 };
 tslib_1.__decorate([
@@ -448,6 +466,14 @@ tslib_1.__decorate([
     (0, typeorm_1.Column)(),
     tslib_1.__metadata("design:type", String)
 ], Item.prototype, "updatedAt", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)(),
+    tslib_1.__metadata("design:type", String)
+], Item.prototype, "userid", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.items),
+    tslib_1.__metadata("design:type", typeof (_b = typeof user_entity_1.User !== "undefined" && user_entity_1.User) === "function" ? _b : Object)
+], Item.prototype, "user", void 0);
 Item = tslib_1.__decorate([
     (0, typeorm_1.Entity)({ name: 'item' })
 ], Item);
@@ -467,6 +493,7 @@ exports.User = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const typeorm_1 = __webpack_require__("typeorm");
 const user_status_enum_1 = __webpack_require__("./src/app/auth/user-status.enum.ts");
+const item_entity_1 = __webpack_require__("./src/app/entities/item.entity.ts");
 let User = class User {
 };
 tslib_1.__decorate([
@@ -488,6 +515,10 @@ tslib_1.__decorate([
     }),
     tslib_1.__metadata("design:type", typeof (_a = typeof user_status_enum_1.UserStatus !== "undefined" && user_status_enum_1.UserStatus) === "function" ? _a : Object)
 ], User.prototype, "status", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.OneToMany)(() => item_entity_1.Item, (item) => item.user),
+    tslib_1.__metadata("design:type", Array)
+], User.prototype, "items", void 0);
 User = tslib_1.__decorate([
     (0, typeorm_1.Entity)({ name: 'user' })
 ], User);
@@ -551,7 +582,7 @@ var ItemStatus;
 
 "use strict";
 
-var _a, _b, _c, _d, _e, _f, _g;
+var _a, _b, _c, _d, _e, _f, _g, _h;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ItemsController = void 0;
 const tslib_1 = __webpack_require__("tslib");
@@ -559,6 +590,8 @@ const common_1 = __webpack_require__("@nestjs/common");
 const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
 const create_item_dto_1 = __webpack_require__("./src/app/items/dto/create-item-dto.ts");
 const jwt_auth_guard_1 = __webpack_require__("./src/app/auth/guards/jwt-auth.guard.ts");
+const get_user_decorator_1 = __webpack_require__("./src/app/auth/decorator/get-user.decorator.ts");
+const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
 let ItemsController = class ItemsController {
     /**
      *
@@ -576,8 +609,9 @@ let ItemsController = class ItemsController {
             return yield this.itemsService.findById(id);
         });
     }
-    create(createItemDto) {
+    create(createItemDto, user) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            // console.log(user);
             return yield this.itemsService.create(createItemDto);
         });
     }
@@ -611,9 +645,10 @@ tslib_1.__decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard) // JwtAuthGuard適用 ※@Controller('xxx')直下に記載すればコントローラー全体に適用
     ,
     tslib_1.__param(0, (0, common_1.Body)()),
+    tslib_1.__param(1, (0, get_user_decorator_1.GetUser)()),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [typeof (_d = typeof create_item_dto_1.CreateItemDto !== "undefined" && create_item_dto_1.CreateItemDto) === "function" ? _d : Object]),
-    tslib_1.__metadata("design:returntype", typeof (_e = typeof Promise !== "undefined" && Promise) === "function" ? _e : Object)
+    tslib_1.__metadata("design:paramtypes", [typeof (_d = typeof create_item_dto_1.CreateItemDto !== "undefined" && create_item_dto_1.CreateItemDto) === "function" ? _d : Object, typeof (_e = typeof user_entity_1.User !== "undefined" && user_entity_1.User) === "function" ? _e : Object]),
+    tslib_1.__metadata("design:returntype", typeof (_f = typeof Promise !== "undefined" && Promise) === "function" ? _f : Object)
 ], ItemsController.prototype, "create", null);
 tslib_1.__decorate([
     (0, common_1.Patch)(':id'),
@@ -621,7 +656,7 @@ tslib_1.__decorate([
     tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
-    tslib_1.__metadata("design:returntype", typeof (_f = typeof Promise !== "undefined" && Promise) === "function" ? _f : Object)
+    tslib_1.__metadata("design:returntype", typeof (_g = typeof Promise !== "undefined" && Promise) === "function" ? _g : Object)
 ], ItemsController.prototype, "updateStatus", null);
 tslib_1.__decorate([
     (0, common_1.Delete)(':id'),
@@ -629,7 +664,7 @@ tslib_1.__decorate([
     tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
-    tslib_1.__metadata("design:returntype", typeof (_g = typeof Promise !== "undefined" && Promise) === "function" ? _g : Object)
+    tslib_1.__metadata("design:returntype", typeof (_h = typeof Promise !== "undefined" && Promise) === "function" ? _h : Object)
 ], ItemsController.prototype, "delete", null);
 ItemsController = tslib_1.__decorate([
     (0, common_1.Controller)('items') // /items というpathに紐づけ
