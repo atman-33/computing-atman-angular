@@ -71,13 +71,14 @@ exports.AppModule = AppModule;
 
 "use strict";
 
-var _a, _b, _c;
+var _a, _b, _c, _d, _e;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthController = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const auth_service_1 = __webpack_require__("./src/app/auth/auth.service.ts");
 const create_user_dto_1 = __webpack_require__("./src/app/auth/dto/create-user-dto.ts");
+const credentials_dto_1 = __webpack_require__("./src/app/auth/dto/credentials.dto.ts");
 let AuthController = class AuthController {
     /**
      *
@@ -87,7 +88,12 @@ let AuthController = class AuthController {
     }
     signup(createUserDto) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return this.authService.signUp(createUserDto);
+            return yield this.authService.signUp(createUserDto);
+        });
+    }
+    signIn(credentialsDto) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.authService.signIn(credentialsDto);
         });
     }
 };
@@ -98,6 +104,13 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [typeof (_b = typeof create_user_dto_1.CreateUserDto !== "undefined" && create_user_dto_1.CreateUserDto) === "function" ? _b : Object]),
     tslib_1.__metadata("design:returntype", typeof (_c = typeof Promise !== "undefined" && Promise) === "function" ? _c : Object)
 ], AuthController.prototype, "signup", null);
+tslib_1.__decorate([
+    (0, common_1.Post)('signIn'),
+    tslib_1.__param(0, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [typeof (_d = typeof credentials_dto_1.CredentialsDto !== "undefined" && credentials_dto_1.CredentialsDto) === "function" ? _d : Object]),
+    tslib_1.__metadata("design:returntype", typeof (_e = typeof Promise !== "undefined" && Promise) === "function" ? _e : Object)
+], AuthController.prototype, "signIn", null);
 AuthController = tslib_1.__decorate([
     (0, common_1.Controller)('auth'),
     tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof auth_service_1.AuthService !== "undefined" && auth_service_1.AuthService) === "function" ? _a : Object])
@@ -116,17 +129,33 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthModule = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
+const jwt_1 = __webpack_require__("@nestjs/jwt");
+const passport_1 = __webpack_require__("@nestjs/passport");
 const auth_controller_1 = __webpack_require__("./src/app/auth/auth.controller.ts");
 const auth_service_1 = __webpack_require__("./src/app/auth/auth.service.ts");
 const user_repository_1 = __webpack_require__("./src/app/auth/user.repository.ts");
 const typeorm_1 = __webpack_require__("@nestjs/typeorm");
+const jwt_strategy_1 = __webpack_require__("./src/app/auth/jwt.strategy.ts");
+const jwt_auth_guard_1 = __webpack_require__("./src/app/auth/guards/jwt-auth.guard.ts");
 let AuthModule = class AuthModule {
 };
 AuthModule = tslib_1.__decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([user_repository_1.UserRepository])],
+        imports: [
+            typeorm_1.TypeOrmModule.forFeature([user_repository_1.UserRepository]),
+            passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
+            jwt_1.JwtModule.register({
+                secret: 'secretKey123',
+                signOptions: {
+                    expiresIn: 3600, // JWT有効期限（単位:秒）
+                }
+            })
+        ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService],
+        // JwtStrategy, JwtAuthGuardはDIさせるため追加
+        providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy, jwt_auth_guard_1.JwtAuthGuard],
+        // JwtStrategy, JwtAuthGuardはitems.module（外部モジュール）で利用するため追加
+        exports: [jwt_strategy_1.JwtStrategy, jwt_auth_guard_1.JwtAuthGuard]
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;
@@ -139,28 +168,45 @@ exports.AuthModule = AuthModule;
 
 "use strict";
 
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthService = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const user_repository_1 = __webpack_require__("./src/app/auth/user.repository.ts");
+const jwt_1 = __webpack_require__("@nestjs/jwt");
+const bcrypt = tslib_1.__importStar(__webpack_require__("bcrypt"));
 let AuthService = class AuthService {
     /**
      *
      */
-    constructor(userRepository) {
+    constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
+        this.jwtService = jwtService;
     }
     signUp(createUserDto) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.userRepository.createUser(createUserDto);
         });
     }
+    signIn(credentialsDto) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const { username, password } = credentialsDto;
+            const user = yield this.userRepository.findOne({ username });
+            // compare(password, user.password) パスワードが同じか比較
+            // => password: 入力されたパスワード vs user.password: DBに保存しているHash化されたpassword
+            if (user && (yield bcrypt.compare(password, user.password))) {
+                const payload = { id: user.id, username: user.username };
+                const accessToken = yield this.jwtService.sign(payload); // 署名されたToken生成
+                return { accessToken };
+            }
+            throw new common_1.UnauthorizedException('Please check your username or password!');
+        });
+    }
 };
 AuthService = tslib_1.__decorate([
     (0, common_1.Injectable)(),
-    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_repository_1.UserRepository !== "undefined" && user_repository_1.UserRepository) === "function" ? _a : Object])
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_repository_1.UserRepository !== "undefined" && user_repository_1.UserRepository) === "function" ? _a : Object, typeof (_b = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _b : Object])
 ], AuthService);
 exports.AuthService = AuthService;
 
@@ -196,6 +242,106 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", typeof (_a = typeof user_status_enum_1.UserStatus !== "undefined" && user_status_enum_1.UserStatus) === "function" ? _a : Object)
 ], CreateUserDto.prototype, "status", void 0);
 exports.CreateUserDto = CreateUserDto;
+
+
+/***/ }),
+
+/***/ "./src/app/auth/dto/credentials.dto.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CredentialsDto = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const class_validator_1 = __webpack_require__("class-validator");
+class CredentialsDto {
+}
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    tslib_1.__metadata("design:type", String)
+], CredentialsDto.prototype, "username", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(8),
+    (0, class_validator_1.MaxLength)(32),
+    tslib_1.__metadata("design:type", String)
+], CredentialsDto.prototype, "password", void 0);
+exports.CredentialsDto = CredentialsDto;
+
+
+/***/ }),
+
+/***/ "./src/app/auth/guards/jwt-auth.guard.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JwtAuthGuard = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const passport_1 = __webpack_require__("@nestjs/passport");
+/**
+ * このGuardが適用されたリクエストハンドラは、
+ * jwt認証に通過していない場合に実行されない。
+ */
+let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.AuthGuard)('jwt') {
+};
+JwtAuthGuard = tslib_1.__decorate([
+    (0, common_1.Injectable)()
+], JwtAuthGuard);
+exports.JwtAuthGuard = JwtAuthGuard;
+
+
+/***/ }),
+
+/***/ "./src/app/auth/jwt.strategy.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JwtStrategy = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const passport_1 = __webpack_require__("@nestjs/passport");
+const passport_jwt_1 = __webpack_require__("passport-jwt");
+const user_repository_1 = __webpack_require__("./src/app/auth/user.repository.ts");
+// PassportStrategy: NestJSでStrategyを使いやすくするfunction
+let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
+    /**
+     *
+     */
+    constructor(userRepositoy) {
+        super({
+            // Requestに記述されているjwt部分を指定 => 今回はAuthHeaderのBearerToken
+            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+            // false: 有効期限を無効にしない（つまり有効）
+            ignoreExpiration: false,
+            secretOrKey: 'secretKey123',
+        });
+        this.userRepositoy = userRepositoy;
+    }
+    // 自動で呼び出しされる処理であり、validateのメソッド名は変更不可
+    validate(payload) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const { id, username } = payload;
+            const user = yield this.userRepositoy.findOne({ id, username });
+            if (user) {
+                return user;
+            }
+            throw new common_1.UnauthorizedException();
+        });
+    }
+};
+JwtStrategy = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_repository_1.UserRepository !== "undefined" && user_repository_1.UserRepository) === "function" ? _a : Object])
+], JwtStrategy);
+exports.JwtStrategy = JwtStrategy;
 
 
 /***/ }),
@@ -644,6 +790,22 @@ module.exports = require("@nestjs/core");
 
 /***/ }),
 
+/***/ "@nestjs/jwt":
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("@nestjs/jwt");
+
+/***/ }),
+
+/***/ "@nestjs/passport":
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("@nestjs/passport");
+
+/***/ }),
+
 /***/ "@nestjs/typeorm":
 /***/ ((module) => {
 
@@ -673,6 +835,14 @@ module.exports = require("class-transformer");
 
 "use strict";
 module.exports = require("class-validator");
+
+/***/ }),
+
+/***/ "passport-jwt":
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("passport-jwt");
 
 /***/ }),
 
