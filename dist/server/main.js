@@ -1,10 +1,48 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
+
+/***/ "./ormconfig.js":
+/***/ ((module) => {
+
+module.exports = {
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    username: 'postgres',
+    password: 'postgres',
+    database: 'postgres',
+    autoLoadEntities: true,
+    entities: ['dist/server/**/*.entity.js'],
+    migrations: ['dist/server/migrations/*.js'],
+    cli: {
+        entitiesDir: 'server/src/app/entites',
+        migrationsDir: 'server/src/app/migrations',
+    },
+};
+// これは NX では利用できないため参考！（dist にwebpack で統合された main.js のみ配置されるため）
+// module.exports = {
+//     type: 'postgres',
+//     host: 'localhost',
+//     port: 5432,
+//     username: 'postgres',
+//     password: 'postgres',
+//     database: 'postgres',
+//     autoLoadEntities: true,
+//     entities: ['dist/server/entities/*.entity.js'],
+//     migrations: ['dist/server/migrations/*.js'],
+//     cli: {
+//         entitiesDir: 'src/entites',
+//         migrationsDir: 'src/migrations',
+//     },
+// };
+
+
+/***/ }),
 
 /***/ "./src/app/app.module.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AppModule = void 0;
@@ -12,13 +50,14 @@ const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const items_module_1 = __webpack_require__("./src/app/items/items.module.ts");
 const typeorm_1 = __webpack_require__("@nestjs/typeorm");
+const ormconfig = tslib_1.__importStar(__webpack_require__("./ormconfig.js"));
 let AppModule = class AppModule {
 };
 AppModule = tslib_1.__decorate([
     (0, common_1.Module)({
         imports: [
             items_module_1.ItemsModule,
-            typeorm_1.TypeOrmModule.forRoot()
+            typeorm_1.TypeOrmModule.forRoot(ormconfig)
         ],
         controllers: [],
         providers: [],
@@ -29,9 +68,73 @@ exports.AppModule = AppModule;
 
 /***/ }),
 
+/***/ "./src/app/entities/item.entity.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+/**
+ * ## entity, migration, repository の流れ
+ * 1. entityを作成
+ * 2. entity.tsをトランスパイルしjsに変換
+ * 3. migration:generate により、jsに変換したentityからmigrationファイルを生成
+ * 4. migration.tsをトランスパイルしjsに変換
+ * 5. migration:run により、jsに変換したmigrationからmigrationを実行（DB操作）
+ * 6. repositoryを作成
+ * 7. moduleのimportsに、repositoryを登録
+ *    ex. imports: [TypeOrmModule.forFeature([ItemRepository])],
+ */
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Item = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const typeorm_1 = __webpack_require__("typeorm");
+const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
+let Item = class Item {
+};
+tslib_1.__decorate([
+    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    tslib_1.__metadata("design:type", String)
+], Item.prototype, "id", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)(),
+    tslib_1.__metadata("design:type", String)
+], Item.prototype, "name", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)(),
+    tslib_1.__metadata("design:type", Number)
+], Item.prototype, "price", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)(),
+    tslib_1.__metadata("design:type", String)
+], Item.prototype, "description", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)({
+        type: 'enum',
+        enum: item_status_enum_1.ItemStatus
+    }),
+    tslib_1.__metadata("design:type", typeof (_a = typeof item_status_enum_1.ItemStatus !== "undefined" && item_status_enum_1.ItemStatus) === "function" ? _a : Object)
+], Item.prototype, "status", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)(),
+    tslib_1.__metadata("design:type", String)
+], Item.prototype, "createdAt", void 0);
+tslib_1.__decorate([
+    (0, typeorm_1.Column)(),
+    tslib_1.__metadata("design:type", String)
+], Item.prototype, "updatedAt", void 0);
+Item = tslib_1.__decorate([
+    (0, typeorm_1.Entity)({ name: 'item' })
+], Item);
+exports.Item = Item;
+
+
+/***/ }),
+
 /***/ "./src/app/items/dto/create-item-dto.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CreateItemDto = void 0;
@@ -65,6 +168,7 @@ exports.CreateItemDto = CreateItemDto;
 /***/ "./src/app/items/item-status.enum.ts":
 /***/ ((__unused_webpack_module, exports) => {
 
+"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ItemStatus = void 0;
@@ -77,26 +181,17 @@ var ItemStatus;
 
 /***/ }),
 
-/***/ "./src/app/items/item.model.ts":
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-
-
-/***/ }),
-
 /***/ "./src/app/items/items.controller.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
-var _a, _b, _c, _d, _e;
+var _a, _b, _c, _d, _e, _f, _g;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ItemsController = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
-const item_model_1 = __webpack_require__("./src/app/items/item.model.ts");
 const create_item_dto_1 = __webpack_require__("./src/app/items/dto/create-item-dto.ts");
 let ItemsController = class ItemsController {
     /**
@@ -106,26 +201,36 @@ let ItemsController = class ItemsController {
         this.itemsService = itemsService;
     }
     findAll() {
-        return this.itemsService.findAll();
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.itemsService.findAll();
+        });
     }
     findById(id) {
-        return this.itemsService.findById(id);
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.itemsService.findById(id);
+        });
     }
     create(createItemDto) {
-        return this.itemsService.create(createItemDto);
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.itemsService.create(createItemDto);
+        });
     }
     updateStatus(id) {
-        return this.itemsService.updateStatus(id);
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.itemsService.updateStatus(id);
+        });
     }
     delete(id) {
-        this.itemsService.delete(id);
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            yield this.itemsService.delete(id);
+        });
     }
 };
 tslib_1.__decorate([
     (0, common_1.Get)(),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", []),
-    tslib_1.__metadata("design:returntype", Array)
+    tslib_1.__metadata("design:returntype", typeof (_b = typeof Promise !== "undefined" && Promise) === "function" ? _b : Object)
 ], ItemsController.prototype, "findAll", null);
 tslib_1.__decorate([
     (0, common_1.Get)(':id') // /items/id
@@ -133,31 +238,32 @@ tslib_1.__decorate([
     tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
-    tslib_1.__metadata("design:returntype", typeof (_b = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _b : Object)
+    tslib_1.__metadata("design:returntype", typeof (_c = typeof Promise !== "undefined" && Promise) === "function" ? _c : Object)
 ], ItemsController.prototype, "findById", null);
 tslib_1.__decorate([
     (0, common_1.Post)(),
     tslib_1.__param(0, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", [typeof (_c = typeof create_item_dto_1.CreateItemDto !== "undefined" && create_item_dto_1.CreateItemDto) === "function" ? _c : Object]),
-    tslib_1.__metadata("design:returntype", typeof (_d = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _d : Object)
+    tslib_1.__metadata("design:paramtypes", [typeof (_d = typeof create_item_dto_1.CreateItemDto !== "undefined" && create_item_dto_1.CreateItemDto) === "function" ? _d : Object]),
+    tslib_1.__metadata("design:returntype", typeof (_e = typeof Promise !== "undefined" && Promise) === "function" ? _e : Object)
 ], ItemsController.prototype, "create", null);
 tslib_1.__decorate([
     (0, common_1.Patch)(':id'),
     tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
-    tslib_1.__metadata("design:returntype", typeof (_e = typeof item_model_1.Item !== "undefined" && item_model_1.Item) === "function" ? _e : Object)
+    tslib_1.__metadata("design:returntype", typeof (_f = typeof Promise !== "undefined" && Promise) === "function" ? _f : Object)
 ], ItemsController.prototype, "updateStatus", null);
 tslib_1.__decorate([
     (0, common_1.Delete)(':id'),
     tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
-    tslib_1.__metadata("design:returntype", void 0)
+    tslib_1.__metadata("design:returntype", typeof (_g = typeof Promise !== "undefined" && Promise) === "function" ? _g : Object)
 ], ItemsController.prototype, "delete", null);
 ItemsController = tslib_1.__decorate([
-    (0, common_1.Controller)('items'),
+    (0, common_1.Controller)('items') // /items というpathに紐づけ
+    ,
     tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof items_service_1.ItemsService !== "undefined" && items_service_1.ItemsService) === "function" ? _a : Object])
 ], ItemsController);
 exports.ItemsController = ItemsController;
@@ -168,17 +274,33 @@ exports.ItemsController = ItemsController;
 /***/ "./src/app/items/items.module.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
+/**
+ * ## 関連構造
+ * module => controller => service => repository => entity
+ *           ^             ^          ^
+ *           dto           dto        dto
+ * - module     : Repository, Controller, Serviceを登録
+ * - controller : ルーティング機能を実装（path(URL)を設定）
+ * - service    : ビジネスロジックを実装（ex. repository経由でDB操作）
+ * - repository : DB操作
+ * - entity     : DBのデータ定義
+ */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ItemsModule = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const items_controller_1 = __webpack_require__("./src/app/items/items.controller.ts");
 const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
+const typeorm_1 = __webpack_require__("@nestjs/typeorm");
+const items_repository_1 = __webpack_require__("./src/app/items/items.repository.ts");
 let ItemsModule = class ItemsModule {
 };
 ItemsModule = tslib_1.__decorate([
     (0, common_1.Module)({
+        // Repository の登録は、一つの機能に閉じた設定のためforFeatureを使用
+        imports: [typeorm_1.TypeOrmModule.forFeature([items_repository_1.ItemRepository])],
         controllers: [items_controller_1.ItemsController],
         providers: [items_service_1.ItemsService],
     })
@@ -188,46 +310,99 @@ exports.ItemsModule = ItemsModule;
 
 /***/ }),
 
+/***/ "./src/app/items/items.repository.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ItemRepository = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const typeorm_1 = __webpack_require__("typeorm");
+const item_entity_1 = __webpack_require__("./src/app/entities/item.entity.ts");
+const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
+let ItemRepository = class ItemRepository extends typeorm_1.Repository {
+    createItem(createItemDto) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const { name, price, description } = createItemDto;
+            const item = this.create({
+                name,
+                price,
+                description,
+                status: item_status_enum_1.ItemStatus.ON_SALE,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            });
+            yield this.save(item);
+            return item;
+        });
+    }
+};
+ItemRepository = tslib_1.__decorate([
+    (0, typeorm_1.EntityRepository)(item_entity_1.Item)
+], ItemRepository);
+exports.ItemRepository = ItemRepository;
+
+
+/***/ }),
+
 /***/ "./src/app/items/items.service.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
+"use strict";
 
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ItemsService = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
-const uuid_1 = __webpack_require__("uuid");
+const items_repository_1 = __webpack_require__("./src/app/items/items.repository.ts");
 let ItemsService = class ItemsService {
-    constructor() {
+    /**
+     *
+     */
+    constructor(itemRepository) {
+        this.itemRepository = itemRepository;
         this.items = [];
     }
     findAll() {
-        return this.items;
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.itemRepository.find();
+        });
     }
     findById(id) {
-        const found = this.items.find((item) => item.id === id);
-        if (!found) {
-            throw new common_1.NotFoundException();
-        }
-        return found;
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const found = yield this.itemRepository.findOne(id);
+            if (!found) {
+                throw new common_1.NotFoundException();
+            }
+            return found;
+        });
     }
     create(createItemDto) {
-        const item = Object.assign(Object.assign({ id: (0, uuid_1.v4)() }, createItemDto), { status: item_status_enum_1.ItemStatus.ON_SALE });
-        this.items.push(item);
-        return item;
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.itemRepository.createItem(createItemDto);
+        });
     }
     updateStatus(id) {
-        const item = this.items.find((item) => item.id === id);
-        item.status = item_status_enum_1.ItemStatus.SOLD_OUT;
-        return item;
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const item = yield this.findById(id);
+            item.status = item_status_enum_1.ItemStatus.SOLD_OUT;
+            item.updatedAt = new Date().toISOString();
+            yield this.itemRepository.save(item);
+            return item;
+        });
     }
     delete(id) {
-        this.items = this.items.filter((item) => item.id !== id);
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            yield this.itemRepository.delete({ id });
+        });
     }
 };
 ItemsService = tslib_1.__decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof items_repository_1.ItemRepository !== "undefined" && items_repository_1.ItemRepository) === "function" ? _a : Object])
 ], ItemsService);
 exports.ItemsService = ItemsService;
 
@@ -237,6 +412,7 @@ exports.ItemsService = ItemsService;
 /***/ "@nestjs/common":
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("@nestjs/common");
 
 /***/ }),
@@ -244,6 +420,7 @@ module.exports = require("@nestjs/common");
 /***/ "@nestjs/core":
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("@nestjs/core");
 
 /***/ }),
@@ -251,6 +428,7 @@ module.exports = require("@nestjs/core");
 /***/ "@nestjs/typeorm":
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("@nestjs/typeorm");
 
 /***/ }),
@@ -258,6 +436,7 @@ module.exports = require("@nestjs/typeorm");
 /***/ "class-transformer":
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("class-transformer");
 
 /***/ }),
@@ -265,6 +444,7 @@ module.exports = require("class-transformer");
 /***/ "class-validator":
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("class-validator");
 
 /***/ }),
@@ -272,14 +452,16 @@ module.exports = require("class-validator");
 /***/ "tslib":
 /***/ ((module) => {
 
+"use strict";
 module.exports = require("tslib");
 
 /***/ }),
 
-/***/ "uuid":
+/***/ "typeorm":
 /***/ ((module) => {
 
-module.exports = require("uuid");
+"use strict";
+module.exports = require("typeorm");
 
 /***/ })
 
@@ -311,8 +493,9 @@ module.exports = require("uuid");
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
+"use strict";
 var exports = __webpack_exports__;
 
 /**
