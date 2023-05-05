@@ -105,7 +105,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:returntype", typeof (_c = typeof Promise !== "undefined" && Promise) === "function" ? _c : Object)
 ], AuthController.prototype, "signup", null);
 tslib_1.__decorate([
-    (0, common_1.Post)('signIn'),
+    (0, common_1.Post)('signin'),
     tslib_1.__param(0, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [typeof (_d = typeof credentials_dto_1.CredentialsDto !== "undefined" && credentials_dto_1.CredentialsDto) === "function" ? _d : Object]),
@@ -558,6 +558,7 @@ const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
 const create_item_dto_1 = __webpack_require__("./src/app/items/dto/create-item-dto.ts");
+const jwt_auth_guard_1 = __webpack_require__("./src/app/auth/guards/jwt-auth.guard.ts");
 let ItemsController = class ItemsController {
     /**
      *
@@ -607,6 +608,8 @@ tslib_1.__decorate([
 ], ItemsController.prototype, "findById", null);
 tslib_1.__decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard) // JwtAuthGuard適用 ※@Controller('xxx')直下に記載すればコントローラー全体に適用
+    ,
     tslib_1.__param(0, (0, common_1.Body)()),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [typeof (_d = typeof create_item_dto_1.CreateItemDto !== "undefined" && create_item_dto_1.CreateItemDto) === "function" ? _d : Object]),
@@ -614,6 +617,7 @@ tslib_1.__decorate([
 ], ItemsController.prototype, "create", null);
 tslib_1.__decorate([
     (0, common_1.Patch)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
@@ -621,6 +625,7 @@ tslib_1.__decorate([
 ], ItemsController.prototype, "updateStatus", null);
 tslib_1.__decorate([
     (0, common_1.Delete)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     tslib_1.__param(0, (0, common_1.Param)('id', common_1.ParseUUIDPipe)),
     tslib_1.__metadata("design:type", Function),
     tslib_1.__metadata("design:paramtypes", [String]),
@@ -645,7 +650,7 @@ exports.ItemsController = ItemsController;
  * ## 関連構造
  * module => controller => service => repository => entity
  *           ^             ^          ^
- *           dto           dto        dto
+ *           dto,guard     dto        dto
  * - module     : Repository, Controller, Serviceを登録
  * - controller : ルーティング機能を実装（path(URL)を設定）
  * - service    : ビジネスロジックを実装（ex. repository経由でDB操作）
@@ -660,12 +665,14 @@ const items_controller_1 = __webpack_require__("./src/app/items/items.controller
 const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
 const typeorm_1 = __webpack_require__("@nestjs/typeorm");
 const items_repository_1 = __webpack_require__("./src/app/items/items.repository.ts");
+const auth_module_1 = __webpack_require__("./src/app/auth/auth.module.ts");
 let ItemsModule = class ItemsModule {
 };
 ItemsModule = tslib_1.__decorate([
     (0, common_1.Module)({
         // Repository の登録は、一つの機能に閉じた設定のためforFeatureを使用
-        imports: [typeorm_1.TypeOrmModule.forFeature([items_repository_1.ItemRepository])],
+        // importsにAuthModuleを追加 => exportsに記載したprovidersを利用可能
+        imports: [typeorm_1.TypeOrmModule.forFeature([items_repository_1.ItemRepository]), auth_module_1.AuthModule],
         controllers: [items_controller_1.ItemsController],
         providers: [items_service_1.ItemsService],
     })
