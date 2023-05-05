@@ -41,7 +41,7 @@ export class Item {
     updatedAt: string;
 
     @Column()
-    userid: string;
+    userId: string;
 
     @ManyToOne(() => User, (user) => user.items)
     user: User;
