@@ -100,22 +100,27 @@ nx g @nx/nest:service app/__name__ --project=server
 - 2. docker-compose.yamlを準備
 - 3. docker-compose.yamlが存在するフォルダに移動
 - 4. docker-compose up -d コマンドを実行
-- 5. ブラウザでpgAdminにログインし、postgres サーバーを作成
+- 5. ブラウザ（http://localhost:81）でpgAdminにログインし、postgres サーバーを作成
 
-5. マイグレーション作成
-```
+5. マイグレーション
+**typeormの最新verはormconfigの読み込み方法やcliが変更されているため、下記verを利用すること!**  
+npm install typeorm@0.2.45 @nestjs/typeorm@8.0.2  
+
+* マイグレーション作成
 npx tsc server/src/app/**/*.entity.ts --outDir "./dist/server" --experimentalDecorators true --emitDecoratorMetadata
-npx tsc server/src/app/migrations/*.ts --outDir "./dist/server/migrations" --experimentalDecorators true --emitDecoratorMetadata
-npx typeorm migration:generate -f server/ormconfig.js -n __name__
-```
-↓  
-↓package.jsonのscriptsにコマンドを追加したため下記を利用可能  
-↓  
-- entitiesをbuildしてmigration:generate
-npm run typeorm-migration-generate CreateItem __name__
+npx typeorm migration:generate -f server/ormconfig.js -n __name__  
 
-- entitiesとmigrationsをbuildしてmigration:generate
-npm run typeorm-migration-generate-ex CreateItem __name__
+* マイグレーション実行
+npx tsc server/src/app/migrations/*.ts --outDir "./dist/server/migrations" --experimentalDecorators true --emitDecoratorMetadata  
+npx typeorm migration:run -f server/ormconfig.js  
+  ↓  
+  ↓package.jsonのscriptsにコマンドを追加したため下記を利用可能  
+  ↓  
+**entitiesをbuildしてmigration:generate**
+npm run typeorm-migration-generate __name__
+
+**migrationsをbuildしてmigration:run**
+npm run typeorm-migration-run
 
 **dockerにアクセスするパーミッションがない場合、下記を実行!**
 ```

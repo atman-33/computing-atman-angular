@@ -1,5 +1,5 @@
-import { IsInt, IsNotEmpty, IsString, MaxLength, Min } from 'class-validator'
-import { Type } from 'class-transformer'
+import { IsInt, IsNotEmpty, IsString, MaxLength, Min } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateItemDto {
     @IsString()
