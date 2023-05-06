@@ -106,7 +106,7 @@ nx g @nx/nest:service app/__name__ --project=server
 **---- TypeORM ver0.3.X ----**
 
 - 1. マイグレーションファイル生成
-npx typeorm-ts-node-commonjs migration:generate -d server/data-source.ts server/src/app/migrations/__name__ 
+npx typeorm-ts-node-commonjs migration:generate -d server/data-source.ts server/src/app/migrations/__name__
 
 - 2. マイグレーション実行
 npx typeorm-ts-node-commonjs migration:run -d server/data-source.ts
