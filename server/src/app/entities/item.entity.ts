@@ -14,7 +14,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { ItemStatus } from '../items/item-status.enum';
 import { User } from './user.entity';
 
-@Entity({ name: 'item' })
+@Entity()
 export class Item {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -28,7 +28,10 @@ export class Item {
     @Column()
     description: string;
 
-    @Column()
+    @Column({
+        type: 'enum',
+        enum: ItemStatus
+    })
     status: ItemStatus;
 
     @Column()

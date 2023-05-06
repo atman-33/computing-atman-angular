@@ -9,6 +9,8 @@
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.dataSourceOptions = void 0;
 const typeorm_1 = __webpack_require__("typeorm");
+const item_entity_1 = __webpack_require__("./src/app/entities/item.entity.ts");
+const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
 exports.dataSourceOptions = {
     type: 'postgres',
     host: 'localhost',
@@ -16,10 +18,16 @@ exports.dataSourceOptions = {
     username: 'postgres',
     password: 'postgres',
     database: 'postgres',
-    entities: ['server/src/app/entities/*.entity.ts'],
-    migrations: ['server/src/app/migrations/*.ts'],
-    // entities: ['dist/server/**/*.entity.js'],     // migrationファイルを生成するentityファイル
-    // migrations: ['dist/server/migrations/*.js'],  // migration実行用のファイル
+    /**
+     * migrationファイル生成及びentityへのメタデータ設定ファイル
+     * 注意: *.entity.ts/jsのファイル参照はエラーが発生するためクラスを指定
+     */
+    entities: [item_entity_1.Item, user_entity_1.User],
+    /**
+     * migrationファイルを生成するentityファイル
+     * 注意: ts参照だとモジュールでないためエラーが発生するのでトランスパイルしたjsを指定
+     */
+    migrations: ['dist/server/migrations/*.js'],
 };
 const dataSource = new typeorm_1.DataSource(exports.dataSourceOptions);
 exports["default"] = dataSource;
@@ -464,7 +472,10 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", String)
 ], Item.prototype, "description", void 0);
 tslib_1.__decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        type: 'enum',
+        enum: item_status_enum_1.ItemStatus
+    }),
     tslib_1.__metadata("design:type", typeof (_a = typeof item_status_enum_1.ItemStatus !== "undefined" && item_status_enum_1.ItemStatus) === "function" ? _a : Object)
 ], Item.prototype, "status", void 0);
 tslib_1.__decorate([
@@ -484,7 +495,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", typeof (_b = typeof user_entity_1.User !== "undefined" && user_entity_1.User) === "function" ? _b : Object)
 ], Item.prototype, "user", void 0);
 Item = tslib_1.__decorate([
-    (0, typeorm_1.Entity)({ name: 'item' })
+    (0, typeorm_1.Entity)()
 ], Item);
 exports.Item = Item;
 
@@ -520,7 +531,10 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", String)
 ], User.prototype, "password", void 0);
 tslib_1.__decorate([
-    (0, typeorm_1.Column)(),
+    (0, typeorm_1.Column)({
+        type: 'enum',
+        enum: user_status_enum_1.UserStatus
+    }),
     tslib_1.__metadata("design:type", typeof (_a = typeof user_status_enum_1.UserStatus !== "undefined" && user_status_enum_1.UserStatus) === "function" ? _a : Object)
 ], User.prototype, "status", void 0);
 tslib_1.__decorate([
@@ -528,7 +542,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", Array)
 ], User.prototype, "items", void 0);
 User = tslib_1.__decorate([
-    (0, typeorm_1.Entity)({ name: 'user' })
+    (0, typeorm_1.Entity)()
 ], User);
 exports.User = User;
 

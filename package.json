@@ -5,7 +5,7 @@
     "tsc-migrations": "npx tsc server/src/app/migrations/*.ts --outDir ./dist/server/migrations --experimentalDecorators true --emitDecoratorMetadata",
     
     "migration:generate": "npx typeorm-ts-node-commonjs migration:generate -d server/data-source.ts server/src/app/migrations/${npm_config_name}",
-    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d server/data-source.ts"
+    "migration:run": "npm run tsc-migrations && npx typeorm-ts-node-commonjs migration:run -d server/data-source.ts"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~15.2.0",

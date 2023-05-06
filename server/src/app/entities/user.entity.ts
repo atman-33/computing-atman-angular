@@ -3,7 +3,7 @@ import { UserStatus } from '../auth/user-status.enum';
 import { Item } from './item.entity';
 import { Exclude } from 'class-transformer';
 
-@Entity({ name: 'user' })
+@Entity()
 export class User {
 
     @PrimaryGeneratedColumn('uuid')
@@ -16,7 +16,10 @@ export class User {
     @Exclude({ toPlainOnly: true }) // toPlainOnly: レスポンスから除外する時はtrue
     password: string;
 
-    @Column()
+    @Column({
+        type: 'enum',
+        enum: UserStatus
+    })
     status: UserStatus;
 
     @OneToMany(() => Item, (item) => item.user)
