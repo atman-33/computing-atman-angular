@@ -1,32 +1,31 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { UserRepository } from './user.repository';
 import { User } from '../entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 // PassportStrategy: NestJSでStrategyを使いやすくするfunction
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
 
-    /**
-     *
-     */
-    constructor(private readonly userRepositoy: UserRepository) {
+    constructor(
+        @InjectRepository(User)
+        private userRepository: Repository<User>,
+    ) {
         super({
-            // Requestに記述されているjwt部分を指定 => 今回はAuthHeaderのBearerToken
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            // false: 有効期限を無効にしない（つまり有効）
             ignoreExpiration: false,
             secretOrKey: 'secretKey123',
         });
     }
 
     // 自動で呼び出しされる処理であり、validateのメソッド名は変更不可
-    async validate(payload: { id: string; username: string }): Promise<User> {
+    async validate(payload: { id: string; username: string; }): Promise<User> {
         const { id, username } = payload;
-        const user = await this.userRepositoy.findOne({ id, username });
+        const user = await this.userRepository.findOneBy({ id, username });
 
-        if(user){
+        if (user) {
             return user;
         }
         throw new UnauthorizedException();

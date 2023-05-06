@@ -103,30 +103,34 @@ nx g @nx/nest:service app/__name__ --project=server
 - 5. ブラウザ（http://localhost:81）でpgAdminにログインし、postgres サーバーを作成
 
 5. マイグレーション
-**typeormの最新verはormconfigの読み込み方法やcliが変更されているため、下記verを利用すること!**  
-npm install typeorm@0.2.45 @nestjs/typeorm@8.0.2  
+**---- TypeORM ver0.3.X ----**
 
-#### マイグレーション作成
-npx tsc server/src/app/**/*.entity.ts --outDir "./dist/server" --experimentalDecorators true --emitDecoratorMetadata
-npx typeorm migration:generate -f server/ormconfig.js -n __name__  
+- 1. マイグレーションファイル生成
+npx typeorm-ts-node-commonjs migration:generate -d server/data-source.ts server/src/app/migrations/__name__ 
 
-#### マイグレーション実行
-npx tsc server/src/app/migrations/*.ts --outDir "./dist/server/migrations" --experimentalDecorators true --emitDecoratorMetadata  
-npx typeorm migration:run -f server/ormconfig.js  
-  ↓  
-  ↓package.jsonのscriptsにコマンドを追加したため下記を利用可能  
-  ↓  
-**entitiesをbuildしてmigration:generate**
-npm run typeorm-migration-generate __name__
+- 2. マイグレーション実行
+npx typeorm-ts-node-commonjs migration:run -d server/data-source.ts
 
-**migrationsをbuildしてmigration:run**
-npm run typeorm-migration-run
+↓↓↓
+
+#### マイグレーションファイル生成（トランスパイル込み）
+npm run migration:generate --name=__name__
+
+#### マイグレーションファイル実行（トランスパイル込み）
+npm run migration:run
 
 **dockerにアクセスするパーミッションがない場合、下記を実行!**
 ```
-sudo chown -R atman:atman /home/atman/Sites/
-sudo chown -R atman:atman /home/atman/Sites/computing-atman-angular/server/docker/postgres/pgdata
+sudo su -
+chmod -R 777 /home/atman/Sites/
 ```
+
+**FATAL: "could not open file global/pg_filenode.map": Permission denied の場合、下記を実行!**
+pgAdminブラウザを閉じる
+cd server
+docker-compose stop
+docker-compose up -d
+
 
 6. Jest テスト実行  
 

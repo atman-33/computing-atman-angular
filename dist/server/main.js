@@ -1,40 +1,36 @@
 /******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./ormconfig.js":
-/***/ ((module) => {
+/***/ "./data-source.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-module.exports = {
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.dataSourceOptions = void 0;
+const typeorm_1 = __webpack_require__("typeorm");
+const item_entity_1 = __webpack_require__("./src/app/entities/item.entity.ts");
+const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
+exports.dataSourceOptions = {
     type: 'postgres',
     host: 'localhost',
     port: 5432,
     username: 'postgres',
     password: 'postgres',
     database: 'postgres',
-    autoLoadEntities: true,
-    entities: ['dist/server/**/*.entity.js'],
+    /**
+     * migrationファイル生成及びentityへのメタデータ設定ファイル
+     * 注意: *.entity.ts/jsのファイル参照はエラーが発生するためクラスを指定
+     */
+    entities: [item_entity_1.Item, user_entity_1.User],
+    /**
+     * migrationファイルを生成するentityファイル
+     * 注意: ts参照だとモジュールでないためエラーが発生するのでトランスパイルしたjsを指定
+     */
     migrations: ['dist/server/migrations/*.js'],
-    cli: {
-        entitiesDir: 'server/src/app/entites',
-        migrationsDir: 'server/src/app/migrations',
-    },
 };
-// これは NX では利用できないため参考！（dist にwebpack で統合された main.js のみ配置されるため）
-// module.exports = {
-//     type: 'postgres',
-//     host: 'localhost',
-//     port: 5432,
-//     username: 'postgres',
-//     password: 'postgres',
-//     database: 'postgres',
-//     autoLoadEntities: true,
-//     entities: ['dist/server/entities/*.entity.js'],
-//     migrations: ['dist/server/migrations/*.js'],
-//     cli: {
-//         entitiesDir: 'src/entites',
-//         migrationsDir: 'src/migrations',
-//     },
-// };
+const dataSource = new typeorm_1.DataSource(exports.dataSourceOptions);
+exports["default"] = dataSource;
 
 
 /***/ }),
@@ -42,7 +38,6 @@ module.exports = {
 /***/ "./src/app/app.module.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AppModule = void 0;
@@ -51,12 +46,12 @@ const common_1 = __webpack_require__("@nestjs/common");
 const items_module_1 = __webpack_require__("./src/app/items/items.module.ts");
 const typeorm_1 = __webpack_require__("@nestjs/typeorm");
 const auth_module_1 = __webpack_require__("./src/app/auth/auth.module.ts");
-const ormconfig = tslib_1.__importStar(__webpack_require__("./ormconfig.js"));
+const data_source_1 = __webpack_require__("./data-source.ts");
 let AppModule = class AppModule {
 };
 AppModule = tslib_1.__decorate([
     (0, common_1.Module)({
-        imports: [items_module_1.ItemsModule, typeorm_1.TypeOrmModule.forRoot(ormconfig), auth_module_1.AuthModule],
+        imports: [items_module_1.ItemsModule, typeorm_1.TypeOrmModule.forRoot(data_source_1.dataSourceOptions), auth_module_1.AuthModule],
         controllers: [],
         providers: [],
     })
@@ -69,7 +64,6 @@ exports.AppModule = AppModule;
 /***/ "./src/app/auth/auth.controller.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 var _a, _b, _c, _d, _e;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -123,7 +117,6 @@ exports.AuthController = AuthController;
 /***/ "./src/app/auth/auth.module.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthModule = void 0;
@@ -133,17 +126,17 @@ const jwt_1 = __webpack_require__("@nestjs/jwt");
 const passport_1 = __webpack_require__("@nestjs/passport");
 const auth_controller_1 = __webpack_require__("./src/app/auth/auth.controller.ts");
 const auth_service_1 = __webpack_require__("./src/app/auth/auth.service.ts");
-const user_repository_1 = __webpack_require__("./src/app/auth/user.repository.ts");
 const typeorm_1 = __webpack_require__("@nestjs/typeorm");
 const jwt_strategy_1 = __webpack_require__("./src/app/auth/jwt.strategy.ts");
 const jwt_auth_guard_1 = __webpack_require__("./src/app/auth/guards/jwt-auth.guard.ts");
 const roles_guard_1 = __webpack_require__("./src/app/auth/guards/roles.guard.ts");
+const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
 let AuthModule = class AuthModule {
 };
 AuthModule = tslib_1.__decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forFeature([user_repository_1.UserRepository]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
             jwt_1.JwtModule.register({
                 secret: 'secretKey123',
@@ -167,47 +160,55 @@ exports.AuthModule = AuthModule;
 /***/ "./src/app/auth/auth.service.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthService = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
-const user_repository_1 = __webpack_require__("./src/app/auth/user.repository.ts");
+const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
 const jwt_1 = __webpack_require__("@nestjs/jwt");
 const bcrypt = tslib_1.__importStar(__webpack_require__("bcrypt"));
+const typeorm_1 = __webpack_require__("@nestjs/typeorm");
+const typeorm_2 = __webpack_require__("typeorm");
 let AuthService = class AuthService {
-    /**
-     *
-     */
     constructor(userRepository, jwtService) {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
     }
     signUp(createUserDto) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.userRepository.createUser(createUserDto);
+            const { username, password, status } = createUserDto;
+            const salt = yield bcrypt.genSalt();
+            const hashPassword = yield bcrypt.hash(password, salt);
+            const user = this.userRepository.create({
+                username,
+                password: hashPassword,
+                status,
+            });
+            yield this.userRepository.save(user);
+            return user;
         });
     }
     signIn(credentialsDto) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const { username, password } = credentialsDto;
-            const user = yield this.userRepository.findOne({ username });
+            const user = yield this.userRepository.findOneBy({ username });
             // compare(password, user.password) パスワードが同じか比較
             // => password: 入力されたパスワード vs user.password: DBに保存しているHash化されたpassword
             if (user && (yield bcrypt.compare(password, user.password))) {
                 const payload = { id: user.id, username: user.username };
-                const accessToken = yield this.jwtService.sign(payload); // 署名されたToken生成
+                const accessToken = this.jwtService.sign(payload);
                 return { accessToken };
             }
-            throw new common_1.UnauthorizedException('Please check your username or password!');
+            throw new common_1.UnauthorizedException('ユーザー名またはパスワードを確認してください');
         });
     }
 };
 AuthService = tslib_1.__decorate([
     (0, common_1.Injectable)(),
-    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_repository_1.UserRepository !== "undefined" && user_repository_1.UserRepository) === "function" ? _a : Object, typeof (_b = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _b : Object])
+    tslib_1.__param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof typeorm_2.Repository !== "undefined" && typeorm_2.Repository) === "function" ? _a : Object, typeof (_b = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _b : Object])
 ], AuthService);
 exports.AuthService = AuthService;
 
@@ -217,7 +218,6 @@ exports.AuthService = AuthService;
 /***/ "./src/app/auth/decorator/get-user.decorator.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GetUser = void 0;
@@ -234,7 +234,6 @@ exports.GetUser = (0, common_1.createParamDecorator)((_, ctx) => {
 /***/ "./src/app/auth/decorator/role.decorator.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Role = void 0;
@@ -254,7 +253,6 @@ exports.Role = Role;
 /***/ "./src/app/auth/dto/create-user-dto.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -287,7 +285,6 @@ exports.CreateUserDto = CreateUserDto;
 /***/ "./src/app/auth/dto/credentials.dto.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CredentialsDto = void 0;
@@ -314,7 +311,6 @@ exports.CredentialsDto = CredentialsDto;
 /***/ "./src/app/auth/guards/jwt-auth.guard.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.JwtAuthGuard = void 0;
@@ -338,7 +334,6 @@ exports.JwtAuthGuard = JwtAuthGuard;
 /***/ "./src/app/auth/guards/roles.guard.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -378,7 +373,6 @@ exports.RolesGuard = RolesGuard;
 /***/ "./src/app/auth/jwt.strategy.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -387,27 +381,24 @@ const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const passport_1 = __webpack_require__("@nestjs/passport");
 const passport_jwt_1 = __webpack_require__("passport-jwt");
-const user_repository_1 = __webpack_require__("./src/app/auth/user.repository.ts");
+const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
+const typeorm_1 = __webpack_require__("@nestjs/typeorm");
+const typeorm_2 = __webpack_require__("typeorm");
 // PassportStrategy: NestJSでStrategyを使いやすくするfunction
 let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    /**
-     *
-     */
-    constructor(userRepositoy) {
+    constructor(userRepository) {
         super({
-            // Requestに記述されているjwt部分を指定 => 今回はAuthHeaderのBearerToken
             jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-            // false: 有効期限を無効にしない（つまり有効）
             ignoreExpiration: false,
             secretOrKey: 'secretKey123',
         });
-        this.userRepositoy = userRepositoy;
+        this.userRepository = userRepository;
     }
     // 自動で呼び出しされる処理であり、validateのメソッド名は変更不可
     validate(payload) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const { id, username } = payload;
-            const user = yield this.userRepositoy.findOne({ id, username });
+            const user = yield this.userRepository.findOneBy({ id, username });
             if (user) {
                 return user;
             }
@@ -417,7 +408,8 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
 };
 JwtStrategy = tslib_1.__decorate([
     (0, common_1.Injectable)(),
-    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof user_repository_1.UserRepository !== "undefined" && user_repository_1.UserRepository) === "function" ? _a : Object])
+    tslib_1.__param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof typeorm_2.Repository !== "undefined" && typeorm_2.Repository) === "function" ? _a : Object])
 ], JwtStrategy);
 exports.JwtStrategy = JwtStrategy;
 
@@ -427,7 +419,6 @@ exports.JwtStrategy = JwtStrategy;
 /***/ "./src/app/auth/user-status.enum.ts":
 /***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.UserStatus = void 0;
@@ -440,41 +431,9 @@ var UserStatus;
 
 /***/ }),
 
-/***/ "./src/app/auth/user.repository.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UserRepository = void 0;
-const tslib_1 = __webpack_require__("tslib");
-const typeorm_1 = __webpack_require__("typeorm");
-const user_entity_1 = __webpack_require__("./src/app/entities/user.entity.ts");
-const bcrypt = tslib_1.__importStar(__webpack_require__("bcrypt"));
-let UserRepository = class UserRepository extends typeorm_1.Repository {
-    createUser(createUserDto) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            const { username, password, status } = createUserDto;
-            const salt = yield bcrypt.genSalt(); // salt: Hash値の強度を高める文字列
-            const hashPassword = yield bcrypt.hash(password, salt);
-            const user = this.create({ username, password: hashPassword, status });
-            yield this.save(user);
-            return user;
-        });
-    }
-};
-UserRepository = tslib_1.__decorate([
-    (0, typeorm_1.EntityRepository)(user_entity_1.User)
-], UserRepository);
-exports.UserRepository = UserRepository;
-
-
-/***/ }),
-
 /***/ "./src/app/entities/item.entity.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 /**
  * ## entity, migration, repository の流れ
@@ -483,7 +442,7 @@ exports.UserRepository = UserRepository;
  * 3. migration:generate により、jsに変換したentityからmigrationファイルを生成
  * 4. migration.tsをトランスパイルしjsに変換
  * 5. migration:run により、jsに変換したmigrationからmigrationを実行（DB操作）
- * 6. repositoryを作成
+ * 6. repositoryを作成 ※TypeORM ver0.3.Xの場合、serviceにrepositoryをDI
  * 7. moduleのimportsに、repositoryを登録
  *    ex. imports: [TypeOrmModule.forFeature([ItemRepository])],
  */
@@ -536,7 +495,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", typeof (_b = typeof user_entity_1.User !== "undefined" && user_entity_1.User) === "function" ? _b : Object)
 ], Item.prototype, "user", void 0);
 Item = tslib_1.__decorate([
-    (0, typeorm_1.Entity)({ name: 'item' })
+    (0, typeorm_1.Entity)()
 ], Item);
 exports.Item = Item;
 
@@ -546,7 +505,6 @@ exports.Item = Item;
 /***/ "./src/app/entities/user.entity.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -584,7 +542,7 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:type", Array)
 ], User.prototype, "items", void 0);
 User = tslib_1.__decorate([
-    (0, typeorm_1.Entity)({ name: 'user' })
+    (0, typeorm_1.Entity)()
 ], User);
 exports.User = User;
 
@@ -594,7 +552,6 @@ exports.User = User;
 /***/ "./src/app/items/dto/create-item-dto.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CreateItemDto = void 0;
@@ -628,7 +585,6 @@ exports.CreateItemDto = CreateItemDto;
 /***/ "./src/app/items/item-status.enum.ts":
 /***/ ((__unused_webpack_module, exports) => {
 
-"use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ItemStatus = void 0;
@@ -644,7 +600,6 @@ var ItemStatus;
 /***/ "./src/app/items/items.controller.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -753,17 +708,16 @@ exports.ItemsController = ItemsController;
 /***/ "./src/app/items/items.module.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 /**
  * ## 関連構造
- * module => controller => service => repository => entity
- *           ^             ^          ^
- *           dto,guard     dto        dto
+ * module => controller => service(repository) => entity
+ *           ^             ^
+ *           dto,guard     dto
  * - module     : Repository, Controller, Serviceを登録
  * - controller : ルーティング機能を実装（path(URL)を設定）
  * - service    : ビジネスロジックを実装（ex. repository経由でDB操作）
- * - repository : DB操作
+ * - repository : DB操作 ※TypeORM ver0.3.Xの場合、serviceにrepositoryをDI
  * - entity     : DBのデータ定義
  */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -773,15 +727,15 @@ const common_1 = __webpack_require__("@nestjs/common");
 const items_controller_1 = __webpack_require__("./src/app/items/items.controller.ts");
 const items_service_1 = __webpack_require__("./src/app/items/items.service.ts");
 const typeorm_1 = __webpack_require__("@nestjs/typeorm");
-const items_repository_1 = __webpack_require__("./src/app/items/items.repository.ts");
 const auth_module_1 = __webpack_require__("./src/app/auth/auth.module.ts");
+const item_entity_1 = __webpack_require__("./src/app/entities/item.entity.ts");
 let ItemsModule = class ItemsModule {
 };
 ItemsModule = tslib_1.__decorate([
     (0, common_1.Module)({
         // Repository の登録は、一つの機能に閉じた設定のためforFeatureを使用
         // importsにAuthModuleを追加 => exportsに記載したprovidersを利用可能
-        imports: [typeorm_1.TypeOrmModule.forFeature([items_repository_1.ItemRepository]), auth_module_1.AuthModule],
+        imports: [typeorm_1.TypeOrmModule.forFeature([item_entity_1.Item]), auth_module_1.AuthModule],
         controllers: [items_controller_1.ItemsController],
         providers: [items_service_1.ItemsService],
     })
@@ -791,63 +745,22 @@ exports.ItemsModule = ItemsModule;
 
 /***/ }),
 
-/***/ "./src/app/items/items.repository.ts":
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ItemRepository = void 0;
-const tslib_1 = __webpack_require__("tslib");
-const typeorm_1 = __webpack_require__("typeorm");
-const item_entity_1 = __webpack_require__("./src/app/entities/item.entity.ts");
-const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
-let ItemRepository = class ItemRepository extends typeorm_1.Repository {
-    createItem(createItemDto, user) {
-        return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            const { name, price, description } = createItemDto;
-            const item = this.create({
-                name,
-                price,
-                description,
-                status: item_status_enum_1.ItemStatus.ON_SALE,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                userId: user.id,
-                user
-            });
-            yield this.save(item);
-            return item;
-        });
-    }
-};
-ItemRepository = tslib_1.__decorate([
-    (0, typeorm_1.EntityRepository)(item_entity_1.Item)
-], ItemRepository);
-exports.ItemRepository = ItemRepository;
-
-
-/***/ }),
-
 /***/ "./src/app/items/items.service.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
-"use strict";
 
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ItemsService = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
+const item_entity_1 = __webpack_require__("./src/app/entities/item.entity.ts");
 const item_status_enum_1 = __webpack_require__("./src/app/items/item-status.enum.ts");
-const items_repository_1 = __webpack_require__("./src/app/items/items.repository.ts");
+const typeorm_1 = __webpack_require__("typeorm");
+const typeorm_2 = __webpack_require__("@nestjs/typeorm");
 let ItemsService = class ItemsService {
-    /**
-     *
-     */
     constructor(itemRepository) {
         this.itemRepository = itemRepository;
-        this.items = [];
     }
     findAll() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
@@ -856,7 +769,7 @@ let ItemsService = class ItemsService {
     }
     findById(id) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            const found = yield this.itemRepository.findOne(id);
+            const found = yield this.itemRepository.findOneBy({ id });
             if (!found) {
                 throw new common_1.NotFoundException();
             }
@@ -865,18 +778,35 @@ let ItemsService = class ItemsService {
     }
     create(createItemDto, user) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.itemRepository.createItem(createItemDto, user);
+            const { name, price, description } = createItemDto;
+            const item = this.itemRepository.create({
+                name,
+                price,
+                description,
+                status: item_status_enum_1.ItemStatus.ON_SALE,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                user,
+            });
+            yield this.itemRepository.save(item);
+            return item;
         });
     }
     updateStatus(id, user) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const item = yield this.findById(id);
             if (item.userId === user.id) {
-                throw new common_1.BadRequestException('You cannot purchase your own product!');
+                throw new common_1.BadRequestException('自身の商品を購入することはできません');
             }
             item.status = item_status_enum_1.ItemStatus.SOLD_OUT;
             item.updatedAt = new Date().toISOString();
-            yield this.itemRepository.save(item);
+            const updatedItem = yield this.itemRepository.update(id, {
+                status: item.status,
+                updatedAt: item.updatedAt,
+            });
+            if (updatedItem.affected === 0) {
+                throw new common_1.NotFoundException(`${id}のデータを更新できませんでした`);
+            }
             return item;
         });
     }
@@ -884,16 +814,19 @@ let ItemsService = class ItemsService {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const item = yield this.findById(id);
             if (item.userId !== user.id) {
-                // eslint-disable-next-line quotes
-                throw new common_1.BadRequestException("You cannot delete someone else's item!");
+                throw new common_1.BadRequestException('他人の商品を削除することはできません');
             }
-            yield this.itemRepository.delete({ id });
+            const response = yield this.itemRepository.delete({ id });
+            if (response.affected !== 1) {
+                throw new common_1.NotFoundException(`${id}のデータを削除できませんでした`);
+            }
         });
     }
 };
 ItemsService = tslib_1.__decorate([
     (0, common_1.Injectable)(),
-    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof items_repository_1.ItemRepository !== "undefined" && items_repository_1.ItemRepository) === "function" ? _a : Object])
+    tslib_1.__param(0, (0, typeorm_2.InjectRepository)(item_entity_1.Item)),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof typeorm_1.Repository !== "undefined" && typeorm_1.Repository) === "function" ? _a : Object])
 ], ItemsService);
 exports.ItemsService = ItemsService;
 
@@ -903,7 +836,6 @@ exports.ItemsService = ItemsService;
 /***/ "@nestjs/common":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/common");
 
 /***/ }),
@@ -911,7 +843,6 @@ module.exports = require("@nestjs/common");
 /***/ "@nestjs/core":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/core");
 
 /***/ }),
@@ -919,7 +850,6 @@ module.exports = require("@nestjs/core");
 /***/ "@nestjs/jwt":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/jwt");
 
 /***/ }),
@@ -927,7 +857,6 @@ module.exports = require("@nestjs/jwt");
 /***/ "@nestjs/passport":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/passport");
 
 /***/ }),
@@ -935,7 +864,6 @@ module.exports = require("@nestjs/passport");
 /***/ "@nestjs/typeorm":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("@nestjs/typeorm");
 
 /***/ }),
@@ -943,7 +871,6 @@ module.exports = require("@nestjs/typeorm");
 /***/ "bcrypt":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("bcrypt");
 
 /***/ }),
@@ -951,7 +878,6 @@ module.exports = require("bcrypt");
 /***/ "class-transformer":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("class-transformer");
 
 /***/ }),
@@ -959,7 +885,6 @@ module.exports = require("class-transformer");
 /***/ "class-validator":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("class-validator");
 
 /***/ }),
@@ -967,7 +892,6 @@ module.exports = require("class-validator");
 /***/ "passport-jwt":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("passport-jwt");
 
 /***/ }),
@@ -975,7 +899,6 @@ module.exports = require("passport-jwt");
 /***/ "tslib":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("tslib");
 
 /***/ }),
@@ -983,7 +906,6 @@ module.exports = require("tslib");
 /***/ "typeorm":
 /***/ ((module) => {
 
-"use strict";
 module.exports = require("typeorm");
 
 /***/ })
@@ -1016,9 +938,8 @@ module.exports = require("typeorm");
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-"use strict";
 var exports = __webpack_exports__;
 
 /**
