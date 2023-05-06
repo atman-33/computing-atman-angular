@@ -106,11 +106,11 @@ nx g @nx/nest:service app/__name__ --project=server
 **typeormの最新verはormconfigの読み込み方法やcliが変更されているため、下記verを利用すること!**  
 npm install typeorm@0.2.45 @nestjs/typeorm@8.0.2  
 
-* マイグレーション作成
+#### マイグレーション作成
 npx tsc server/src/app/**/*.entity.ts --outDir "./dist/server" --experimentalDecorators true --emitDecoratorMetadata
 npx typeorm migration:generate -f server/ormconfig.js -n __name__  
 
-* マイグレーション実行
+#### マイグレーション実行
 npx tsc server/src/app/migrations/*.ts --outDir "./dist/server/migrations" --experimentalDecorators true --emitDecoratorMetadata  
 npx typeorm migration:run -f server/ormconfig.js  
   ↓  
@@ -124,10 +124,17 @@ npm run typeorm-migration-run
 
 **dockerにアクセスするパーミッションがない場合、下記を実行!**
 ```
-sudo su -
-chmod -R 777 /home/atman/Sites/
-exit
+sudo chown -R atman:atman /home/atman/Sites/
+sudo chown -R atman:atman /home/atman/Sites/computing-atman-angular/server/docker/postgres/pgdata
 ```
+
+6. Jest テスト実行  
+
+テスト実行
+nx test server
+
+watchモードでテスト実行
+nx test server --watch
 
 ## ブログ作成
 
