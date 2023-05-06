@@ -1,9 +1,11 @@
 {
   "scripts": {
-    "typeorm-build-entites": "npx tsc server/src/app/**/*.entity.ts --outDir ./dist/server --experimentalDecorators true --emitDecoratorMetadata",
-    "typeorm-build-migrations": "npx tsc server/src/app/migrations/*.ts --outDir ./dist/server/migrations --experimentalDecorators true --emitDecoratorMetadata",
-    "typeorm-migration-generate": "npm run typeorm-build-entites && npx typeorm migration:generate -f server/ormconfig.js -n",
-    "typeorm-migration-run": "npm run typeorm-build-migrations && npx typeorm migration:run -f server/ormconfig.js"
+    "typeorm": "npx typeorm-ts-node-commonjs",
+    "tsc-entities": "npx tsc server/src/app/**/*.entity.ts --outDir ./dist/server --experimentalDecorators true --emitDecoratorMetadata",
+    "tsc-migrations": "npx tsc server/src/app/migrations/*.ts --outDir ./dist/server/migrations --experimentalDecorators true --emitDecoratorMetadata",
+    
+    "migration:generate": "npx typeorm-ts-node-commonjs migration:generate -d server/data-source.ts server/src/app/migrations/${npm_config_name}",
+    "migration:run": "npx typeorm-ts-node-commonjs migration:run -d server/data-source.ts"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~15.2.0",
@@ -63,7 +65,7 @@
     "@nestjs/jwt": "^10.0.3",
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/typeorm": "^8.0.2",
+    "@nestjs/typeorm": "^9.0.1",
     "@ng-bootstrap/ng-bootstrap": "^14.1.0",
     "@ngx-prism/core": "^2.0.1",
     "@types/marked": "^4.3.0",
@@ -96,7 +98,7 @@
     "rxjs": "^7.0.0",
     "smooth-scroll": "^16.1.0",
     "tslib": "^2.3.0",
-    "typeorm": "^0.2.45",
+    "typeorm": "^0.3.15",
     "uuid": "^9.0.0",
     "zone.js": "~0.12.0"
   }

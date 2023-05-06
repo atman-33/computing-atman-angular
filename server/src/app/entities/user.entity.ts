@@ -16,10 +16,7 @@ export class User {
     @Exclude({ toPlainOnly: true }) // toPlainOnly: レスポンスから除外する時はtrue
     password: string;
 
-    @Column({
-        type: 'enum',
-        enum: UserStatus
-    })
+    @Column()
     status: UserStatus;
 
     @OneToMany(() => Item, (item) => item.user)

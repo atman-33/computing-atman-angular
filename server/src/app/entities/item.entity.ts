@@ -5,7 +5,7 @@
  * 3. migration:generate により、jsに変換したentityからmigrationファイルを生成
  * 4. migration.tsをトランスパイルしjsに変換
  * 5. migration:run により、jsに変換したmigrationからmigrationを実行（DB操作）
- * 6. repositoryを作成
+ * 6. repositoryを作成 ※TypeORM ver0.3.Xの場合、serviceにrepositoryをDI
  * 7. moduleのimportsに、repositoryを登録
  *    ex. imports: [TypeOrmModule.forFeature([ItemRepository])],
  */
@@ -28,10 +28,7 @@ export class Item {
     @Column()
     description: string;
 
-    @Column({
-        type: 'enum',
-        enum: ItemStatus
-      })
+    @Column()
     status: ItemStatus;
 
     @Column()

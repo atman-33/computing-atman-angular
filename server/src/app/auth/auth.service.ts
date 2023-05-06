@@ -1,40 +1,52 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UserRepository } from './user.repository';
 import { CreateUserDto } from './dto/create-user-dto';
 import { CredentialsDto } from './dto/credentials.dto';
 import { User } from '../entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 
 import * as bcrypt from 'bcrypt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
 
-    /**
-     *
-     */
     constructor(
-        private readonly userRepository: UserRepository,
-        private readonly jwtService: JwtService) {
-    }
+        @InjectRepository(User) private readonly userRepository: Repository<User>,
+        private readonly jwtService: JwtService,
+    ) { }
 
     async signUp(createUserDto: CreateUserDto): Promise<User> {
-        return await this.userRepository.createUser(createUserDto);
+        const { username, password, status } = createUserDto;
+        const salt = await bcrypt.genSalt();
+        const hashPassword = await bcrypt.hash(password, salt);
+
+        const user = this.userRepository.create({
+            username,
+            password: hashPassword,
+            status,
+        });
+
+        await this.userRepository.save(user);
+        return user;
     }
 
-    async signIn(credentialsDto: CredentialsDto): Promise<{ accessToken: string }> {
+
+    async signIn(
+        credentialsDto: CredentialsDto,
+    ): Promise<{ accessToken: string; }> {
         const { username, password } = credentialsDto;
-        const user = await this.userRepository.findOne({ username });
+        const user = await this.userRepository.findOneBy({ username });
 
         // compare(password, user.password) パスワードが同じか比較
         // => password: 入力されたパスワード vs user.password: DBに保存しているHash化されたpassword
         if (user && (await bcrypt.compare(password, user.password))) {
             const payload = { id: user.id, username: user.username };
-            const accessToken = await this.jwtService.sign(payload); // 署名されたToken生成
+            const accessToken = this.jwtService.sign(payload);
             return { accessToken };
         }
         throw new UnauthorizedException(
-            'Please check your username or password!'
+            'ユーザー名またはパスワードを確認してください',
         );
     }
 }
