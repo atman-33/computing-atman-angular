@@ -1,6 +1,9 @@
 {
   "scripts": {
     "typeorm": "npx typeorm-ts-node-commonjs",
+
+    "create-nest-module-controller-service": "nx g @nx/nest:module app/${npm_config_name} --project=server && nx g @nx/nest:controller app/${npm_config_name} --project=server && nx g @nx/nest:service app/${npm_config_name} --project=server",
+
     "tsc-entities": "npx tsc server/src/app/**/*.entity.ts --outDir ./dist/server --experimentalDecorators true --emitDecoratorMetadata",
     "tsc-migrations": "npx tsc server/src/app/migrations/*.ts --outDir ./dist/server/migrations --experimentalDecorators true --emitDecoratorMetadata",
     
