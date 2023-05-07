@@ -1,9 +1,9 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PrismService } from '../../shared/services/prism.service'
+import { PrismService } from '../../shared/services/prism.service';
 import { AssetsService } from '../../shared/services/assets.service';
 import * as MarkdownIt from 'markdown-it';
-import * as Util from '../../shared/utils/util'
+import * as Util from '../../shared/utils/util';
 
 @Component({
   selector: 'app-blog-post',

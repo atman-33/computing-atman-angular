@@ -6,13 +6,13 @@ npm install -g nx
 npx nx@latest init
 ```
 
-2. nest フォルダを生成
+2. NestJS フォルダを生成
 ```
 npm install -D @nx/nest
 nx generate @nx/nest:app server
 ```
 
-3. angular フォルダを生成
+3. Angular フォルダを生成
 ```
 npm install -D @nx/angular
 nx generate @nx/angular:app client
@@ -22,19 +22,17 @@ nx generate @nx/angular:app client
 - use Standalone Components => false 
 
 4. libs フォルダを作成（必要に応じて適宜追加でOK）
+
 ```
-  |- libs/
+npx nx generate @nrwl/js:library libs --buildable
+```
+
+必要に応じて適宜追加
+```
+  |- libs/src/
   |  |- shared/
-  |  |  |- models/
-  |  |  |- services/
-  |  |  |- components/
-  |  |  |- directives/
-  |  |  |- ...
-  |  |- core/
-  |  |  |- guards/
-  |  |  |- interceptors/
-  |  |  |- services/
-  |  |  |- ...
+  |  |  |- utils/   : どこにでも自由に移動およびインポートできる静的クラス
+  |  |  |- helpers/ : 別のクラスまたはモジュールを支援するクラス（ex. modulename-helper.ts）
 ```
 
 5. Angular CLI をインストール
@@ -81,7 +79,7 @@ nx g @nx/angular:component __componet__ --project=client
 ページ単体の場合
 - routes に path を追加
 
-モジュールの場合
+* モジュールの場合
 - @NgModule の imports に追加
 
 ## バックエンド（NestJS）開発
@@ -94,6 +92,11 @@ nx g @nx/nest:controller app/__name__ --project=server
 
 3. サービス作成
 nx g @nx/nest:service app/__name__ --project=server
+
+↓↓↓
+
+#### モジュール、コントローラー、サービスを一度に生成
+npm run create-nest-module-controller-service --name=__name__
 
 4. Docker（DB）構築
 - 1. dockerをインストール
