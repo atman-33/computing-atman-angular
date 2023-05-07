@@ -27,19 +27,12 @@ nx generate @nx/angular:app client
 npx nx generate @nrwl/js:library libs --buildable
 ```
 
+必要に応じて適宜追加
 ```
-  |- libs/
+  |- libs/src/
   |  |- shared/
-  |  |  |- models/
-  |  |  |- services/
-  |  |  |- components/
-  |  |  |- directives/
-  |  |  |- ...
-  |  |- core/
-  |  |  |- guards/
-  |  |  |- interceptors/
-  |  |  |- services/
-  |  |  |- ...
+  |  |  |- utils/   : どこにでも自由に移動およびインポートできる静的クラス
+  |  |  |- helpers/ : 別のクラスまたはモジュールを支援するクラス（ex. modulename-helper.ts）
 ```
 
 5. Angular CLI をインストール

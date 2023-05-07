@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { Blog } from './blog.model';
 
@@ -8,13 +8,18 @@ export class BlogsController {
     constructor(private readonly blogsService: BlogsService) {
     }
 
+    @Get('ids')
+    async findAllIds(): Promise<string[]> {
+        return await this.blogsService.findAllIds();
+    }
+
     @Get()
     async findAll(): Promise<Blog[]> {
         return await this.blogsService.findAll();
     }
 
-    @Get(':id')  // /items/id
-    async findById(id: string): Promise<Blog> {
+    @Get(':id')
+    async findById(@Param('id') id: string): Promise<Blog> {
         return await this.blogsService.findById(id);
     }
 }

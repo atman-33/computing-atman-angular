@@ -1,11 +1,11 @@
-import { RouterModule, Routes } from "@angular/router";
-import { BlogComponent } from "./blog.component";
-import { BlogListComponent } from "./blog-list/blog-list.component";
-import { BlogPostComponent } from "./blog-post/blog-post.component";
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { PrismService } from "../shared/services/prism.service";
-import { AssetsService } from "../shared/services/assets.service";
+import { RouterModule, Routes } from '@angular/router';
+import { BlogComponent } from './blog.component';
+import { BlogListComponent } from './blog-list/blog-list.component';
+import { BlogPostComponent } from './blog-post/blog-post.component';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { PrismService } from '../shared/services/prism.service';
+import { AssetsService } from '../shared/services/assets.service';
 
 const routes: Routes = [
     {

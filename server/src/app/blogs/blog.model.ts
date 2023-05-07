@@ -5,5 +5,5 @@ export interface Blog {
     tags: string[];
     categories: string[];
 
-    blog:string;
+    article: string;
 }
