@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AssetsService } from '../../shared/services/assets.service';
+import { BlogService } from '../shared/blog.service';
 
 @Component({
   selector: 'app-blog-list',
@@ -8,24 +8,25 @@ import { AssetsService } from '../../shared/services/assets.service';
 })
 export class BlogListComponent implements OnInit {
 
-  public posts: string[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public posts: any;
 
   constructor(
-    private assetsService: AssetsService) {
+    private blogService: BlogService) {
   }
 
   ngOnInit() {
 
     // 観測対象を取得
-    const postFilesObservable = this.assetsService.getAssetFolders();
+    const blogObservable = this.blogService.getBlogs();
 
     // subscribeでファイルからデータ取得
-    postFilesObservable.subscribe({
+    blogObservable.subscribe({
       next: (data) => {
         this.posts = data;
-        console.log(this.posts);
+        // console.log(this.posts);
       },
-      error: (err) => { console.error('Error: ' + err); }
+      error: (err) => { console.error('Error: ' + err.error); }
     });
   }
 }

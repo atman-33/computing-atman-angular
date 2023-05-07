@@ -56,6 +56,7 @@ export class BlogsService {
     const blog: Blog = {
       id: id,
       title: utils.getMetadataValue(content, 'title:'),
+      date: utils.getMetadataValue(content, 'date:'),
       thumbnail: utils.getMetadataValue(content, 'thumbnail:'),
       tags: utils.getMetadataArray(content, 'tags:'),
       categories: utils.getMetadataArray(content, 'categories:'),

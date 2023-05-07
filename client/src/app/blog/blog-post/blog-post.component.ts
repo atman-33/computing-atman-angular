@@ -1,9 +1,11 @@
 import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PrismService } from '../../shared/services/prism.service';
-import { AssetsService } from '../../shared/services/assets.service';
+import { BlogService } from '../shared/blog.service';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import * as utils from 'libs/src/shared/utils/index';
 import * as MarkdownIt from 'markdown-it';
-import * as Util from '../../shared/utils/util';
+
 
 @Component({
   selector: 'app-blog-post',
@@ -12,41 +14,51 @@ import * as Util from '../../shared/utils/util';
 })
 export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecked {
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public post: any;
   public postHtml: string | undefined;
+
   public title: string | undefined;
   public date: string | undefined;
-  public tags: string | undefined;
-  public categories: string | undefined;
+  public thumbnail: string | undefined;
+  public tags: string[] | undefined;
+  public categories: string[] | undefined;
 
   private highlighted = false;
 
   constructor(
     private route: ActivatedRoute,
-    private assetsService: AssetsService,
+    private blogService: BlogService,
     private prismService: PrismService) {
   }
 
   ngOnInit() {
-    const articleName = this.route.snapshot.paramMap.get('article');
+    this.route.paramMap.subscribe(params => {
 
-    const md = new MarkdownIt();
-    Util.addMdPrefixToImageSource(md, './assets/posts/' + articleName + '/');
+      const md = new MarkdownIt();
+      // Util.addMdPrefixToImageSource(md, './assets/posts/' + articleName + '/');
 
-    // 観測対象を取得
-    const fileObservable = this.assetsService.getFileContent(`../../../assets/posts/${articleName}/index.md`);
+      // 観測対象を取得
+      const blogObservable = this.blogService.getBlogById(params.get('id') ?? '');
 
-    // subscribeでファイルからデータ取得
-    fileObservable.subscribe({
-      next: (data) => {
-        this.title = Util.getMetadataValue(data, 'title:');
-        this.date = Util.getMetadataValue(data, 'date:');
-        this.tags = Util.getMetadataValue(data, 'tags:');
-        this.categories = Util.getMetadataValue(data, 'categories:');
+      // subscribeでファイルからデータ取得
+      blogObservable.subscribe({
+        next: (data) => {
+          this.post = data;
 
-        const html = md.render(Util.getMdContent(data));
-        this.postHtml = Util.addClassToHtml(html, 'line-numbers', 'pre');
-      },
-      error: (err) => { console.error('Error: ' + err); }
+          this.title = data.title;
+          console.log(this.title);
+
+          this.date = data.date;
+          this.thumbnail = data.thumbnail;
+          this.tags = data.tags;
+          this.categories = data.categories;
+
+          const html = md.render(data.article);
+          this.postHtml = utils.addClassToHtml(html, 'line-numbers', 'pre');
+        },
+        error: (err) => { console.error('Error: ' + err.error); }
+      });
     });
   }
 
