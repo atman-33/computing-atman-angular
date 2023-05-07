@@ -5,7 +5,7 @@ import { BlogPostComponent } from './blog-post/blog-post.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { PrismService } from '../shared/services/prism.service';
-import { AssetsService } from '../shared/services/assets.service';
+import { BlogService } from './shared/blog.service';
 
 const routes: Routes = [
     {
@@ -15,7 +15,7 @@ const routes: Routes = [
             { path: '', component: BlogListComponent },
 
             // :*** で、変数を格納
-            { path: ':article', component: BlogPostComponent }
+            { path: ':id', component: BlogPostComponent }
         ]
     }
 ];
@@ -33,7 +33,7 @@ const routes: Routes = [
         // CommonModuleはngFor,ngIf等を利用する場合に必要
         CommonModule
     ],
-    providers: [PrismService, AssetsService],
+    providers: [PrismService, BlogService],
     bootstrap: []
 })
 export class BlogModule { }

@@ -1,11 +1,12 @@
-import * as MarkdownIt from 'markdown-it';
+import MarkdownIt = require('markdown-it');
 
 /**
  * mdファイル内の画像に文字列を追加
- * @param md 
  * @param prefix 
+ * @returns 
  */
-export function addMdPrefixToImageSource(md: MarkdownIt, prefix: string) {
+export function addMdPrefixToImageSource(str: string, prefix: string) : string {
+    const md = new MarkdownIt();
     md.renderer.rules.image = (tokens, idx, options, env, self) => {
         const imgToken = tokens[idx];
         const srcIndex = imgToken.attrIndex('src');
@@ -16,6 +17,7 @@ export function addMdPrefixToImageSource(md: MarkdownIt, prefix: string) {
         }
         return self.renderToken(tokens, idx, options);
     };
+    return md.render(str);
 }
 
 /**

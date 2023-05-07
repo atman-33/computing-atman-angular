@@ -2,77 +2,31 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../libs/src/shared/utils/html-utils.ts":
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.addTextAfterClosingTag = exports.addClassToHtml = void 0;
-/**
-  * htmlのタグにクラスを追加
-  * @param html
-  * @param className
-  * @param tagName
-  * @returns
-  */
-function addClassToHtml(html, className, tagName) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const elements = doc.querySelectorAll(tagName);
-    elements.forEach((el) => {
-        el.classList.add(className);
-    });
-    return doc.documentElement.innerHTML;
-}
-exports.addClassToHtml = addClassToHtml;
-/**
- * 要素の終了タグの後ろにテキストを追加
- * @param html
- * @param tagName
- * @param text
- * @returns
- */
-function addTextAfterClosingTag(html, tagName, text) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const elements = doc.querySelectorAll(tagName);
-    elements.forEach((el) => {
-        const textNode = document.createTextNode(text);
-        if (el.parentNode) {
-            el.parentNode.insertBefore(textNode, el.nextSibling);
-        }
-    });
-    return doc.documentElement.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
-}
-exports.addTextAfterClosingTag = addTextAfterClosingTag;
-
-
-/***/ }),
-
-/***/ "../libs/src/shared/utils/index.ts":
+/***/ "../libs/src/shared/helpers/index.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const tslib_1 = __webpack_require__("tslib");
-tslib_1.__exportStar(__webpack_require__("../libs/src/shared/utils/html-utils.ts"), exports);
-tslib_1.__exportStar(__webpack_require__("../libs/src/shared/utils/markdown-utils.ts"), exports);
+tslib_1.__exportStar(__webpack_require__("../libs/src/shared/helpers/markdown-helper.ts"), exports);
 
 
 /***/ }),
 
-/***/ "../libs/src/shared/utils/markdown-utils.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ "../libs/src/shared/helpers/markdown-helper.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getMetadataArray = exports.getMetadataValue = exports.getMdContent = exports.addMdPrefixToImageSource = void 0;
+const MarkdownIt = __webpack_require__("markdown-it");
 /**
  * mdファイル内の画像に文字列を追加
- * @param md
  * @param prefix
+ * @returns
  */
-function addMdPrefixToImageSource(md, prefix) {
+function addMdPrefixToImageSource(str, prefix) {
+    const md = new MarkdownIt();
     md.renderer.rules.image = (tokens, idx, options, env, self) => {
         const imgToken = tokens[idx];
         const srcIndex = imgToken.attrIndex('src');
@@ -83,6 +37,7 @@ function addMdPrefixToImageSource(md, prefix) {
         }
         return self.renderToken(tokens, idx, options);
     };
+    return md.render(str);
 }
 exports.addMdPrefixToImageSource = addMdPrefixToImageSource;
 /**
@@ -181,12 +136,13 @@ exports.AppModule = AppModule;
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BlogsController = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const blogs_service_1 = __webpack_require__("./src/app/blogs/blogs.service.ts");
+const express_1 = __webpack_require__("express");
 let BlogsController = class BlogsController {
     constructor(blogsService) {
         this.blogsService = blogsService;
@@ -204,6 +160,11 @@ let BlogsController = class BlogsController {
     findById(id) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.blogsService.findById(id);
+        });
+    }
+    getBlogImageFile(id, fileName, res) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.blogsService.getBlogImageFile(id, fileName, res);
         });
     }
 };
@@ -226,6 +187,15 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [String]),
     tslib_1.__metadata("design:returntype", typeof (_d = typeof Promise !== "undefined" && Promise) === "function" ? _d : Object)
 ], BlogsController.prototype, "findById", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('/img/:id/:fileName'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__param(1, (0, common_1.Param)('fileName')),
+    tslib_1.__param(2, (0, common_1.Res)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String, String, typeof (_e = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _e : Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], BlogsController.prototype, "getBlogImageFile", null);
 BlogsController = tslib_1.__decorate([
     (0, common_1.Controller)('blogs'),
     tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof blogs_service_1.BlogsService !== "undefined" && blogs_service_1.BlogsService) === "function" ? _a : Object])
@@ -269,15 +239,14 @@ const common_1 = __webpack_require__("@nestjs/common");
 const fs_1 = __webpack_require__("fs");
 const util_1 = __webpack_require__("util");
 // eslint-disable-next-line @nx/enforce-module-boundaries
-const utils = tslib_1.__importStar(__webpack_require__("../libs/src/shared/utils/index.ts"));
+const helpers = tslib_1.__importStar(__webpack_require__("../libs/src/shared/helpers/index.ts"));
+const path_1 = __webpack_require__("path");
 let BlogsService = class BlogsService {
-    constructor() {
-        this.postPath = './dist/server/assets/posts';
-    }
     findAllIds() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const folderPath = (0, path_1.join)(process.cwd(), 'dist/server/assets/posts');
             try {
-                const dirents = yield (0, util_1.promisify)(fs_1.readdir)(this.postPath, {
+                const dirents = yield (0, util_1.promisify)(fs_1.readdir)(folderPath, {
                     withFileTypes: true,
                 });
                 const folders = dirents
@@ -304,7 +273,7 @@ let BlogsService = class BlogsService {
     findById(id) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // console.log(id);
-            const filePath = `${this.postPath}/${id}/index.md`;
+            const filePath = (0, path_1.join)(process.cwd(), 'dist/server/assets/posts', id, 'index.md');
             try {
                 const content = (0, util_1.promisify)(fs_1.readFile)(filePath, { encoding: 'utf-8' });
                 return this.parseBlogContent(id, yield content);
@@ -315,16 +284,33 @@ let BlogsService = class BlogsService {
             }
         });
     }
+    getBlogImageFile(id, fileName, res) {
+        const imageFilePath = (0, path_1.join)(process.cwd(), 'dist/server/assets/posts', id, fileName);
+        return res.sendFile(imageFilePath);
+    }
     parseBlogContent(id, content) {
         // console.log(`id: ${id}`);
-        const blog = {
+        let blog = {
             id: id,
-            title: utils.getMetadataValue(content, 'title:'),
-            thumbnail: utils.getMetadataValue(content, 'thumbnail:'),
-            tags: utils.getMetadataArray(content, 'tags:'),
-            categories: utils.getMetadataArray(content, 'categories:'),
-            article: utils.getMdContent(content),
+            title: helpers.getMetadataValue(content, 'title:'),
+            date: helpers.getMetadataValue(content, 'date:'),
+            thumbnail: helpers.getMetadataValue(content, 'thumbnail:'),
+            tags: helpers.getMetadataArray(content, 'tags:'),
+            categories: helpers.getMetadataArray(content, 'categories:'),
+            article: helpers.getMdContent(content),
         };
+        blog = this.addPrefixTothumbnail(blog);
+        blog = this.addPrefixToImageSource(blog);
+        return blog;
+    }
+    addPrefixTothumbnail(blog) {
+        if (blog.thumbnail) {
+            blog.thumbnail = (0, path_1.join)('/api/blogs/img', blog.id, blog.thumbnail);
+        }
+        return blog;
+    }
+    addPrefixToImageSource(blog) {
+        blog.article = helpers.addMdPrefixToImageSource(blog.article, './api/blogs/img/' + blog.id + '/');
         return blog;
     }
 };
@@ -350,6 +336,20 @@ module.exports = require("@nestjs/core");
 
 /***/ }),
 
+/***/ "express":
+/***/ ((module) => {
+
+module.exports = require("express");
+
+/***/ }),
+
+/***/ "markdown-it":
+/***/ ((module) => {
+
+module.exports = require("markdown-it");
+
+/***/ }),
+
 /***/ "tslib":
 /***/ ((module) => {
 
@@ -361,6 +361,13 @@ module.exports = require("tslib");
 /***/ ((module) => {
 
 module.exports = require("fs");
+
+/***/ }),
+
+/***/ "path":
+/***/ ((module) => {
+
+module.exports = require("path");
 
 /***/ }),
 

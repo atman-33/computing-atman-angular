@@ -1,29 +1,19 @@
-<!-- <div class="wrapper">
+<div class="wrapper mt-8">
     <div class="container">
-        <br />
-        <div class="row"> -->
+        <div class="row">
             <!-- ループ文の何番目をindexで取得 -->
-            <!-- <div class="col" *ngFor="let product of products; let productId = index">
-                <a [routerLink]="[product._id]">
+            <div class="col" *ngFor="let blog of blogs">
+                <a [routerLink]="[blog.id]">
                     <div class="card">
 
-                        <img src="{{ product.coverImage }}" class="card-img-top" alt="...">
+                        <img src="{{ blog.thumbnail }}" class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">{{ product.name }} </h5>
-                            <p class="card-text">{{ product.description}}</p>
+                            <h5 class="card-title">{{ blog.title }} </h5>
+                            <p class="card-text">{{ blog.categories.join()}}</p>
                         </div>
                     </div>
                 </a>
             </div>
         </div>
     </div>
-</div> -->
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<ul mt-5>
-    <li *ngFor="let post of posts">{{ post }}</li>
-  </ul>
+</div>
