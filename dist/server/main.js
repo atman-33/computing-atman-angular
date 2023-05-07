@@ -181,12 +181,13 @@ exports.AppModule = AppModule;
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.BlogsController = void 0;
 const tslib_1 = __webpack_require__("tslib");
 const common_1 = __webpack_require__("@nestjs/common");
 const blogs_service_1 = __webpack_require__("./src/app/blogs/blogs.service.ts");
+const express_1 = __webpack_require__("express");
 let BlogsController = class BlogsController {
     constructor(blogsService) {
         this.blogsService = blogsService;
@@ -204,6 +205,11 @@ let BlogsController = class BlogsController {
     findById(id) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.blogsService.findById(id);
+        });
+    }
+    getBlogImageFile(id, fileName, res) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.blogsService.getBlogImageFile(id, fileName, res);
         });
     }
 };
@@ -226,6 +232,15 @@ tslib_1.__decorate([
     tslib_1.__metadata("design:paramtypes", [String]),
     tslib_1.__metadata("design:returntype", typeof (_d = typeof Promise !== "undefined" && Promise) === "function" ? _d : Object)
 ], BlogsController.prototype, "findById", null);
+tslib_1.__decorate([
+    (0, common_1.Get)('/img/:id/:fileName'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
+    tslib_1.__param(1, (0, common_1.Param)('fileName')),
+    tslib_1.__param(2, (0, common_1.Res)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String, String, typeof (_e = typeof express_1.Response !== "undefined" && express_1.Response) === "function" ? _e : Object]),
+    tslib_1.__metadata("design:returntype", Promise)
+], BlogsController.prototype, "getBlogImageFile", null);
 BlogsController = tslib_1.__decorate([
     (0, common_1.Controller)('blogs'),
     tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof blogs_service_1.BlogsService !== "undefined" && blogs_service_1.BlogsService) === "function" ? _a : Object])
@@ -270,14 +285,13 @@ const fs_1 = __webpack_require__("fs");
 const util_1 = __webpack_require__("util");
 // eslint-disable-next-line @nx/enforce-module-boundaries
 const utils = tslib_1.__importStar(__webpack_require__("../libs/src/shared/utils/index.ts"));
+const path_1 = __webpack_require__("path");
 let BlogsService = class BlogsService {
-    constructor() {
-        this.postPath = './dist/server/assets/posts';
-    }
     findAllIds() {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const folderPath = (0, path_1.join)(process.cwd(), 'dist/server/assets/posts');
             try {
-                const dirents = yield (0, util_1.promisify)(fs_1.readdir)(this.postPath, {
+                const dirents = yield (0, util_1.promisify)(fs_1.readdir)(folderPath, {
                     withFileTypes: true,
                 });
                 const folders = dirents
@@ -304,7 +318,7 @@ let BlogsService = class BlogsService {
     findById(id) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             // console.log(id);
-            const filePath = `${this.postPath}/${id}/index.md`;
+            const filePath = (0, path_1.join)(process.cwd(), 'dist/server/assets/posts', id, 'index.md');
             try {
                 const content = (0, util_1.promisify)(fs_1.readFile)(filePath, { encoding: 'utf-8' });
                 return this.parseBlogContent(id, yield content);
@@ -314,6 +328,10 @@ let BlogsService = class BlogsService {
                 console.error(error);
             }
         });
+    }
+    getBlogImageFile(id, fileName, res) {
+        const imageFilePath = (0, path_1.join)(process.cwd(), 'dist/server/assets/posts', id, fileName);
+        return res.sendFile(imageFilePath);
     }
     parseBlogContent(id, content) {
         // console.log(`id: ${id}`);
@@ -351,6 +369,13 @@ module.exports = require("@nestjs/core");
 
 /***/ }),
 
+/***/ "express":
+/***/ ((module) => {
+
+module.exports = require("express");
+
+/***/ }),
+
 /***/ "tslib":
 /***/ ((module) => {
 
@@ -362,6 +387,13 @@ module.exports = require("tslib");
 /***/ ((module) => {
 
 module.exports = require("fs");
+
+/***/ }),
+
+/***/ "path":
+/***/ ((module) => {
+
+module.exports = require("path");
 
 /***/ }),
 

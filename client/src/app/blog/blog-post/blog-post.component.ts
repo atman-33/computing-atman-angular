@@ -35,8 +35,10 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
 
+      const id = params.get('id') ?? '';
+
       const md = new MarkdownIt();
-      // Util.addMdPrefixToImageSource(md, './assets/posts/' + articleName + '/');
+      utils.addMdPrefixToImageSource(md, './assets/posts/' + id + '/');
 
       // 観測対象を取得
       const blogObservable = this.blogService.getBlogById(params.get('id') ?? '');
@@ -67,7 +69,6 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
 
   ngAfterViewChecked() {
     if (!this.highlighted && this.postHtml) {
-      //this.postHtml = this.addClassToHtml(this.postHtml, 'line-numbers', 'pre');
       this.prismService.highlightAll();
       this.highlighted = true;
     }

@@ -45,6 +45,7 @@ npm install -g @angular/cli
 ### Angular 起動
 ```
 nx serve client
+nx serve client --proxy-config client/proxy.conf.json
 ```
 
 ### Nest 起動

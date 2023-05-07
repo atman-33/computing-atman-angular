@@ -1,6 +1,7 @@
 ---
 title: 【VBS】指定したファイル、フォルダを削除する
 date: 2023-02-23 20:14:32
+thumbnail: /img-1.png
 tags: VBS
 categories: VBS
 ---

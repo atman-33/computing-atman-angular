@@ -1,6 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { Blog } from './blog.model';
+import { Response } from 'express';
 
 @Controller('blogs')
 export class BlogsController {
@@ -21,5 +22,13 @@ export class BlogsController {
     @Get(':id')
     async findById(@Param('id') id: string): Promise<Blog> {
         return await this.blogsService.findById(id);
+    }
+
+    @Get('/img/:id/:fileName')
+    async getBlogImageFile(
+        @Param('id') id: string,
+        @Param('fileName') fileName: string,
+        @Res() res: Response) {
+        return await this.blogsService.getBlogImageFile(id, fileName, res);
     }
 }

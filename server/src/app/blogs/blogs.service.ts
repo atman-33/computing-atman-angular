@@ -4,16 +4,19 @@ import { readFile, readdir } from 'fs';
 import { promisify } from 'util';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import * as utils from 'libs/src/shared/utils';
+import { Response } from 'express';
+import { join } from 'path';
 
 @Injectable()
 export class BlogsService {
 
-  private readonly postPath: string = './dist/server/assets/posts';
-
   async findAllIds(): Promise<string[]> {
+
+    const folderPath = join(process.cwd(), 'dist/server/assets/posts');
+
     try {
       const dirents = await promisify(readdir)(
-        this.postPath, {
+        folderPath, {
         withFileTypes: true,
       });
       const folders = dirents
@@ -40,7 +43,7 @@ export class BlogsService {
   async findById(id: string): Promise<Blog> {
     // console.log(id);
 
-    const filePath = `${this.postPath}/${id}/index.md`;
+    const filePath = join(process.cwd(), 'dist/server/assets/posts', id, 'index.md');
     try {
       const content = promisify(readFile)(filePath, { encoding: 'utf-8' });
       return this.parseBlogContent(id, await content);
@@ -48,6 +51,12 @@ export class BlogsService {
       console.error(`Failed to read file: ${filePath}`);
       console.error(error);
     }
+  }
+
+  getBlogImageFile(id: string, fileName: string, res: Response) {
+
+    const imageFilePath = join(process.cwd(), 'dist/server/assets/posts', id, fileName);
+    return res.sendFile(imageFilePath);
   }
 
   private parseBlogContent(id: string, content: string): Blog {
