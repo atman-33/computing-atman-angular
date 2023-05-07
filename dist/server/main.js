@@ -2,77 +2,31 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "../libs/src/shared/utils/html-utils.ts":
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.addTextAfterClosingTag = exports.addClassToHtml = void 0;
-/**
-  * htmlのタグにクラスを追加
-  * @param html
-  * @param className
-  * @param tagName
-  * @returns
-  */
-function addClassToHtml(html, className, tagName) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const elements = doc.querySelectorAll(tagName);
-    elements.forEach((el) => {
-        el.classList.add(className);
-    });
-    return doc.documentElement.innerHTML;
-}
-exports.addClassToHtml = addClassToHtml;
-/**
- * 要素の終了タグの後ろにテキストを追加
- * @param html
- * @param tagName
- * @param text
- * @returns
- */
-function addTextAfterClosingTag(html, tagName, text) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const elements = doc.querySelectorAll(tagName);
-    elements.forEach((el) => {
-        const textNode = document.createTextNode(text);
-        if (el.parentNode) {
-            el.parentNode.insertBefore(textNode, el.nextSibling);
-        }
-    });
-    return doc.documentElement.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
-}
-exports.addTextAfterClosingTag = addTextAfterClosingTag;
-
-
-/***/ }),
-
-/***/ "../libs/src/shared/utils/index.ts":
+/***/ "../libs/src/shared/helpers/index.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const tslib_1 = __webpack_require__("tslib");
-tslib_1.__exportStar(__webpack_require__("../libs/src/shared/utils/html-utils.ts"), exports);
-tslib_1.__exportStar(__webpack_require__("../libs/src/shared/utils/markdown-utils.ts"), exports);
+tslib_1.__exportStar(__webpack_require__("../libs/src/shared/helpers/markdown-helper.ts"), exports);
 
 
 /***/ }),
 
-/***/ "../libs/src/shared/utils/markdown-utils.ts":
-/***/ ((__unused_webpack_module, exports) => {
+/***/ "../libs/src/shared/helpers/markdown-helper.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getMetadataArray = exports.getMetadataValue = exports.getMdContent = exports.addMdPrefixToImageSource = void 0;
+const MarkdownIt = __webpack_require__("markdown-it");
 /**
  * mdファイル内の画像に文字列を追加
- * @param md
  * @param prefix
+ * @returns
  */
-function addMdPrefixToImageSource(md, prefix) {
+function addMdPrefixToImageSource(str, prefix) {
+    const md = new MarkdownIt();
     md.renderer.rules.image = (tokens, idx, options, env, self) => {
         const imgToken = tokens[idx];
         const srcIndex = imgToken.attrIndex('src');
@@ -83,6 +37,7 @@ function addMdPrefixToImageSource(md, prefix) {
         }
         return self.renderToken(tokens, idx, options);
     };
+    return md.render(str);
 }
 exports.addMdPrefixToImageSource = addMdPrefixToImageSource;
 /**
@@ -284,7 +239,7 @@ const common_1 = __webpack_require__("@nestjs/common");
 const fs_1 = __webpack_require__("fs");
 const util_1 = __webpack_require__("util");
 // eslint-disable-next-line @nx/enforce-module-boundaries
-const utils = tslib_1.__importStar(__webpack_require__("../libs/src/shared/utils/index.ts"));
+const helpers = tslib_1.__importStar(__webpack_require__("../libs/src/shared/helpers/index.ts"));
 const path_1 = __webpack_require__("path");
 let BlogsService = class BlogsService {
     findAllIds() {
@@ -335,18 +290,27 @@ let BlogsService = class BlogsService {
     }
     parseBlogContent(id, content) {
         // console.log(`id: ${id}`);
-        const blog = {
+        let blog = {
             id: id,
-            title: utils.getMetadataValue(content, 'title:'),
-            date: utils.getMetadataValue(content, 'date:'),
-            thumbnail: utils.getMetadataValue(content, 'thumbnail:'),
-            tags: utils.getMetadataArray(content, 'tags:'),
-            categories: utils.getMetadataArray(content, 'categories:'),
-            article: utils.getMdContent(content),
+            title: helpers.getMetadataValue(content, 'title:'),
+            date: helpers.getMetadataValue(content, 'date:'),
+            thumbnail: helpers.getMetadataValue(content, 'thumbnail:'),
+            tags: helpers.getMetadataArray(content, 'tags:'),
+            categories: helpers.getMetadataArray(content, 'categories:'),
+            article: helpers.getMdContent(content),
         };
+        blog = this.addPrefixTothumbnail(blog);
+        blog = this.addPrefixToImageSource(blog);
+        return blog;
+    }
+    addPrefixTothumbnail(blog) {
         if (blog.thumbnail) {
             blog.thumbnail = (0, path_1.join)('/api/blogs/img', blog.id, blog.thumbnail);
         }
+        return blog;
+    }
+    addPrefixToImageSource(blog) {
+        blog.article = helpers.addMdPrefixToImageSource(blog.article, './api/blogs/img/' + blog.id + '/');
         return blog;
     }
 };
@@ -376,6 +340,13 @@ module.exports = require("@nestjs/core");
 /***/ ((module) => {
 
 module.exports = require("express");
+
+/***/ }),
+
+/***/ "markdown-it":
+/***/ ((module) => {
+
+module.exports = require("markdown-it");
 
 /***/ }),
 

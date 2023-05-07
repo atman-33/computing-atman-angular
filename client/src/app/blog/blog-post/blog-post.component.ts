@@ -4,8 +4,6 @@ import { PrismService } from '../../shared/services/prism.service';
 import { BlogService } from '../shared/blog.service';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import * as utils from 'libs/src/shared/utils/index';
-import * as MarkdownIt from 'markdown-it';
-
 
 @Component({
   selector: 'app-blog-post',
@@ -37,9 +35,6 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
 
       const id = params.get('id') ?? '';
 
-      const md = new MarkdownIt();
-      utils.addMdPrefixToImageSource(md, './api/blogs/img/' + id + '/');
-
       // 観測対象を取得
       const blogObservable = this.blogService.getBlogById(params.get('id') ?? '');
 
@@ -56,8 +51,7 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
           this.tags = data.tags;
           this.categories = data.categories;
 
-          const html = md.render(data.article);
-          this.postHtml = utils.addClassToHtml(html, 'line-numbers', 'pre');
+          this.postHtml = utils.addClassToHtml(data.article, 'line-numbers', 'pre');
         },
         error: (err) => { console.error('Error: ' + err.error); }
       });

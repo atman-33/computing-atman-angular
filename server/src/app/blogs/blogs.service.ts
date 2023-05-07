@@ -4,7 +4,7 @@ import { Blog } from 'libs/src/shared/models/blog.model';
 import { readFile, readdir } from 'fs';
 import { promisify } from 'util';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import * as utils from 'libs/src/shared/utils';
+import * as helpers from 'libs/src/shared/helpers';
 import { Response } from 'express';
 import { join } from 'path';
 
@@ -63,20 +63,31 @@ export class BlogsService {
   private parseBlogContent(id: string, content: string): Blog {
     // console.log(`id: ${id}`);
 
-    const blog: Blog = {
+    let blog: Blog = {
       id: id,
-      title: utils.getMetadataValue(content, 'title:'),
-      date: utils.getMetadataValue(content, 'date:'),
-      thumbnail: utils.getMetadataValue(content, 'thumbnail:'),
-      tags: utils.getMetadataArray(content, 'tags:'),
-      categories: utils.getMetadataArray(content, 'categories:'),
-      article: utils.getMdContent(content),
+      title: helpers.getMetadataValue(content, 'title:'),
+      date: helpers.getMetadataValue(content, 'date:'),
+      thumbnail: helpers.getMetadataValue(content, 'thumbnail:'),
+      tags: helpers.getMetadataArray(content, 'tags:'),
+      categories: helpers.getMetadataArray(content, 'categories:'),
+      article: helpers.getMdContent(content),
     };
 
-    if(blog.thumbnail){
+    blog = this.addPrefixTothumbnail(blog);
+    blog = this.addPrefixToImageSource(blog);
+
+    return blog;
+  }
+
+  private addPrefixTothumbnail(blog: Blog): Blog {
+    if (blog.thumbnail) {
       blog.thumbnail = join('/api/blogs/img', blog.id, blog.thumbnail);
     }
+    return blog;
+  }
 
+  private addPrefixToImageSource(blog: Blog): Blog {
+    blog.article = helpers.addMdPrefixToImageSource(blog.article, './api/blogs/img/' + blog.id + '/');
     return blog;
   }
 }

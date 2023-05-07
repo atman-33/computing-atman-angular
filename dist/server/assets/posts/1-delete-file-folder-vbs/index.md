@@ -1,7 +1,7 @@
 ---
 title: 【VBS】指定したファイル、フォルダを削除する
 date: 2023-02-23 20:14:32
-thumbnail: /img-0.jpg
+thumbnail: 
 tags: VBS
 categories: VBS
 ---
@@ -56,5 +56,3 @@ FileSystemObject.DeleteFolder関数
 - 第2パラメータ：  
 　- True：読み取り専用ファイルも削除  
 　- False(規定値)：読み取り専用ファイルは削除しない
-
-![image](img-0.jpg)
