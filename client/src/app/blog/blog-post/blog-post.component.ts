@@ -38,7 +38,7 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
       const id = params.get('id') ?? '';
 
       const md = new MarkdownIt();
-      utils.addMdPrefixToImageSource(md, './assets/posts/' + id + '/');
+      utils.addMdPrefixToImageSource(md, './api/blogs/img/' + id + '/');
 
       // 観測対象を取得
       const blogObservable = this.blogService.getBlogById(params.get('id') ?? '');

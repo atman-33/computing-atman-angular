@@ -344,6 +344,9 @@ let BlogsService = class BlogsService {
             categories: utils.getMetadataArray(content, 'categories:'),
             article: utils.getMdContent(content),
         };
+        if (blog.thumbnail) {
+            blog.thumbnail = (0, path_1.join)('/api/blogs/img', blog.id, blog.thumbnail);
+        }
         return blog;
     }
 };

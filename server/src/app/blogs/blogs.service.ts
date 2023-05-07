@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Blog } from './blog.model';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { Blog } from 'libs/src/shared/models/blog.model';
 import { readFile, readdir } from 'fs';
 import { promisify } from 'util';
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -71,6 +72,10 @@ export class BlogsService {
       categories: utils.getMetadataArray(content, 'categories:'),
       article: utils.getMdContent(content),
     };
+
+    if(blog.thumbnail){
+      blog.thumbnail = join('/api/blogs/img', blog.id, blog.thumbnail);
+    }
 
     return blog;
   }

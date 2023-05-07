@@ -1,6 +1,7 @@
 import { Controller, Get, Param, Res } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
-import { Blog } from './blog.model';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { Blog } from 'libs/src/shared/models/blog.model';
 import { Response } from 'express';
 
 @Controller('blogs')

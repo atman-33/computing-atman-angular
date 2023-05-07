@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BlogService } from '../shared/blog.service';
-
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import { Blog } from 'libs/src/shared/models/blog.model';
 @Component({
   selector: 'app-blog-list',
   templateUrl: './blog-list.component.html',
@@ -8,8 +9,7 @@ import { BlogService } from '../shared/blog.service';
 })
 export class BlogListComponent implements OnInit {
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public posts: any;
+  public blogs: Blog[] = [];
 
   constructor(
     private blogService: BlogService) {
@@ -23,7 +23,7 @@ export class BlogListComponent implements OnInit {
     // subscribeでファイルからデータ取得
     blogObservable.subscribe({
       next: (data) => {
-        this.posts = data;
+        this.blogs = data;
         // console.log(this.posts);
       },
       error: (err) => { console.error('Error: ' + err.error); }
