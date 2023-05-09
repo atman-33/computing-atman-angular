@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PrismService } from '../../shared/services/prism.service';
 import { BlogService } from '../shared/blog.service';
@@ -10,7 +10,7 @@ import * as utils from 'libs/src/shared/utils/index';
   templateUrl: './blog-post.component.html',
   styleUrls: ['./blog-post.component.scss']
 })
-export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class BlogPostComponent implements OnInit, AfterViewChecked {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public post: any;
@@ -33,13 +33,13 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
 
-      const id = params.get('id') ?? '';
+      // const id = params.get('id') ?? '';
 
       // 観測対象を取得
-      const blogObservable = this.blogService.getBlogById(params.get('id') ?? '');
+      const blogObservable$ = this.blogService.getBlogById(params.get('id') ?? '');
 
       // subscribeでファイルからデータ取得
-      blogObservable.subscribe({
+      blogObservable$.subscribe({
         next: (data) => {
           this.post = data;
 
@@ -57,9 +57,6 @@ export class BlogPostComponent implements OnInit, AfterViewInit, AfterViewChecke
       });
     });
   }
-
-  // eslint-disable-next-line @angular-eslint/no-empty-lifecycle-method, @typescript-eslint/no-empty-function
-  ngAfterViewInit() { }
 
   ngAfterViewChecked() {
     if (!this.highlighted && this.postHtml) {

@@ -9,6 +9,8 @@ import { Blog } from 'libs/src/shared/models/blog.model';
 })
 export class BlogListComponent implements OnInit {
 
+  public readonly defaultImagePath = '../../assets/img/keyboard.jpg';
+
   public blogs: Blog[] = [];
 
   constructor(
@@ -18,10 +20,10 @@ export class BlogListComponent implements OnInit {
   ngOnInit() {
 
     // 観測対象を取得
-    const blogObservable = this.blogService.getBlogs();
+    const blogObservable$ = this.blogService.getBlogs();
 
     // subscribeでファイルからデータ取得
-    blogObservable.subscribe({
+    blogObservable$.subscribe({
       next: (data) => {
         this.blogs = data;
         // console.log(this.posts);
