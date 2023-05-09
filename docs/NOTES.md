@@ -70,9 +70,9 @@ npm install bootstrap@5 --save
 
 ## フロントエンド（Angular）開発
 
-### 1. ページ追加
+### 1. 画面追加
 
-1. コンポーネント（Page）作成
+1. コンポーネント作成
 ```
 nx g @nx/angular:component __componet__ --project=client
 ```

@@ -6,12 +6,13 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { PrismService } from '../shared/services/prism.service';
 import { PostService } from './shared/post.service';
+import { PaginationComponent } from './pagination/pagination.component';
 
 const routes: Routes = [
     {
         path: 'blog', component: BlogComponent,
         children: [
-            // htmlにrouter-outletを実装する事で、URL「***/blog」に BlogListComponent を表示 
+            // htmlにrouter-outletを実装する事で、URL「***/blog」に PostListComponent を表示 
             { path: '', component: PostListComponent },
 
             // :*** で、変数を格納
@@ -25,7 +26,8 @@ const routes: Routes = [
     declarations: [
         BlogComponent,
         PostListComponent,
-        PostDetailComponent
+        PostDetailComponent,
+        PaginationComponent
     ],
     imports: [
         // RouterModuleのforRootはapp-routing.module.tsで利用。モジュールはforChildでルーター登録
