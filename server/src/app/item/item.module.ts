@@ -11,8 +11,8 @@
  */
 
 import { Module } from '@nestjs/common';
-import { ItemsController } from './items.controller';
-import { ItemsService } from './items.service';
+import { ItemController } from './item.controller';
+import { ItemService } from './item.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from '../auth/auth.module';
 import { Item } from '../entities/item.entity';
@@ -21,7 +21,7 @@ import { Item } from '../entities/item.entity';
   // Repository の登録は、一つの機能に閉じた設定のためforFeatureを使用
   // importsにAuthModuleを追加 => exportsに記載したprovidersを利用可能
   imports: [TypeOrmModule.forFeature([Item]), AuthModule],  
-  controllers: [ItemsController],
-  providers: [ItemsService],
+  controllers: [ItemController],
+  providers: [ItemService],
 })
-export class ItemsModule {}
+export class ItemModule {}

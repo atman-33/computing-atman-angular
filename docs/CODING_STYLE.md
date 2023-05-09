@@ -30,6 +30,10 @@
 `private lists: string[]`  
 <br>
 
+### コンポーネント名（Angular,NestJS共通）
+単数形とする。
+<br>
+
 ## コードフォーマット
 ---
 

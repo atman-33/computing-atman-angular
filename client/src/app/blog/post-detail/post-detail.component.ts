@@ -1,20 +1,20 @@
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PrismService } from '../../shared/services/prism.service';
-import { BlogService } from '../shared/blog.service';
+import { PostService } from '../shared/post.service';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import * as utils from 'libs/src/shared/utils/index';
 
 @Component({
-  selector: 'app-blog-post',
-  templateUrl: './blog-post.component.html',
-  styleUrls: ['./blog-post.component.scss']
+  selector: 'app-post-detail',
+  templateUrl: './post-detail.component.html',
+  styleUrls: ['./post-detail.component.scss']
 })
-export class BlogPostComponent implements OnInit, AfterViewChecked {
+export class PostDetailComponent implements OnInit, AfterViewChecked {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public post: any;
-  public postHtml: string | undefined;
+  public articleHtml: string | undefined;
 
   public title: string | undefined;
   public date: string | undefined;
@@ -26,7 +26,7 @@ export class BlogPostComponent implements OnInit, AfterViewChecked {
 
   constructor(
     private route: ActivatedRoute,
-    private blogService: BlogService,
+    private postService: PostService,
     private prismService: PrismService) {
   }
 
@@ -36,10 +36,10 @@ export class BlogPostComponent implements OnInit, AfterViewChecked {
       // const id = params.get('id') ?? '';
 
       // 観測対象を取得
-      const blogObservable$ = this.blogService.getBlogById(params.get('id') ?? '');
+      const postObservable$ = this.postService.getPostById(params.get('id') ?? '');
 
       // subscribeでファイルからデータ取得
-      blogObservable$.subscribe({
+      postObservable$.subscribe({
         next: (data) => {
           this.post = data;
 
@@ -51,7 +51,7 @@ export class BlogPostComponent implements OnInit, AfterViewChecked {
           this.tags = data.tags;
           this.categories = data.categories;
 
-          this.postHtml = utils.addClassToHtml(data.article, 'line-numbers', 'pre');
+          this.articleHtml = utils.addClassToHtml(data.article, 'line-numbers', 'pre');
         },
         error: (err) => { console.error('Error: ' + err.error); }
       });
@@ -59,7 +59,7 @@ export class BlogPostComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
-    if (!this.highlighted && this.postHtml) {
+    if (!this.highlighted && this.articleHtml) {
       this.prismService.highlightAll();
       this.highlighted = true;
     }

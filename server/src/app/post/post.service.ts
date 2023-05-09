@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { Blog } from 'libs/src/shared/models/blog.model';
+import { Post } from 'libs/src/shared/models/post.model';
 import { readFile, readdir } from 'fs';
 import { promisify } from 'util';
 // eslint-disable-next-line @nx/enforce-module-boundaries
@@ -9,7 +9,7 @@ import { Response } from 'express';
 import { join } from 'path';
 
 @Injectable()
-export class BlogsService {
+export class PostService {
 
   async findAllIds(): Promise<string[]> {
 
@@ -30,40 +30,40 @@ export class BlogsService {
     }
   }
 
-  async findAll(): Promise<Blog[]> {
+  async findAll(): Promise<Post[]> {
     const ids = await this.findAllIds();
 
-    const blogs: Blog[] = [];
+    const posts: Post[] = [];
     for (const id of ids) {
-      blogs.push(await this.findById(id));
+      posts.push(await this.findById(id));
     }
 
-    return blogs;
+    return posts;
   }
 
-  async findById(id: string): Promise<Blog> {
+  async findById(id: string): Promise<Post> {
     // console.log(id);
 
     const filePath = join(process.cwd(), 'dist/server/assets/posts', id, 'index.md');
     try {
       const content = promisify(readFile)(filePath, { encoding: 'utf-8' });
-      return this.parseBlogContent(id, await content);
+      return this.parsePostContent(id, await content);
     } catch (error) {
       console.error(`Failed to read file: ${filePath}`);
       console.error(error);
     }
   }
 
-  getBlogImageFile(id: string, fileName: string, res: Response) {
+  getPostImageFile(id: string, fileName: string, res: Response) {
 
     const imageFilePath = join(process.cwd(), 'dist/server/assets/posts', id, fileName);
     return res.sendFile(imageFilePath);
   }
 
-  private parseBlogContent(id: string, content: string): Blog {
+  private parsePostContent(id: string, content: string): Post {
     // console.log(`id: ${id}`);
 
-    let blog: Blog = {
+    let post: Post = {
       id: id,
       title: helpers.getMetadataValue(content, 'title:'),
       date: helpers.getMetadataValue(content, 'date:'),
@@ -73,21 +73,21 @@ export class BlogsService {
       article: helpers.getMdContent(content),
     };
 
-    blog = this.addPrefixTothumbnail(blog);
-    blog = this.addPrefixToImageSource(blog);
+    post = this.addPrefixTothumbnail(post);
+    post = this.addPrefixToImageSource(post);
 
-    return blog;
+    return post;
   }
 
-  private addPrefixTothumbnail(blog: Blog): Blog {
-    if (blog.thumbnail) {
-      blog.thumbnail = join('/api/blogs/img', blog.id, blog.thumbnail);
+  private addPrefixTothumbnail(post: Post): Post {
+    if (post.thumbnail) {
+      post.thumbnail = join('/api/post/img', post.id, post.thumbnail);
     }
-    return blog;
+    return post;
   }
 
-  private addPrefixToImageSource(blog: Blog): Blog {
-    blog.article = helpers.addMdPrefixToImageSource(blog.article, './api/blogs/img/' + blog.id + '/');
-    return blog;
+  private addPrefixToImageSource(post: Post): Post {
+    post.article = helpers.addMdPrefixToImageSource(post.article, './api/post/img/' + post.id + '/');
+    return post;
   }
 }

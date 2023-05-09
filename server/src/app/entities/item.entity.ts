@@ -11,7 +11,7 @@
  */
 
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { ItemStatus } from '../items/item-status.enum';
+import { ItemStatus } from '../item/item-status.enum';
 import { User } from './user.entity';
 
 @Entity()
