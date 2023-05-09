@@ -5,7 +5,7 @@ tags:
 - JavaScript
 - シューティングゲーム
 categories: JavaScript
-thumbnail: /img/thumbnails/thumbnail-9.png
+thumbnail: /thumbnail.png
 ---
 
 CreateJSとクラス（ オブジェクト指向 ）を用いた『シューティングゲーム』を作成してみました。

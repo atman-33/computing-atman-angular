@@ -1,0 +1,65 @@
+<!-- ブログ記事一覧コンポーネント -->
+<div class="wrapper mt-8">
+    <div class="container">
+        <div class="row">
+            <!-- ブログ記事の表示 -->
+
+            <!-- 参考にコメントアウト -->
+            <!-- <div class="col-12 col-md-6 col-lg-4 mb-5" *ngFor="let post of pagedPosts">
+                <div class="card bg-primary border-light shadow-soft">
+                    <img src="{{ post.thumbnail || defaultImagePath}}" class="card-img-top rounded-top" alt="...">
+                    <div class="card-body">
+                        <div class="media d-flex align-items-center justify-content-between">
+                            <div class="post-group">{{ post.categories.join()}}</div>
+                            <div class="d-flex align-items-center"><span class="small"><span
+                                        class="far fa-calendar-alt mr-2"></span>{{post.date}}</span></div>
+                        </div>
+                        <h5 class="h5 card-title mt-3">{{ post.title }} </h5>
+                        <p class="card-text">{{post.article}}</p>
+                        <a [routerLink]="[post.id]" class="btn btn-primary btn-sm">Learn More</a>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 mb-4" *ngFor="let post of pagedPosts">
+                        <div class="card bg-primary border-light shadow-soft h-100">
+                            <div class="row no-gutters">
+                                <div class="col-md-3 align-self-center ">
+                                    <div
+                                        class="card bg-primary shadow-soft border-light organic-radius mt-4 p-1 ml-2 mr-2">
+                                        <img src="{{ post.thumbnail || defaultImagePath}}" alt="..."
+                                            class="organic-radius img-fluid">
+                                    </div>
+                                    <div class="card p-1 mt-4 ml-2 mr-2">
+                                        <a [routerLink]="[post.id]" class="btn btn-primary btn-sm">Learn More</a>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="card-body">
+                                        <div class="media d-flex align-items-center justify-content-between">
+                                            <div class="post-group">{{ post.categories.join()}}</div>
+                                            <div class="d-flex align-items-center"><span class="small"><span
+                                                        class="far fa-calendar-alt mr-2"></span>{{post.date}}</span>
+                                            </div>
+                                        </div>
+                                        <h5 class="card-title mt-3">{{ post.title }} </h5>
+                                        <p class="card-text">{{post.article}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+    <!-- ページネーションの表示 -->
+    <app-pagination [totalPosts]="posts.length" [postsPerPage]="postsPerPage" [currentPage]="currentPage"
+        (changePage)="onChangePage($event)">
+    </app-pagination>
+</div>

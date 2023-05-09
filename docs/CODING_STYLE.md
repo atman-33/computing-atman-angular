@@ -30,6 +30,19 @@
 `private lists: string[]`  
 <br>
 
+### コンポーネント名（Angular,NestJS共通）
+単数形とする。
+<br>
+
+### @Outputの名前（Angular）
+@Outputの名前は、適切な動詞+名詞の組み合わせ
+- change（値が変更されたことを示す）
+- update（値が更新されたことを示す）
+- select（選択されたことを示す）
+- delete（削除されたことを示す）
+<br>
+
+
 ## コードフォーマット
 ---
 

@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { ItemsService } from './items.service';
+import { ItemService } from './item.service';
 import { UserStatus } from '../auth/user-status.enum';
 import { ItemStatus } from './item-status.enum';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
@@ -29,14 +29,14 @@ const mockUser1 = {
     status: UserStatus.FREE,
   };
   
-  describe('ItemsServiceTest', () => {
-    let itemsService;
+  describe('ItemServiceTest', () => {
+    let itemService;
     let itemRepository;
   
     beforeEach(async () => {
       const module = await Test.createTestingModule({
         providers: [
-          ItemsService,
+          ItemService,
           {
             provide: getRepositoryToken(Item),
             useClass: Repository,
@@ -47,7 +47,7 @@ const mockUser1 = {
         ],
       }).compile();
   
-      itemsService = module.get<ItemsService>(ItemsService);
+      itemService = module.get<ItemService>(ItemService);
       itemRepository = module.get<Repository<Item>>(getRepositoryToken(Item));
     });
   
@@ -57,7 +57,7 @@ const mockUser1 = {
         jest
           .spyOn(itemRepository, 'find')
           .mockImplementation(async () => expected);
-        const result = await itemsService.findAll();
+        const result = await itemService.findAll();
   
         expect(result).toEqual(expected);
       });
@@ -80,7 +80,7 @@ const mockUser1 = {
         jest
           .spyOn(itemRepository, 'findOneBy')
           .mockImplementation(async () => expected);
-        const result = await itemsService.findById('test-id');
+        const result = await itemService.findById('test-id');
         expect(result).toEqual(expected);
       });
   
@@ -88,7 +88,7 @@ const mockUser1 = {
         jest
           .spyOn(itemRepository, 'findOneBy')
           .mockImplementation(async () => null);
-        await expect(itemsService.findById('test-id')).rejects.toThrow(
+        await expect(itemService.findById('test-id')).rejects.toThrow(
           NotFoundException,
         );
       });
@@ -112,7 +112,7 @@ const mockUser1 = {
           .spyOn(itemRepository, 'create')
           .mockImplementation(async () => expected);
         jest.spyOn(itemRepository, 'save').mockImplementation(async () => []);
-        const result = await itemsService.create(
+        const result = await itemService.create(
           { name: 'PC', price: 50000, describe: '' },
           mockUser1,
         );
@@ -139,7 +139,7 @@ const mockUser1 = {
         const spy = jest
           .spyOn(itemRepository, 'update')
           .mockImplementation(() => mockItem);
-        await itemsService.updateStatus('test-id', mockUser2);
+        await itemService.updateStatus('test-id', mockUser2);
         expect(spy).toHaveBeenCalled();
       });
   
@@ -148,7 +148,7 @@ const mockUser1 = {
           .spyOn(itemRepository, 'findOneBy')
           .mockImplementation(async () => mockItem);
         await expect(
-          itemsService.updateStatus('test-id', mockUser1),
+          itemService.updateStatus('test-id', mockUser1),
         ).rejects.toThrow(BadRequestException);
       });
     });
@@ -174,7 +174,7 @@ const mockUser1 = {
         const spy = jest
           .spyOn(itemRepository, 'delete')
           .mockImplementation(async () => deleteResponse);
-        await itemsService.delete('test-id', mockUser1);
+        await itemService.delete('test-id', mockUser1);
         expect(spy).toHaveBeenCalled();
       });
   
@@ -182,7 +182,7 @@ const mockUser1 = {
         jest
           .spyOn(itemRepository, 'findOneBy')
           .mockImplementation(async () => mockItem);
-        await expect(itemsService.delete('test-id', mockUser2)).rejects.toThrow(
+        await expect(itemService.delete('test-id', mockUser2)).rejects.toThrow(
           BadRequestException,
         );
       });

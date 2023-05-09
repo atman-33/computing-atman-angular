@@ -1,21 +1,22 @@
 import { RouterModule, Routes } from '@angular/router';
 import { BlogComponent } from './blog.component';
-import { BlogListComponent } from './blog-list/blog-list.component';
-import { BlogPostComponent } from './blog-post/blog-post.component';
+import { PostListComponent } from './post-list/post-list.component';
+import { PostDetailComponent } from './post-detail/post-detail.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { PrismService } from '../shared/services/prism.service';
-import { BlogService } from './shared/blog.service';
+import { PostService } from './shared/post.service';
+import { PaginationComponent } from './pagination/pagination.component';
 
 const routes: Routes = [
     {
         path: 'blog', component: BlogComponent,
         children: [
-            // htmlにrouter-outletを実装する事で、URL「***/blog」に BlogListComponent を表示 
-            { path: '', component: BlogListComponent },
+            // htmlにrouter-outletを実装する事で、URL「***/blog」に PostListComponent を表示 
+            { path: '', component: PostListComponent },
 
             // :*** で、変数を格納
-            { path: ':id', component: BlogPostComponent }
+            { path: ':id', component: PostDetailComponent }
         ]
     }
 ];
@@ -24,8 +25,9 @@ const routes: Routes = [
     // 利用するコンポーネントを登録
     declarations: [
         BlogComponent,
-        BlogListComponent,
-        BlogPostComponent
+        PostListComponent,
+        PostDetailComponent,
+        PaginationComponent
     ],
     imports: [
         // RouterModuleのforRootはapp-routing.module.tsで利用。モジュールはforChildでルーター登録
@@ -33,7 +35,7 @@ const routes: Routes = [
         // CommonModuleはngFor,ngIf等を利用する場合に必要
         CommonModule
     ],
-    providers: [PrismService, BlogService],
+    providers: [PrismService, PostService],
     bootstrap: []
 })
 export class BlogModule { }
