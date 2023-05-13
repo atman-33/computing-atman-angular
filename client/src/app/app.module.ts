@@ -6,6 +6,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { FooterComponent } from './common/footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   // 利用するコンポーネントを登録
   declarations: [

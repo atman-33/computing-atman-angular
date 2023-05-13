@@ -3,7 +3,7 @@ title: 【JavaScript】CreateJSとクラスを用いたシューティングゲ�
 date: 2023-02-25 20:49:17
 tags:
 - JavaScript
-- シューティングゲーム
+- Game
 categories: JavaScript
 thumbnail: /thumbnail.png
 ---

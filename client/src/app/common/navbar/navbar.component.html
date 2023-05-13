@@ -24,7 +24,7 @@
                 <ul class="navbar-nav navbar-nav-hover align-items-lg-center ml-auto">
 
                     <li class="nav-item mt-2 mb-2">
-                        <a class="text-secondary ml-1 mr-3" routerLink="/blog">
+                        <a class="text-secondary ml-1 mr-3" [routerLink]="['/blog']" [queryParams]="{page: '1'}">
                             <span>My Blog
                                 <span class="fas fa-blog ml-2">
                                 </span>

@@ -8,6 +8,8 @@ import { PrismService } from '../shared/services/prism.service';
 import { PostService } from './shared/post.service';
 import { PaginationComponent } from './pagination/pagination.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { CategoryListComponent } from './sidebar/category-list/category-list.component';
+import { TagListComponent } from './sidebar/tag-list/tag-list.component';
 
 const routes: Routes = [
     {
@@ -32,7 +34,9 @@ const routes: Routes = [
         PostListComponent,
         PostDetailComponent,
         BreadcrumbComponent,
-        PaginationComponent
+        PaginationComponent,
+        CategoryListComponent,
+        TagListComponent
     ],
     imports: [
         // RouterModuleのforRootはapp-routing.module.tsで利用。モジュールはforChildでルーター登録

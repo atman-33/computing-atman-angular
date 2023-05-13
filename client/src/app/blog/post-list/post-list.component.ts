@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../shared/post.service';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { Post } from 'libs/src/shared/models/post.model';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import * as utils from 'libs/src/shared/utils/index';
 import { ActivatedRoute } from '@angular/router';
+import { Category } from 'libs/src/shared/models/category.model';
+import { Tag } from 'libs/src/shared/models/tag.model';
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -18,6 +18,9 @@ export class PostListComponent implements OnInit {
   public posts: Post[] = [];
   public currentPage = 1;
   public postsPerPage = 3;
+
+  public sidebarCategories: Category[] = [];
+  public sidebarTags: Tag[] = [];
 
   constructor(
     private postService: PostService,
@@ -47,17 +50,26 @@ export class PostListComponent implements OnInit {
         // 画面表示用のpostsに格納
         this.posts = [...this.allPosts];
 
+        // page number によるフィルタリング
+        this.filterPostsByPage();
+
         // category によるフィルタリング
         this.filterPostsByCategory();
 
         // tag によるフィルタリング
         this.filterPostsByTag();
+
+        // サイドバーのカテゴリー一覧を設定
+        this.setSidebarCategories();
+
+        // サイドバーのタグ一覧を設定
+        this.setSidebarTags();
       },
       error: (err) => { console.error('Error: ' + err.error); }
     });
   }
 
-  get pagedPosts() {
+  get pagedPosts(): Post[] {
     const startIndex = (this.currentPage - 1) * this.postsPerPage;
     const endIndex = startIndex + this.postsPerPage;
     return this.posts.slice(startIndex, endIndex);
@@ -86,6 +98,18 @@ export class PostListComponent implements OnInit {
     return truncated;
   }
 
+  filterPostsByPage() {
+    this.route.queryParams.subscribe(params => {
+      const pageNumber = params['page'];
+      if (pageNumber) {
+        if (pageNumber) {
+          this.posts = this.allPosts;
+          this.onChangePage(pageNumber);
+        }
+      }
+    });
+  }
+
   filterPostsByCategory() {
     this.route.queryParams.subscribe(params => {
       const category = params['category'];
@@ -104,5 +128,39 @@ export class PostListComponent implements OnInit {
         }
       }
     });
+  }
+
+  setSidebarCategories() {
+    const categories: Category[] = this.allPosts.reduce((acc, post) => {
+      post.categories.forEach((category) => {
+        const existingCategory = acc.find((c) => c.name === category);
+        if (existingCategory) {
+          existingCategory.count++;
+        } else {
+          acc.push({ name: category, count: 1 });
+        }
+      });
+      return acc;
+    }, [] as Category[]);
+
+    // console.log(categories);
+    this.sidebarCategories = utils.sortByNumber(categories, 'count', 'desc');
+  }
+
+  setSidebarTags() {
+    const tags: Tag[] = this.allPosts.reduce((acc, post) => {
+      post.tags.forEach((tag) => {
+        const existingTag = acc.find((c) => c.name === tag);
+        if (existingTag) {
+          existingTag.count++;
+        } else {
+          acc.push({ name: tag, count: 1 });
+        }
+      });
+      return acc;
+    }, [] as Tag[]);
+
+    // console.log(tags);
+    this.sidebarTags = utils.sortByNumber(tags, 'count', 'desc');
   }
 }
