@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { PostService } from '../shared/post.service';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import { Post } from 'libs/src/shared/models/post.model';
+// eslint-disable-next-line @nx/enforce-module-boundaries
+import * as utils from 'libs/src/shared/utils/index';
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -29,6 +31,13 @@ export class PostListComponent implements OnInit {
       next: (data) => {
         this.posts = data;
         // console.log(this.posts);
+
+        // this.posts.sort((a, b) => {
+        //   return new Date(b.date).getTime() - new Date(a.date).getTime();
+        // });
+
+        this.posts = utils.sortByDate(this.posts, 'date', 'desc');
+
         this.posts = this.posts.map(post => {
           return {
             ...post,

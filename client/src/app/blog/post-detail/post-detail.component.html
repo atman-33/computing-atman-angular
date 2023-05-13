@@ -1,6 +1,25 @@
+<!-- Breadcrumb -->
+<div class="container mt-7">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-gray breadcrumb-transparent">
+            <li class="breadcrumb-item"><a class="underline-link" [routerLink]="['/blog']">Blog Home</a></li>
+            <li><span class="fas fa-angle-double-right mx-2"></span></li>
+            <li class="breadcrumb-item">
+                <a class="underline-link" *ngFor="let category of post.categories"
+                    [routerLink]="['/categories', category]">
+                    {{ category }}
+                </a>
+            </li>
+            <li><span class="fas fa-angle-double-right mx-2"></span></li>
+            <li class="breadcrumb-item">{{title}}</li>
+        </ol>
+    </nav>
+</div>
+
 <main class="blog-content">
     <section class="section">
-        <div class="container mt-4">
+        <div class="container">
+
             <!-- ヘッダー -->
             <div class="row align-items-center justify-content-around">
                 <div class="col-md-6 col-xl-6 mt-4">
