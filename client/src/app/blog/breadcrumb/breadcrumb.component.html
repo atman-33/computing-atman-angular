@@ -7,7 +7,7 @@
             <div><span class="fas fa-angle-double-right mx-2"></span></div>
             <div class="breadcrumb-item">
                 <a class="underline-link" *ngFor="let category of categories" [routerLink]="['/blog/posts']"
-                    [queryParams]="{category: category}">
+                    [queryParams]="{category: category, page: 1}">
                     {{ category }}
                 </a>
             </div>

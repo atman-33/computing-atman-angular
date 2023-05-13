@@ -64,6 +64,8 @@ export class PostListComponent implements OnInit {
 
         // サイドバーのタグ一覧を設定
         this.setSidebarTags();
+
+        console.log(`page: ${this.currentPage}`);
       },
       error: (err) => { console.error('Error: ' + err.error); }
     });
@@ -116,6 +118,7 @@ export class PostListComponent implements OnInit {
       if (category) {
         this.posts = this.allPosts.filter(post => post.categories.includes(category));
       }
+      console.log(`category: ${category}`);
     });
   }
 
@@ -123,9 +126,8 @@ export class PostListComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const tag = params['tag'];
       if (tag) {
-        if (tag) {
-          this.posts = this.allPosts.filter(post => post.tags.includes(tag));
-        }
+        this.posts = this.allPosts.filter(post => post.tags.includes(tag));
+        console.log(`tag: ${tag}`);
       }
     });
   }
