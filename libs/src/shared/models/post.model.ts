@@ -3,8 +3,8 @@ export interface Post {
     title: string;
     date: string;
     thumbnail: string;
-    tags: string[];
     categories: string[];
+    tags: string[];
 
     article: string;
 }

@@ -7,16 +7,20 @@ import { NgModule } from '@angular/core';
 import { PrismService } from '../shared/services/prism.service';
 import { PostService } from './shared/post.service';
 import { PaginationComponent } from './pagination/pagination.component';
+import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 
 const routes: Routes = [
     {
         path: 'blog', component: BlogComponent,
         children: [
+            // デフォルトはリダイレクト
+            { path: '', redirectTo: 'posts', pathMatch: 'full' },
+            
             // htmlにrouter-outletを実装する事で、URL「***/blog」に PostListComponent を表示 
-            { path: '', component: PostListComponent },
+            { path: 'posts', component: PostListComponent },
 
             // :*** で、変数を格納
-            { path: ':id', component: PostDetailComponent }
+            { path: 'posts/:id', component: PostDetailComponent }
         ]
     }
 ];
@@ -27,6 +31,7 @@ const routes: Routes = [
         BlogComponent,
         PostListComponent,
         PostDetailComponent,
+        BreadcrumbComponent,
         PaginationComponent
     ],
     imports: [
