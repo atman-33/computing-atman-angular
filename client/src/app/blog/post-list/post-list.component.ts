@@ -4,6 +4,7 @@ import { PostService } from '../shared/post.service';
 import { Post } from 'libs/src/shared/models/post.model';
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import * as utils from 'libs/src/shared/utils/index';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -13,12 +14,14 @@ export class PostListComponent implements OnInit {
 
   public readonly defaultImagePath = '../../assets/img/keyboard.jpg';
 
+  public allPosts: Post[] = [];
   public posts: Post[] = [];
   public currentPage = 1;
   public postsPerPage = 3;
 
   constructor(
-    private postService: PostService) {
+    private postService: PostService,
+    private route: ActivatedRoute) {
   }
 
   ngOnInit() {
@@ -29,21 +32,26 @@ export class PostListComponent implements OnInit {
     // subscribeでファイルからデータ取得
     postObservable$.subscribe({
       next: (data) => {
-        this.posts = data;
-        // console.log(this.posts);
-
-        // this.posts.sort((a, b) => {
-        //   return new Date(b.date).getTime() - new Date(a.date).getTime();
-        // });
-
-        this.posts = utils.sortByDate(this.posts, 'date', 'desc');
-
-        this.posts = this.posts.map(post => {
+        this.allPosts = data;
+        // 記事のリード文抽出
+        this.allPosts = this.allPosts.map(post => {
           return {
             ...post,
             article: this.extractLead(post.article, 40)
           };
         });
+
+        // 日付によるソート
+        this.allPosts = utils.sortByDate(this.allPosts, 'date', 'desc');
+
+        // 画面表示用のpostsに格納
+        this.posts = [...this.allPosts];
+
+        // category によるフィルタリング
+        this.filterPostsByCategory();
+
+        // tag によるフィルタリング
+        this.filterPostsByTag();
       },
       error: (err) => { console.error('Error: ' + err.error); }
     });
@@ -60,6 +68,11 @@ export class PostListComponent implements OnInit {
     this.currentPage = page;
   }
 
+  onResetPosts() {
+    this.posts = [...this.allPosts];
+    this.currentPage = 1;
+  }
+
   extractLead(article: string, maxLength: number): string {
     // HTML要素を除去する
     const div = document.createElement('div');
@@ -71,5 +84,25 @@ export class PostListComponent implements OnInit {
       truncated += '...';
     }
     return truncated;
+  }
+
+  filterPostsByCategory() {
+    this.route.queryParams.subscribe(params => {
+      const category = params['category'];
+      if (category) {
+        this.posts = this.allPosts.filter(post => post.categories.includes(category));
+      }
+    });
+  }
+
+  filterPostsByTag() {
+    this.route.queryParams.subscribe(params => {
+      const tag = params['tag'];
+      if (tag) {
+        if (tag) {
+          this.posts = this.allPosts.filter(post => post.tags.includes(tag));
+        }
+      }
+    });
   }
 }

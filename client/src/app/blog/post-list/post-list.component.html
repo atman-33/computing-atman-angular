@@ -1,11 +1,5 @@
 <div class="container mt-7">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb breadcrumb-gray breadcrumb-transparent">
-            <li class="breadcrumb-item"><a class="underline-link" [routerLink]="['/blog']">Blog Home</a></li>
-            <li><span class="fas fa-angle-double-right mx-2"></span></li>
-            <li class="breadcrumb-item active" aria-current="page">Latest Posts</li>
-        </ol>
-    </nav>
+    <app-breadcrumb (resetPosts)="onResetPosts()"></app-breadcrumb>
 </div>
 
 <!-- ブログ記事一覧コンポーネント -->
@@ -30,8 +24,8 @@
                                 <div class="card-body">
                                     <div class="media d-flex align-items-center justify-content-between">
                                         <div class="post-group">
-                                            <a *ngFor="let category of post.categories"
-                                                [routerLink]="['/categories', category]">
+                                            <a class="underline-link" *ngFor="let category of post.categories" [routerLink]="['/blog/posts']"
+                                                [queryParams]="{category: category}">
                                                 {{ category }}
                                             </a>
                                         </div>
