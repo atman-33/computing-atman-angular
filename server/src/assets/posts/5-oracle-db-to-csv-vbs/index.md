@@ -1,6 +1,7 @@
 ---
 title: 【VBS】Oracle DBからSELECTした結果をCSVファイルに保存
 date: 2023-02-25 15:50:59
+thumbnail: db_to_csv.PNG
 tags:
 - VBS
 - Oracle
@@ -192,7 +193,7 @@ Set objAdoCon = Nothing
 
 次に、DBからデータを抽出するためのSQL実行まで説明します。ここでの動作は下記のようなフローとなります。
 
-SQL格納ファイル群を取得　※SQL１ファイルにつき１SELECT文  
+SQL格納ファイル群を取得　**※SQL１ファイルにつき１SELECT文**  
 　↓  
 SQL格納ファイルからSQL文の取得  
 　↓  

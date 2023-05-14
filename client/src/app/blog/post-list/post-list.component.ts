@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from 'libs/src/shared/models/category.model';
 import { Tag } from 'libs/src/shared/models/tag.model';
 import { map } from 'rxjs';
+import Constants from '../../shared/constants';
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -13,7 +14,7 @@ import { map } from 'rxjs';
 })
 export class PostListComponent implements OnInit {
 
-  public readonly defaultImagePath = '../../assets/img/keyboard.jpg';
+  public readonly defaultThumbnail = Constants.DEFAULT_BLOG_THUMBNAIL_PATH;
 
   public allPosts: Post[] = [];
   public posts: Post[] = [];

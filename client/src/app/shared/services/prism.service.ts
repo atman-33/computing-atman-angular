@@ -10,14 +10,15 @@ import 'prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard';
 import 'prismjs/plugins/line-numbers/prism-line-numbers';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-java';
 import 'prismjs/components/prism-csharp';
+import 'prismjs/components/prism-python';
 import 'prismjs/components/prism-visual-basic';
 import 'prismjs/components/prism-markup';
-import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-sass';
 import 'prismjs/components/prism-scss';
-import 'prismjs/components/prism-ruby';
+import 'prismjs/components/prism-sql';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const Prism: any;

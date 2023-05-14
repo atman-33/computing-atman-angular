@@ -4,6 +4,7 @@ import { PrismService } from '../../shared/services/prism.service';
 import { PostService } from '../shared/post.service';
 import * as utils from 'libs/src/shared/utils/index';
 import { Post } from 'libs/src/shared/models/post.model';
+import Constants from '../../shared/constants';
 
 @Component({
   selector: 'app-post-detail',
@@ -11,6 +12,8 @@ import { Post } from 'libs/src/shared/models/post.model';
   styleUrls: ['./post-detail.component.scss']
 })
 export class PostDetailComponent implements OnInit, AfterViewChecked {
+
+  public readonly defaultThumbnail = Constants.DEFAULT_BLOG_THUMBNAIL_PATH;
 
   public post!: Post;
   public articleHtml: string | undefined;

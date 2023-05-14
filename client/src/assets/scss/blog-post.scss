@@ -35,6 +35,8 @@ main.blog-content {
 
     h3 {
         font-size: large;
+        font-weight: bold;
+        margin-top: 3rem;
     }
 
     p {
@@ -52,10 +54,62 @@ main.blog-content {
         margin-inline-end: 0px;
     }
 
+    /* strong */
+    strong {
+        background: linear-gradient(transparent 70%, yellow 70%);
+    }
+
     /* Link */
     a {
         color: #2D4CC8;
         text-decoration: underline;
+    }
+
+    /* Blockquote */
+    blockquote {
+        position: relative;
+        padding: 5px 12px 5px 56px;
+        box-sizing: border-box;
+        font-style: italic;
+        color: #464646;
+        background: #f0f7ff;
+        border-radius: 0.5em;
+    }
+
+    blockquote:before {
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        width: 36px;
+        height: 36px;
+        -ms-transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        text-align: center;
+        content: "\f10d";
+        font-family: FontAwesome;
+        color: #FFF;
+        font-size: 20px;
+        line-height: 36px;
+        background: #a5d7ff;
+        border-radius: 50%;
+        font-weight: 900;
+    }
+
+    blockquote p {
+        position: relative;
+        padding: 0;
+        margin: 10px 0;
+        z-index: 3;
+        line-height: 1.7;
+    }
+
+    blockquote cite {
+        display: block;
+        text-align: right;
+        color: #888888;
+        font-size: 0.9em;
     }
 
     /* Table */
@@ -116,7 +170,7 @@ main.blog-content {
         // font-family: Söhne Mono,Monaco,Andale Mono,Ubuntu Mono,monospace;
         // font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
         // font-family: Noto Sans JP, Yu Gothic, Hiragino Kaku Gothic ProN, Meiryo;
-        font-family: Consolas,Monaco,Andale Mono,Ubuntu Mono,monospace;
+        font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
         font-size: $post-code-font-size;
         line-height: $post-code-line-height;
 

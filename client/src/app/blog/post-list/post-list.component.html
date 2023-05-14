@@ -15,7 +15,7 @@
                             <div class="row no-gutters">
                                 <div class="col-md-3 align-self-center">
                                     <div class="card bg-primary shadow-soft border-light organic-radius mt-2 mx-2 p-1">
-                                        <img src="{{ post.thumbnail || defaultImagePath}}" alt="..."
+                                        <img src="{{ post.thumbnail || defaultThumbnail}}" alt="..."
                                             class="organic-radius img-fluid">
                                     </div>
                                     <div class="card p-1 mt-2 mx-2">
@@ -43,6 +43,12 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- ページネーションの表示 -->
+                <app-pagination [totalPosts]="posts.length" [postsPerPage]="postsPerPage" [currentPage]="currentPage"
+                    (changePage)="onChangePage($event)">
+                </app-pagination>
+
             </div>
         </main>
 
@@ -54,10 +60,6 @@
         </div>
     </div>
 </div>
-<!-- ページネーションの表示 -->
-<app-pagination [totalPosts]="posts.length" [postsPerPage]="postsPerPage" [currentPage]="currentPage"
-    (changePage)="onChangePage($event)">
-</app-pagination>
 
 <!-- カードタイプの記事一覧　参考にコメントアウト -->
 <!-- <div class="col-12 col-md-6 col-lg-4 mb-5" *ngFor="let post of pagedPosts">

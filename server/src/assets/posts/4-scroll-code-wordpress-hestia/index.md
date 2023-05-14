@@ -1,6 +1,7 @@
 ---
 title: 【WordPress】テーマHestiaの記事に埋め込んだコードを横スクロールさせる
 date: 2023-02-25 15:28:19
+thumbnail: /add_css.PNG
 tags:
 - WordPress
 - CSS
