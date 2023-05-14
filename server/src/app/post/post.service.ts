@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { Post } from 'libs/src/shared/models/post.model';
 import { readFile, readdir } from 'fs';
 import { promisify } from 'util';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import * as helpers from 'libs/src/shared/helpers';
 import { Response } from 'express';
 import { join } from 'path';

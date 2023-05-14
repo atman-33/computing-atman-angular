@@ -1,6 +1,5 @@
 import { Controller, Get, Param, Res } from '@nestjs/common';
 import { PostService } from './post.service';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { Post } from 'libs/src/shared/models/post.model';
 import { Response } from 'express';
 
