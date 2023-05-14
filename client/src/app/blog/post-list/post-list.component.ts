@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from 'libs/src/shared/models/category.model';
 import { Tag } from 'libs/src/shared/models/tag.model';
 import { map } from 'rxjs';
+import Constants from '../../shared/constants';
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -13,15 +14,18 @@ import { map } from 'rxjs';
 })
 export class PostListComponent implements OnInit {
 
-  public readonly defaultImagePath = '../../assets/img/keyboard.jpg';
+  public readonly defaultThumbnail = Constants.DEFAULT_BLOG_THUMBNAIL_PATH;
 
   public allPosts: Post[] = [];
   public posts: Post[] = [];
   public currentPage = 1;
-  public postsPerPage = 2;
+  public postsPerPage = 10;
 
   public sidebarCategories: Category[] = [];
   public sidebarTags: Tag[] = [];
+
+  public filteredCategories: string[] = [];
+  public filteredTags: string[] = [];
 
   constructor(
     private postService: PostService,
@@ -105,7 +109,7 @@ export class PostListComponent implements OnInit {
   onChangePage(page: number) {
     console.log(`page: ${page}`);
     this.currentPage = page;
-    
+
     this.router.navigate([], {
       queryParams: { page: page },
       queryParamsHandling: 'merge'
@@ -132,9 +136,11 @@ export class PostListComponent implements OnInit {
 
   filterPostsByCategory() {
     this.route.queryParams.subscribe(params => {
+      this.filteredCategories = [];
       const category = params['category'];
       if (category) {
         this.posts = this.allPosts.filter(post => post.categories.includes(category));
+        this.filteredCategories.push(category);
       }
       // console.log(`category: ${category}`);
     });
@@ -142,11 +148,13 @@ export class PostListComponent implements OnInit {
 
   filterPostsByTag() {
     this.route.queryParams.subscribe(params => {
+      this.filteredTags = [];
       const tag = params['tag'];
       if (tag) {
         this.posts = this.allPosts.filter(post => post.tags.includes(tag));
-        // console.log(`tag: ${tag}`);
+        this.filteredTags.push(tag);
       }
+      // console.log(`tag: ${tag}`);
     });
   }
 

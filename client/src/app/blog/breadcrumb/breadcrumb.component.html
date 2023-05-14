@@ -14,6 +14,16 @@
             </div>
         </li>
 
+        <li class="d-flex justify-content-between" *ngIf="tags.length > 0">
+            <div><span class="fas fa-angle-double-right mx-2"></span></div>
+            <div class="breadcrumb-item">
+                <a class="underline-link" *ngFor="let tag of tags" [routerLink]="['/blog/posts']"
+                    [queryParams]="{tag: tag}">
+                    {{ tag }}
+                </a>
+            </div>
+        </li>
+
         <li class="d-flex justify-content-between" *ngIf="postTitle !== ''">
             <div><span class="fas fa-angle-double-right mx-2"></span></div>
             <div class="breadcrumb-item">{{postTitle}}</div>

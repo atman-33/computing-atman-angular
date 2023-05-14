@@ -13,12 +13,6 @@ CreateJSとクラス（ オブジェクト指向 ）を用いた『シューテ�
 2020/03/06 追記:
 JavaScriptのコンストラクタ外にフィールドを宣言すると、スマホ用ブラウザでは動作しない問題が分かったため修正を実施。
 
-___
-目次
-<!-- toc -->
-
-___
-
 ## 概要
 マウス、もしくは画面タッチで自機を動かしながら弾を発射することで、敵機を倒していくゲームとなります。
 
@@ -26,14 +20,14 @@ ___
 
 [【ソースコードはこちら】](https://github.com/atman-33/shooting-game-js)
 
-{% asset_img shooting_game.png %}
+![image](thumbnail.png)
 
 ## パッケージ構成
 構成は下記となります。
 
 今回は js/class フォルダ内にPlayer（自機）、Enemy（敵機）、Bullet（弾 ）のクラスを３つ準備しました。
 
-```
+```text
 js-shooting-game
 ├ index.html
 ├ css
@@ -57,7 +51,7 @@ index.htmlはシューティングゲームが動作するページとなりま�
 ここで、各CSSやJavascriptを読み込んでプログラムが動作します。
 
 ▼index.html
-```
+```html
 <html>
 <head>
     <meta charset="utf-8" />
@@ -78,7 +72,7 @@ index.htmlはシューティングゲームが動作するページとなりま�
 
 最初に CreageJS のライブラリを読み込んでいます。
 
-```
+```html
 <script src="//code.createjs.com/1.0.0/createjs.min.js"></script>
 ```
 
@@ -96,7 +90,7 @@ index.htmlはシューティングゲームが動作するページとなりま�
 プレイヤーに準備させるべき機能として『弾を発射する』というのもあげられますが、プログラムのシンプル化も考慮してメインプログラム（index.html）側に持たせております。
 
 ▼Player.js
-```
+```js
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // breif : プレイヤークラス
 // note  :
@@ -160,7 +154,7 @@ class Player extends createjs.Shape{
 一つ異なる点は、『弾との衝突判定を行う』機能を持たせている点です。この機能を用いて、プレイヤーが放った弾と衝突した際に消滅させる処理をメインプログラム側に実装させています。
 
 ▼Enemy.Class
-```
+```js
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // breif : エネミークラス
 // note  :
@@ -226,7 +220,7 @@ class Enemy extends createjs.Shape{
 弾クラスもプレイヤークラス、エネミークラスとほぼ同じです。
 
 ▼Bullet.js
-```
+```js
 // ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
 // breif : 弾クラス
 // note  :
@@ -265,6 +259,7 @@ class Bullet extends createjs.Shape{
     }
 }
 ```
+
 【補足】
 ここまで説明したプレイヤークラス、エネミークラス、弾クラスの３つは、類似したフィールドやメソッドを使用しています。
 
@@ -280,7 +275,7 @@ createjs.Shape　→　（仮）PanelShape
 最後に今まで説明した各クラスをインスタンス化して活用するメインプログラムについてです。
 
 ▼index.html
-```
+```html
 <html>
 <head>
     <meta charset="utf-8" />
@@ -481,8 +476,8 @@ function init() {
 
 この方法は、ゲームも含め様々なアプリケーションの基本的な流れとなりますので重要な考え方です。
 
-初期化　→　function init
-ループ処理　→　function handleTick
+初期化　→　function init  
+ループ処理　→　function handleTick  
 
 更に規模の大きいゲームやアプリケーションを作る際、メインプログラムと役割ごとのクラスを作成していく考え方は役に立つと思います。
 
