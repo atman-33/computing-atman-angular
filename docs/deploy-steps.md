@@ -1,12 +1,13 @@
-## デプロイ手順
-### ビルド
+# デプロイ手順
+
+## ビルド
 nx build client --prod
 nx build server --prod
 nx build libs --prod
  ↓  
 npm run build
 
-### 起動
+## 起動
 npm run start
 
 **補足**
@@ -18,3 +19,22 @@ serverのみ起動すればフロントエンドとバックエンドが両方�
 nx run client:build:development --statsJson
 npm run analyze  
 => ブラウザでバンドルサイズが高い部分を確認可能
+
+## デプロイ
+- デプロイ先：render.com
+
+### Settings
+- Repository: 
+https://github.com/atman-33/computing-atman-angular
+
+- Branch: 
+main
+
+- Build Command: 
+npm install && npm run build
+
+- Start Command: 
+npm run start
+
+- Auto-Deploy: 
+Yes
