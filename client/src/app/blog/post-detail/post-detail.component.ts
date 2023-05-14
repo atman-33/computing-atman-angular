@@ -2,8 +2,8 @@ import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PrismService } from '../../shared/services/prism.service';
 import { PostService } from '../shared/post.service';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import * as utils from 'libs/src/shared/utils/index';
+import { Post } from 'libs/src/shared/models/post.model';
 
 @Component({
   selector: 'app-post-detail',
@@ -12,8 +12,7 @@ import * as utils from 'libs/src/shared/utils/index';
 })
 export class PostDetailComponent implements OnInit, AfterViewChecked {
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public post: any;
+  public post!: Post;
   public articleHtml: string | undefined;
 
   public title: string | undefined;

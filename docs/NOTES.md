@@ -6,13 +6,13 @@ npm install -g nx
 npx nx@latest init
 ```
 
-2. NestJS フォルダを生成
+2. NestJS プロジェクトを生成
 ```
 npm install -D @nx/nest
 nx generate @nx/nest:app server
 ```
 
-3. Angular フォルダを生成
+3. Angular プロジェクトを生成
 ```
 npm install -D @nx/angular
 nx generate @nx/angular:app client
@@ -21,7 +21,12 @@ nx generate @nx/angular:app client
 - configure routing => true
 - use Standalone Components => false 
 
-4. libs フォルダを作成（必要に応じて適宜追加でOK）
+Angular CLI をインストール
+```
+npm install -g @angular/cli
+```
+
+4. libs プロジェクトを作成
 
 ```
 npx nx generate @nrwl/js:library libs --buildable
@@ -35,9 +40,23 @@ npx nx generate @nrwl/js:library libs --buildable
   |  |  |- helpers/ : 別のクラスまたはモジュールを支援するクラス（ex. modulename-helper.ts）
 ```
 
-5. Angular CLI をインストール
+*lintエラーが発生するため、ルートの.eslintrc.jsonに、"allow": ["libs/src/**"]を記載*
+参考
 ```
-npm install -g @angular/cli
+      "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": ["libs/src/**"],
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
+              }
+            ]
+          }
+        ]
 ```
 
 ## サーバー起動方法

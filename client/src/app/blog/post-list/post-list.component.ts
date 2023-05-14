@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { PostService } from '../shared/post.service';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { Post } from 'libs/src/shared/models/post.model';
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import * as utils from 'libs/src/shared/utils/index';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Category } from 'libs/src/shared/models/category.model';
+import { Tag } from 'libs/src/shared/models/tag.model';
+import { map } from 'rxjs';
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -17,22 +18,38 @@ export class PostListComponent implements OnInit {
   public allPosts: Post[] = [];
   public posts: Post[] = [];
   public currentPage = 1;
-  public postsPerPage = 3;
+  public postsPerPage = 2;
+
+  public sidebarCategories: Category[] = [];
+  public sidebarTags: Tag[] = [];
 
   constructor(
     private postService: PostService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private router: Router) {
   }
 
+  /**
+   * 初期化処理
+   * 1. postデータ取得
+   * 2. postデータを日付最新順で並び替え
+   * 3. 一覧表示用に記事のリード文抽出
+   * 4. サイドバーのカテゴリ、タグ一覧を更新
+   * 5. クエリパラメータ変更をsubscribe
+   */
   ngOnInit() {
-
     // 観測対象を取得
     const postObservable$ = this.postService.getPosts();
+    const queryParamsObservable$ = this.route.queryParams.pipe(map(params => +params['page'] || 1));
 
-    // subscribeでファイルからデータ取得
+    // postデータ取得をsubscribe
     postObservable$.subscribe({
       next: (data) => {
+
+        // postデータを取得して日付によるソート
         this.allPosts = data;
+        this.allPosts = utils.sortByDate(this.allPosts, 'date', 'desc');
+
         // 記事のリード文抽出
         this.allPosts = this.allPosts.map(post => {
           return {
@@ -41,23 +58,45 @@ export class PostListComponent implements OnInit {
           };
         });
 
-        // 日付によるソート
-        this.allPosts = utils.sortByDate(this.allPosts, 'date', 'desc');
+        // サイドバーのカテゴリー一覧を設定
+        this.setSidebarCategories();
 
-        // 画面表示用のpostsに格納
-        this.posts = [...this.allPosts];
+        // サイドバーのタグ一覧を設定
+        this.setSidebarTags();
 
-        // category によるフィルタリング
-        this.filterPostsByCategory();
+        // 表示用postデータを読み込み
+        this.loadPosts();
 
-        // tag によるフィルタリング
-        this.filterPostsByTag();
+        // console.log(`page: ${this.currentPage}`);
+      },
+      error: (err) => { console.error('Error: ' + err.error); }
+    });
+
+    // クエリパラメータのpage変更をsubscribe
+    queryParamsObservable$.subscribe({
+      next: (page) => {
+        this.currentPage = page;
+        this.loadPosts();
       },
       error: (err) => { console.error('Error: ' + err.error); }
     });
   }
 
-  get pagedPosts() {
+  /**
+   * 表示用postデータを読み込み
+   */
+  loadPosts() {
+    // 画面表示用のpostsに格納
+    this.posts = [...this.allPosts];
+
+    // category によるフィルタリング
+    this.filterPostsByCategory();
+
+    // tag によるフィルタリング
+    this.filterPostsByTag();
+  }
+
+  get pagedPosts(): Post[] {
     const startIndex = (this.currentPage - 1) * this.postsPerPage;
     const endIndex = startIndex + this.postsPerPage;
     return this.posts.slice(startIndex, endIndex);
@@ -66,6 +105,11 @@ export class PostListComponent implements OnInit {
   onChangePage(page: number) {
     console.log(`page: ${page}`);
     this.currentPage = page;
+    
+    this.router.navigate([], {
+      queryParams: { page: page },
+      queryParamsHandling: 'merge'
+    });
   }
 
   onResetPosts() {
@@ -92,6 +136,7 @@ export class PostListComponent implements OnInit {
       if (category) {
         this.posts = this.allPosts.filter(post => post.categories.includes(category));
       }
+      // console.log(`category: ${category}`);
     });
   }
 
@@ -99,10 +144,43 @@ export class PostListComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       const tag = params['tag'];
       if (tag) {
-        if (tag) {
-          this.posts = this.allPosts.filter(post => post.tags.includes(tag));
-        }
+        this.posts = this.allPosts.filter(post => post.tags.includes(tag));
+        // console.log(`tag: ${tag}`);
       }
     });
+  }
+
+  setSidebarCategories() {
+    const categories: Category[] = this.allPosts.reduce((acc, post) => {
+      post.categories.forEach((category) => {
+        const existingCategory = acc.find((c) => c.name === category);
+        if (existingCategory) {
+          existingCategory.count++;
+        } else {
+          acc.push({ name: category, count: 1 });
+        }
+      });
+      return acc;
+    }, [] as Category[]);
+
+    // console.log(categories);
+    this.sidebarCategories = utils.sortByNumber(categories, 'count', 'desc');
+  }
+
+  setSidebarTags() {
+    const tags: Tag[] = this.allPosts.reduce((acc, post) => {
+      post.tags.forEach((tag) => {
+        const existingTag = acc.find((c) => c.name === tag);
+        if (existingTag) {
+          existingTag.count++;
+        } else {
+          acc.push({ name: tag, count: 1 });
+        }
+      });
+      return acc;
+    }, [] as Tag[]);
+
+    // console.log(tags);
+    this.sidebarTags = utils.sortByNumber(tags, 'count', 'desc');
   }
 }
