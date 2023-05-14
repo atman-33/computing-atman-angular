@@ -1,14 +1,14 @@
 {
   "scripts": {
     "typeorm": "npx typeorm-ts-node-commonjs",
-
     "create-nest-module-controller-service": "nx g @nx/nest:module app/${npm_config_name} --project=server && nx g @nx/nest:controller app/${npm_config_name} --project=server && nx g @nx/nest:service app/${npm_config_name} --project=server",
-
     "tsc-entities": "npx tsc server/src/app/**/*.entity.ts --outDir ./dist/server --experimentalDecorators true --emitDecoratorMetadata",
     "tsc-migrations": "npx tsc server/src/app/migrations/*.ts --outDir ./dist/server/migrations --experimentalDecorators true --emitDecoratorMetadata",
-    
     "migration:generate": "npx typeorm-ts-node-commonjs migration:generate -d server/data-source.ts server/src/app/migrations/${npm_config_name}",
-    "migration:run": "npm run tsc-migrations && npx typeorm-ts-node-commonjs migration:run -d server/data-source.ts"
+    "migration:run": "npm run tsc-migrations && npx typeorm-ts-node-commonjs migration:run -d server/data-source.ts",
+    "analyze": "webpack-bundle-analyzer dist/client/stats.json",
+    "build": "nx build client --prod && nx build server --prod && nx build libs --prod",
+    "start": "node dist/server/main.js"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~15.2.0",
@@ -51,7 +51,8 @@
     "prettier": "^2.6.2",
     "ts-jest": "^29.1.0",
     "ts-node": "10.9.1",
-    "typescript": "~4.9.5"
+    "typescript": "~4.9.5",
+    "webpack-bundle-analyzer": "^4.8.0"
   },
   "dependencies": {
     "@angular/animations": "~15.2.0",
@@ -68,6 +69,7 @@
     "@nestjs/jwt": "^10.0.3",
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/serve-static": "^3.0.1",
     "@nestjs/typeorm": "^9.0.1",
     "@ng-bootstrap/ng-bootstrap": "^14.1.0",
     "@ngx-prism/core": "^2.0.1",
