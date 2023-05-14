@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { PostService } from '../shared/post.service';
 import { Post } from 'libs/src/shared/models/post.model';
 import * as utils from 'libs/src/shared/utils/index';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Category } from 'libs/src/shared/models/category.model';
 import { Tag } from 'libs/src/shared/models/tag.model';
+import { map } from 'rxjs';
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -17,25 +18,38 @@ export class PostListComponent implements OnInit {
   public allPosts: Post[] = [];
   public posts: Post[] = [];
   public currentPage = 1;
-  public postsPerPage = 3;
+  public postsPerPage = 2;
 
   public sidebarCategories: Category[] = [];
   public sidebarTags: Tag[] = [];
 
   constructor(
     private postService: PostService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private router: Router) {
   }
 
+  /**
+   * 初期化処理
+   * 1. postデータ取得
+   * 2. postデータを日付最新順で並び替え
+   * 3. 一覧表示用に記事のリード文抽出
+   * 4. サイドバーのカテゴリ、タグ一覧を更新
+   * 5. クエリパラメータ変更をsubscribe
+   */
   ngOnInit() {
-
     // 観測対象を取得
     const postObservable$ = this.postService.getPosts();
+    const queryParamsObservable$ = this.route.queryParams.pipe(map(params => +params['page'] || 1));
 
-    // subscribeでファイルからデータ取得
+    // postデータ取得をsubscribe
     postObservable$.subscribe({
       next: (data) => {
+
+        // postデータを取得して日付によるソート
         this.allPosts = data;
+        this.allPosts = utils.sortByDate(this.allPosts, 'date', 'desc');
+
         // 記事のリード文抽出
         this.allPosts = this.allPosts.map(post => {
           return {
@@ -44,31 +58,42 @@ export class PostListComponent implements OnInit {
           };
         });
 
-        // 日付によるソート
-        this.allPosts = utils.sortByDate(this.allPosts, 'date', 'desc');
-
-        // 画面表示用のpostsに格納
-        this.posts = [...this.allPosts];
-
-        // page number によるフィルタリング
-        this.filterPostsByPage();
-
-        // category によるフィルタリング
-        this.filterPostsByCategory();
-
-        // tag によるフィルタリング
-        this.filterPostsByTag();
-
         // サイドバーのカテゴリー一覧を設定
         this.setSidebarCategories();
 
         // サイドバーのタグ一覧を設定
         this.setSidebarTags();
 
-        console.log(`page: ${this.currentPage}`);
+        // 表示用postデータを読み込み
+        this.loadPosts();
+
+        // console.log(`page: ${this.currentPage}`);
       },
       error: (err) => { console.error('Error: ' + err.error); }
     });
+
+    // クエリパラメータのpage変更をsubscribe
+    queryParamsObservable$.subscribe({
+      next: (page) => {
+        this.currentPage = page;
+        this.loadPosts();
+      },
+      error: (err) => { console.error('Error: ' + err.error); }
+    });
+  }
+
+  /**
+   * 表示用postデータを読み込み
+   */
+  loadPosts() {
+    // 画面表示用のpostsに格納
+    this.posts = [...this.allPosts];
+
+    // category によるフィルタリング
+    this.filterPostsByCategory();
+
+    // tag によるフィルタリング
+    this.filterPostsByTag();
   }
 
   get pagedPosts(): Post[] {
@@ -80,6 +105,11 @@ export class PostListComponent implements OnInit {
   onChangePage(page: number) {
     console.log(`page: ${page}`);
     this.currentPage = page;
+    
+    this.router.navigate([], {
+      queryParams: { page: page },
+      queryParamsHandling: 'merge'
+    });
   }
 
   onResetPosts() {
@@ -100,25 +130,13 @@ export class PostListComponent implements OnInit {
     return truncated;
   }
 
-  filterPostsByPage() {
-    this.route.queryParams.subscribe(params => {
-      const pageNumber = params['page'];
-      if (pageNumber) {
-        if (pageNumber) {
-          this.posts = this.allPosts;
-          this.onChangePage(pageNumber);
-        }
-      }
-    });
-  }
-
   filterPostsByCategory() {
     this.route.queryParams.subscribe(params => {
       const category = params['category'];
       if (category) {
         this.posts = this.allPosts.filter(post => post.categories.includes(category));
       }
-      console.log(`category: ${category}`);
+      // console.log(`category: ${category}`);
     });
   }
 
@@ -127,7 +145,7 @@ export class PostListComponent implements OnInit {
       const tag = params['tag'];
       if (tag) {
         this.posts = this.allPosts.filter(post => post.tags.includes(tag));
-        console.log(`tag: ${tag}`);
+        // console.log(`tag: ${tag}`);
       }
     });
   }

@@ -1,13 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb breadcrumb-gray breadcrumb-transparent">
-        <li class="breadcrumb-item"><a class="underline-link" [routerLink]="['/blog']" (click)="resetPosts.emit()">Blog
+        <li class="breadcrumb-item">
+            <a class="underline-link" [routerLink]="['/blog']" (click)="resetPosts.emit()">Blog
                 Home</a></li>
 
         <li class="d-flex justify-content-between" *ngIf="categories.length > 0">
             <div><span class="fas fa-angle-double-right mx-2"></span></div>
             <div class="breadcrumb-item">
                 <a class="underline-link" *ngFor="let category of categories" [routerLink]="['/blog/posts']"
-                    [queryParams]="{category: category, page: 1}">
+                    [queryParams]="{category: category}">
                     {{ category }}
                 </a>
             </div>
