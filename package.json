@@ -1,4 +1,10 @@
 {
+  "name" : "computing-atman",
+  "version" : "0.0.0",
+  "license" : "MIT",
+  "engines" : {
+    "node" : "18.x"
+  },
   "scripts": {
     "typeorm": "npx typeorm-ts-node-commonjs",
     "create-nest-module-controller-service": "nx g @nx/nest:module app/${npm_config_name} --project=server && nx g @nx/nest:controller app/${npm_config_name} --project=server && nx g @nx/nest:service app/${npm_config_name} --project=server",
