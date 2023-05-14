@@ -18,7 +18,7 @@ export class PostListComponent implements OnInit {
   public allPosts: Post[] = [];
   public posts: Post[] = [];
   public currentPage = 1;
-  public postsPerPage = 2;
+  public postsPerPage = 10;
 
   public sidebarCategories: Category[] = [];
   public sidebarTags: Tag[] = [];

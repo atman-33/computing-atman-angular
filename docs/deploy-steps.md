@@ -31,7 +31,7 @@ https://github.com/atman-33/computing-atman-angular
 main
 
 - Build Command: 
-npm install && npm run build
+node --version && npm install --force && npm run build
 
 - Start Command: 
 npm run start
