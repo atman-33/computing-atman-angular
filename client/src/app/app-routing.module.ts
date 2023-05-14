@@ -21,7 +21,7 @@ const routes: Routes = [
         TopPageComponent
     ],
     imports: [
-        RouterModule.forRoot(routes),
+        RouterModule.forRoot(routes, { scrollPositionRestoration: 'top' }),
         BlogModule
 
         // AuthModule

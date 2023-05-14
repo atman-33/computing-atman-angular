@@ -24,6 +24,9 @@ export class PostListComponent implements OnInit {
   public sidebarCategories: Category[] = [];
   public sidebarTags: Tag[] = [];
 
+  public filteredCategories: string[] = [];
+  public filteredTags: string[] = [];
+
   constructor(
     private postService: PostService,
     private route: ActivatedRoute,
@@ -106,7 +109,7 @@ export class PostListComponent implements OnInit {
   onChangePage(page: number) {
     console.log(`page: ${page}`);
     this.currentPage = page;
-    
+
     this.router.navigate([], {
       queryParams: { page: page },
       queryParamsHandling: 'merge'
@@ -133,9 +136,11 @@ export class PostListComponent implements OnInit {
 
   filterPostsByCategory() {
     this.route.queryParams.subscribe(params => {
+      this.filteredCategories = [];
       const category = params['category'];
       if (category) {
         this.posts = this.allPosts.filter(post => post.categories.includes(category));
+        this.filteredCategories.push(category);
       }
       // console.log(`category: ${category}`);
     });
@@ -143,11 +148,13 @@ export class PostListComponent implements OnInit {
 
   filterPostsByTag() {
     this.route.queryParams.subscribe(params => {
+      this.filteredTags = [];
       const tag = params['tag'];
       if (tag) {
         this.posts = this.allPosts.filter(post => post.tags.includes(tag));
-        // console.log(`tag: ${tag}`);
+        this.filteredTags.push(tag);
       }
+      // console.log(`tag: ${tag}`);
     });
   }
 
