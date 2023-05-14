@@ -1,11 +1,23 @@
 import { Module } from '@nestjs/common';
-import { ItemsModule } from './items/items.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import * as ormconfig from '../../ormconfig';
+import { PostModule } from './post/post.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+// import { ItemsModule } from './items/items.module';
+// import { AuthModule } from './auth/auth.module';
+// import { TypeOrmModule } from '@nestjs/typeorm';
+// import { dataSourceOptions } from '../../data-source';
 
 @Module({
-  imports: [ItemsModule, TypeOrmModule.forRoot(ormconfig), AuthModule],
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+      exclude: ['/api*']
+    }),
+    // ItemsModule,
+    // AuthModule,
+    // TypeOrmModule.forRoot(dataSourceOptions),
+    PostModule
+  ],
   controllers: [],
   providers: [],
 })

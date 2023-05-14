@@ -1,21 +1,28 @@
-import { RouterModule, Routes } from "@angular/router";
-import { BlogComponent } from "./blog.component";
-import { BlogListComponent } from "./blog-list/blog-list.component";
-import { BlogPostComponent } from "./blog-post/blog-post.component";
-import { CommonModule } from "@angular/common";
-import { NgModule } from "@angular/core";
-import { PrismService } from "../shared/services/prism.service";
-import { AssetsService } from "../shared/services/assets.service";
+import { RouterModule, Routes } from '@angular/router';
+import { BlogComponent } from './blog.component';
+import { PostListComponent } from './post-list/post-list.component';
+import { PostDetailComponent } from './post-detail/post-detail.component';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { PrismService } from '../shared/services/prism.service';
+import { PostService } from './shared/post.service';
+import { PaginationComponent } from './pagination/pagination.component';
+import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { CategoryListComponent } from './sidebar/category-list/category-list.component';
+import { TagListComponent } from './sidebar/tag-list/tag-list.component';
 
 const routes: Routes = [
     {
         path: 'blog', component: BlogComponent,
         children: [
-            // htmlにrouter-outletを実装する事で、URL「***/blog」に BlogListComponent を表示 
-            { path: '', component: BlogListComponent },
+            // デフォルトはリダイレクト
+            { path: '', redirectTo: 'posts', pathMatch: 'full' },
+            
+            // htmlにrouter-outletを実装する事で、URL「***/blog」に PostListComponent を表示 
+            { path: 'posts', component: PostListComponent },
 
             // :*** で、変数を格納
-            { path: ':article', component: BlogPostComponent }
+            { path: 'posts/:id', component: PostDetailComponent }
         ]
     }
 ];
@@ -24,8 +31,12 @@ const routes: Routes = [
     // 利用するコンポーネントを登録
     declarations: [
         BlogComponent,
-        BlogListComponent,
-        BlogPostComponent
+        PostListComponent,
+        PostDetailComponent,
+        BreadcrumbComponent,
+        PaginationComponent,
+        CategoryListComponent,
+        TagListComponent
     ],
     imports: [
         // RouterModuleのforRootはapp-routing.module.tsで利用。モジュールはforChildでルーター登録
@@ -33,7 +44,7 @@ const routes: Routes = [
         // CommonModuleはngFor,ngIf等を利用する場合に必要
         CommonModule
     ],
-    providers: [PrismService, AssetsService],
+    providers: [PrismService, PostService],
     bootstrap: []
 })
 export class BlogModule { }

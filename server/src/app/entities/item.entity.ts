@@ -5,16 +5,16 @@
  * 3. migration:generate により、jsに変換したentityからmigrationファイルを生成
  * 4. migration.tsをトランスパイルしjsに変換
  * 5. migration:run により、jsに変換したmigrationからmigrationを実行（DB操作）
- * 6. repositoryを作成
+ * 6. repositoryを作成 ※TypeORM ver0.3.Xの場合、serviceにrepositoryをDI
  * 7. moduleのimportsに、repositoryを登録
  *    ex. imports: [TypeOrmModule.forFeature([ItemRepository])],
  */
 
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { ItemStatus } from '../items/item-status.enum';
+import { ItemStatus } from '../item/item-status.enum';
 import { User } from './user.entity';
 
-@Entity({ name: 'item' })
+@Entity()
 export class Item {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -31,7 +31,7 @@ export class Item {
     @Column({
         type: 'enum',
         enum: ItemStatus
-      })
+    })
     status: ItemStatus;
 
     @Column()

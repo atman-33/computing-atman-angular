@@ -5,5 +5,7 @@ node_modules
 
 .angular
 
+/dist
+
 server/docker/pgadmin
 server/docker/postgres/pgdata

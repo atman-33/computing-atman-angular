@@ -1,3 +1,4 @@
+-------------------------------------------------------------------------------
 ## 開発環境構築手順
 
 1. nxインストール、プロジェクトをセットアップ
@@ -6,13 +7,13 @@ npm install -g nx
 npx nx@latest init
 ```
 
-2. nest フォルダを生成
+2. NestJS プロジェクトを生成
 ```
 npm install -D @nx/nest
 nx generate @nx/nest:app server
 ```
 
-3. angular フォルダを生成
+3. Angular プロジェクトを生成
 ```
 npm install -D @nx/angular
 nx generate @nx/angular:app client
@@ -21,32 +22,51 @@ nx generate @nx/angular:app client
 - configure routing => true
 - use Standalone Components => false 
 
-4. libs フォルダを作成（必要に応じて適宜追加でOK）
-```
-  |- libs/
-  |  |- shared/
-  |  |  |- models/
-  |  |  |- services/
-  |  |  |- components/
-  |  |  |- directives/
-  |  |  |- ...
-  |  |- core/
-  |  |  |- guards/
-  |  |  |- interceptors/
-  |  |  |- services/
-  |  |  |- ...
-```
-
-5. Angular CLI をインストール
+Angular CLI をインストール
 ```
 npm install -g @angular/cli
 ```
 
+4. libs プロジェクトを作成
+
+```
+npx nx generate @nrwl/js:library libs --buildable
+```
+
+必要に応じて適宜追加
+```
+  |- libs/src/
+  |  |- shared/
+  |  |  |- utils/   : どこにでも自由に移動およびインポートできる静的クラス
+  |  |  |- helpers/ : 別のクラスまたはモジュールを支援するクラス（ex. modulename-helper.ts）
+```
+
+*lintエラーが発生するため、ルートの.eslintrc.jsonに、"allow": ["libs/src/**"]を記載*
+参考
+```
+      "rules": {
+        "@nx/enforce-module-boundaries": [
+          "error",
+          {
+            "enforceBuildableLibDependency": true,
+            "allow": ["libs/src/**"],
+            "depConstraints": [
+              {
+                "sourceTag": "*",
+                "onlyDependOnLibsWithTags": ["*"]
+              }
+            ]
+          }
+        ]
+```
+
+-------------------------------------------------------------------------------
 ## サーバー起動方法
 
 ### Angular 起動
 ```
 nx serve client
+nx serve client --proxy-config client/proxy.conf.json
 ```
 
 ### Nest 起動
@@ -54,6 +74,7 @@ nx serve client
 nx serve server
 ```
 
+-------------------------------------------------------------------------------
 ## Bootstrap & テーマ適用
 
 1. Bootstrapインストール
@@ -69,11 +90,12 @@ npm install bootstrap@5 --save
           ],
 ```
 
+-------------------------------------------------------------------------------
 ## フロントエンド（Angular）開発
 
-### 1. ページ追加
+### 1. 画面追加
 
-1. コンポーネント（Page）作成
+1. コンポーネント作成
 ```
 nx g @nx/angular:component __componet__ --project=client
 ```
@@ -81,9 +103,10 @@ nx g @nx/angular:component __componet__ --project=client
 ページ単体の場合
 - routes に path を追加
 
-モジュールの場合
+* モジュールの場合
 - @NgModule の imports に追加
 
+-------------------------------------------------------------------------------
 ## バックエンド（NestJS）開発
 
 1. モジュール作成
@@ -95,6 +118,11 @@ nx g @nx/nest:controller app/__name__ --project=server
 3. サービス作成
 nx g @nx/nest:service app/__name__ --project=server
 
+↓↓↓
+
+#### モジュール、コントローラー、サービスを一度に生成
+npm run create-nest-module-controller-service --name=__name__
+
 4. Docker（DB）構築
 - 1. dockerをインストール
 - 2. docker-compose.yamlを準備
@@ -103,32 +131,67 @@ nx g @nx/nest:service app/__name__ --project=server
 - 5. ブラウザ（http://localhost:81）でpgAdminにログインし、postgres サーバーを作成
 
 5. マイグレーション
-**typeormの最新verはormconfigの読み込み方法やcliが変更されているため、下記verを利用すること!**  
-npm install typeorm@0.2.45 @nestjs/typeorm@8.0.2  
+**---- TypeORM ver0.3.X ----**
 
-* マイグレーション作成
-npx tsc server/src/app/**/*.entity.ts --outDir "./dist/server" --experimentalDecorators true --emitDecoratorMetadata
-npx typeorm migration:generate -f server/ormconfig.js -n __name__  
+- 1. マイグレーションファイル生成
+npx typeorm-ts-node-commonjs migration:generate -d server/data-source.ts server/src/app/migrations/__name__
 
-* マイグレーション実行
-npx tsc server/src/app/migrations/*.ts --outDir "./dist/server/migrations" --experimentalDecorators true --emitDecoratorMetadata  
-npx typeorm migration:run -f server/ormconfig.js  
-  ↓  
-  ↓package.jsonのscriptsにコマンドを追加したため下記を利用可能  
-  ↓  
-**entitiesをbuildしてmigration:generate**
-npm run typeorm-migration-generate __name__
+- 2. マイグレーション実行
+npx typeorm-ts-node-commonjs migration:run -d server/data-source.ts
 
-**migrationsをbuildしてmigration:run**
-npm run typeorm-migration-run
+↓↓↓
+
+#### マイグレーションファイル生成（トランスパイル込み）
+npm run migration:generate --name=__name__
+
+#### マイグレーションファイル実行（トランスパイル込み）
+npm run migration:run
 
 **dockerにアクセスするパーミッションがない場合、下記を実行!**
 ```
 sudo su -
 chmod -R 777 /home/atman/Sites/
-exit
 ```
 
+**FATAL: "could not open file global/pg_filenode.map": Permission denied の場合、下記を実行!**
+pgAdminブラウザを閉じる
+cd server
+docker-compose stop
+docker-compose up -d
+
+
+6. Jest テスト実行  
+
+テスト実行
+nx test server
+
+watchモードでテスト実行
+nx test server --watch
+
+-------------------------------------------------------------------------------
+## デプロイ手順
+### ビルド
+nx build client --prod
+nx build server --prod
+nx build libs --prod
+ ↓  
+npm run build
+
+### 起動
+npm run start
+
+**補足**
+この起動でserverを起動する。
+api以外のアクセスが届いた場合は、angular の index.htmlにアクセスを流す事で、
+serverのみ起動すればフロントエンドとバックエンドが両方稼働した事となる。
+
+### バンドルサイズ分析方法
+nx run client:build:development --statsJson
+npm run analyze  
+=> ブラウザでバンドルサイズが高い部分を確認可能
+
+
+-------------------------------------------------------------------------------
 ## ブログ作成
 
 ### 画像の埋め込み方法

@@ -3,7 +3,7 @@ import { UserStatus } from '../auth/user-status.enum';
 import { Item } from './item.entity';
 import { Exclude } from 'class-transformer';
 
-@Entity({ name: 'user' })
+@Entity()
 export class User {
 
     @PrimaryGeneratedColumn('uuid')

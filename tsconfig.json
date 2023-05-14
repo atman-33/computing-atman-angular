@@ -1,0 +1,7 @@
+{
+    /* migration:generate 時にデコレーターを利用するため必要 */
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true
+    }
+}
