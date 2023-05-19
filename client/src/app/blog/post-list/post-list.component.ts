@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { PostService } from '../shared/post.service';
 import { Post } from 'libs/src/shared/models/post.model';
 import * as utils from 'libs/src/shared/utils/index';
@@ -7,6 +7,8 @@ import { Category } from 'libs/src/shared/models/category.model';
 import { Tag } from 'libs/src/shared/models/tag.model';
 import { map } from 'rxjs';
 import Constants from '../../shared/constants';
+import { MediaObserver } from '@angular/flex-layout';
+
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
@@ -15,6 +17,7 @@ import Constants from '../../shared/constants';
 export class PostListComponent implements OnInit {
 
   public readonly defaultThumbnail = Constants.DEFAULT_BLOG_THUMBNAIL_PATH;
+  public readonly articleLeadMaxLength = 80;
 
   public allPosts: Post[] = [];
   public posts: Post[] = [];
@@ -27,10 +30,23 @@ export class PostListComponent implements OnInit {
   public filteredCategories: string[] = [];
   public filteredTags: string[] = [];
 
+  public isGreaterThanXS!: boolean;
+
+  public searchText = '';
+
   constructor(
     private postService: PostService,
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router,
+    private mediaObserver: MediaObserver,
+    private changeDetectorRef: ChangeDetectorRef) {
+
+    const media$ = mediaObserver.asObservable();
+
+    media$.subscribe(() => {
+      this.isGreaterThanXS = this.mediaObserver.isActive('gt-xs');
+      this.changeDetectorRef.detectChanges();
+    });
   }
 
   /**
@@ -58,7 +74,7 @@ export class PostListComponent implements OnInit {
         this.allPosts = this.allPosts.map(post => {
           return {
             ...post,
-            article: this.extractLead(post.article, 40)
+            article: this.extractLead(post.article, this.articleLeadMaxLength)
           };
         });
 
@@ -190,5 +206,39 @@ export class PostListComponent implements OnInit {
 
     // console.log(tags);
     this.sidebarTags = utils.sortByNumber(tags, 'count', 'desc');
+  }
+
+  search() {
+    console.log('Search Text:', this.searchText);
+
+    if (!this.posts) {
+      this.posts = this.allPosts;
+      return;
+    }
+    if (!this.searchText) {
+      this.posts = this.allPosts;
+      return;
+    }
+
+    const searchTerms = this.searchText.toLowerCase().replace('　', ' ').split(' ');
+
+    this.posts = this.allPosts.filter(it => {
+      const titleMatch = searchTerms.every(term =>
+        it.title.toLowerCase().includes(term)
+      );
+      const articleMatch = searchTerms.every(term =>
+        it.article.toLowerCase().includes(term)
+      );
+      return titleMatch || articleMatch;
+    });
+
+    console.log(`Posts count: ${this.posts.length}`);
+
+    this.filteredCategories = [];
+    this.filteredTags = [];
+  }
+
+  clearSearchText() {
+    this.searchText = '';
   }
 }
