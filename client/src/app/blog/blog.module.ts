@@ -10,6 +10,7 @@ import { PaginationComponent } from './pagination/pagination.component';
 import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
 import { CategoryListComponent } from './sidebar/category-list/category-list.component';
 import { TagListComponent } from './sidebar/tag-list/tag-list.component';
+import { FormsModule } from '@angular/forms';
 
 const routes: Routes = [
     {
@@ -42,7 +43,8 @@ const routes: Routes = [
         // RouterModuleのforRootはapp-routing.module.tsで利用。モジュールはforChildでルーター登録
         RouterModule.forChild(routes),
         // CommonModuleはngFor,ngIf等を利用する場合に必要
-        CommonModule
+        CommonModule,
+        FormsModule  
     ],
     providers: [PrismService, PostService],
     bootstrap: []
