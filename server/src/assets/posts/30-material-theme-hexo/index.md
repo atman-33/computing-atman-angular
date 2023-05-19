@@ -70,7 +70,7 @@ Hexoブログ用の各種ディレクトリが生成されていれば完了で�
 [オリジナル](https://github.com/iblh/hexo-theme-material)はバグが残っていますので、修正版をダウンロードして下さい。
 
 ↓修正版  
-https://github.com/atman-33/hexo-theme-material  
+[https://github.com/atman-33/hexo-theme-material](https://github.com/atman-33/hexo-theme-material)  
 
 Code > Download ZIP でzipファイルをダウンロードします。  
 ![image](2.png)

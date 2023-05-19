@@ -21,7 +21,7 @@ Windows PCに、「Oracle Database 21c Express Edition (XE)」をインストー
 私はアプリ開発用で、個人PCにインストールしています。
 
 ※公式HPのOracle XE説明  
-[https://www.oracle.com/jp/database/technologies/appdev/xe.html](https://www.oracle.com/jp/database/technologies/appdev/xe.html)
+[Oracle XE 説明](https://www.oracle.com/jp/database/technologies/appdev/xe.html)  
 
 ## 手順
 
@@ -29,7 +29,7 @@ Windows PCに、「Oracle Database 21c Express Edition (XE)」をインストー
 
 Webから「Oracle Database XE」をダウンロードします。
 
-[https://www.oracle.com/jp/database/technologies/xe-downloads.html](https://www.oracle.com/jp/database/technologies/xe-downloads.html)
+[Oracle XE ダウンロード](https://www.oracle.com/jp/database/technologies/xe-downloads.html)
 
 ![image](1.png)
 
