@@ -16,6 +16,7 @@ export class PaginationComponent {
   @Output() changePage = new EventEmitter<number>();
 
   get totalPages() {
+    // console.log(`totalPages: ${this.totalPosts}`);
     return Math.ceil(this.totalPosts / this.postsPerPage);
   }
 

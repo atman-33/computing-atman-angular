@@ -2,23 +2,43 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { Post } from 'libs/src/shared/models/post.model';
+import { Category, Post, PostResponse, Tag } from 'libs/src/shared/models';
 
 @Injectable()   // <= Angularでserviceを利用する際に必要
 export class PostService {
 
     constructor(private http: HttpClient) { }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    getPosts(): Observable<Post[]> {
-        return this.http.get<Post[]>('/api/post');
+    getPosts(page: number, category: string, tag: string, searchQuery: string): Observable<PostResponse> {
+        const encodedCategory = encodeURIComponent(category);
+        const encodedTag = encodeURIComponent(tag);
+        const encodedSearchQuery = encodeURIComponent(searchQuery);
+
+        console.log(`/api/post?page=${page}&category=${encodedCategory}&tag=${encodedTag}&q=${encodedSearchQuery}`);
+        return this.http.get<PostResponse>(`/api/post?page=${page}&category=${encodedCategory}&tag=${encodedTag}&q=${encodedSearchQuery}`);
+    }
+
+    getPostsByCategory(category: string, page: number): Observable<PostResponse> {
+        return this.http.get<PostResponse>(`/api/post/categories/${category}?page=${page}`);
+    }
+
+    getPostsByTag(tag: string, page: number): Observable<PostResponse> {
+        return this.http.get<PostResponse>(`/api/post/tags/${tag}?page=${page}`);
     }
 
     getPostById(id: string): Observable<Post> {
-        return this.http.get<Post>('/api/post/' + id);
+        return this.http.get<Post>(`/api/post/items/${id}`);
     }
 
     getPostImage(id: string, fileName: string): Observable<Blob> {
-        return this.http.get<Blob>('/api/post/img/' + id + '/' + fileName);
+        return this.http.get<Blob>(`/api/post/img/${id}/${fileName}`);
+    }
+
+    getCategoryList(): Observable<Category[]> {
+        return this.http.get<Category[]>('/api/post/category-list');
+    }
+
+    getTagList(): Observable<Tag[]> {
+        return this.http.get<Tag[]>('/api/post/tag-list');
     }
 }

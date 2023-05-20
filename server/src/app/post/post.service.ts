@@ -3,8 +3,8 @@ import { Response } from 'express';
 import { readFile, readdir } from 'fs';
 import * as constants from 'libs/src/shared/constants';
 import * as helpers from 'libs/src/shared/helpers';
-import { Post } from 'libs/src/shared/models/post.model';
-import * as utils from 'libs/src/shared/utils/index';
+import { Category, Post, PostResponse, Tag } from 'libs/src/shared/models';
+import * as utils from 'libs/src/shared/utils';
 import { join } from 'path';
 import { promisify } from 'util';
 
@@ -14,13 +14,29 @@ export class PostService {
   /**
    * ページに対応した記事データを取得
    * @param page 
+   * @param category 
+   * @param tag 
+   * @param searchQuery 
    * @returns 
    */
-  async findAll(page: number): Promise<{ posts: Post[], totalCount: number; }> {
+  async findAll(page: number, category: string, tag: string, searchQuery: string): Promise<PostResponse> {
+
+    if (category) {
+      // console.log(`category: ${category}`);
+      return this.findCategoryPosts(category, page);
+    }
+
+    if (tag) {
+      return this.findTagPosts(tag, page);
+    }
+
+    if (searchQuery) {
+      return this.findSearchedPosts(searchQuery, page);
+    }
+
     const allPosts = await this.getAllPosts();
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
-
-    return { posts: posts, totalCount: posts.length };
+    return { posts: posts, totalCount: allPosts.length };
   }
 
   /**
@@ -44,13 +60,13 @@ export class PostService {
   /**
    * 画像を取得
    * @param id 
-   * @param fileName 
+   * @param file 
    * @param res 
    * @returns 
    */
-  getPostImageFile(id: string, fileName: string, res: Response) {
+  getPostImageFile(id: string, file: string, res: Response) {
 
-    const imageFilePath = join(process.cwd(), 'dist/server/assets/posts', id, fileName);
+    const imageFilePath = join(process.cwd(), 'dist/server/assets/posts', id, file);
     return res.sendFile(imageFilePath);
   }
 
@@ -78,38 +94,38 @@ export class PostService {
 
   /**
    * カテゴリでフィルタした記事一覧を取得
-   * @param categoryName 
+   * @param category 
    * @param page 
    * @returns 
    */
-  async findCategoryPosts(categoryName: string, page: number): Promise<{ posts: Post[], totalCount: number; }> {
+  async findCategoryPosts(category: string, page: number): Promise<PostResponse> {
     let allPosts = await this.getAllPosts();
 
-    if (categoryName) {
-      allPosts = allPosts.filter(post => post.categories.includes(categoryName));
+    if (category) {
+      allPosts = allPosts.filter(post => post.categories.includes(category));
     }
 
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
 
-    return { posts: posts, totalCount: posts.length };
+    return { posts: posts, totalCount: allPosts.length };
   }
 
   /**
    * タグでフィルタした記事一覧を取得
-   * @param tagName 
+   * @param tag 
    * @param page 
    * @returns 
    */
-  async findTagPosts(tagName: string, page: number): Promise<{ posts: Post[], totalCount: number; }> {
+  async findTagPosts(tag: string, page: number): Promise<PostResponse> {
     let allPosts = await this.getAllPosts();
 
-    if (tagName) {
-      allPosts = allPosts.filter(post => post.categories.includes(tagName));
+    if (tag) {
+      allPosts = allPosts.filter(post => post.categories.includes(tag));
     }
 
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
 
-    return { posts: posts, totalCount: posts.length };
+    return { posts: posts, totalCount: allPosts.length };
   }
 
   /**
@@ -118,7 +134,7 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async searchPosts(searchQuery: string, page: number): Promise<{ posts: Post[], totalCount: number; }> {
+  async findSearchedPosts(searchQuery: string, page: number): Promise<PostResponse> {
     let allPosts = await this.getAllPosts();
 
     if (searchQuery) {
@@ -137,7 +153,51 @@ export class PostService {
 
     // console.log(`Posts count: ${allPosts.length}`);
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
-    return { posts: posts, totalCount: posts.length };
+    return { posts: posts, totalCount: allPosts.length };
+  }
+
+  /**
+   * 各カテゴリとその登録数を取得
+   * @returns 
+   */
+  async getCagegoryList(): Promise<Category[]> {
+    const allPosts = await this.getAllPosts();
+
+    const categories: Category[] = allPosts.reduce((acc, post) => {
+      post.categories.forEach((category) => {
+        const existingCategory = acc.find((c) => c.name === category);
+        if (existingCategory) {
+          existingCategory.count++;
+        } else {
+          acc.push({ name: category, count: 1 });
+        }
+      });
+      return acc;
+    }, [] as Category[]);
+
+    return categories;
+  }
+
+  /**
+   * 各タグとその登録数を取得
+   * @returns 
+   */
+  async getTagList(): Promise<Tag[]> {
+    const allPosts = await this.getAllPosts();
+
+    const tags: Tag[] = allPosts.reduce((acc, post) => {
+      post.tags.forEach((tag) => {
+        const existingTag = acc.find((c) => c.name === tag);
+        if (existingTag) {
+          existingTag.count++;
+        } else {
+          acc.push({ name: tag, count: 1 });
+        }
+      });
+      return acc;
+    }, [] as Tag[]);
+
+    return tags;
   }
 
   /**
