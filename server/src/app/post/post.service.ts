@@ -16,11 +16,11 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async findAll(page: number): Promise<Post[]> {
+  async findAll(page: number): Promise<{ posts: Post[], totalCount: number; }> {
     const allPosts = await this.getAllPosts();
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
 
-    return posts;
+    return { posts: posts, totalCount: posts.length };
   }
 
   /**
@@ -82,7 +82,7 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async findCategoryPosts(categoryName: string, page: number): Promise<Post[]> {
+  async findCategoryPosts(categoryName: string, page: number): Promise<{ posts: Post[], totalCount: number; }> {
     let allPosts = await this.getAllPosts();
 
     if (categoryName) {
@@ -91,7 +91,7 @@ export class PostService {
 
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
 
-    return posts;
+    return { posts: posts, totalCount: posts.length };
   }
 
   /**
@@ -100,7 +100,7 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async findTagPosts(tagName: string, page: number): Promise<Post[]> {
+  async findTagPosts(tagName: string, page: number): Promise<{ posts: Post[], totalCount: number; }> {
     let allPosts = await this.getAllPosts();
 
     if (tagName) {
@@ -109,7 +109,7 @@ export class PostService {
 
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
 
-    return posts;
+    return { posts: posts, totalCount: posts.length };
   }
 
   /**
@@ -118,7 +118,7 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async searchPosts(searchQuery: string, page: number): Promise<Post[]> {
+  async searchPosts(searchQuery: string, page: number): Promise<{ posts: Post[], totalCount: number; }> {
     let allPosts = await this.getAllPosts();
 
     if (searchQuery) {
@@ -137,7 +137,7 @@ export class PostService {
 
     // console.log(`Posts count: ${allPosts.length}`);
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
-    return posts;
+    return { posts: posts, totalCount: posts.length };
   }
 
   /**

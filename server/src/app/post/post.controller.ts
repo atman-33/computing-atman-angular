@@ -10,7 +10,7 @@ export class PostController {
     }
 
     @Get()
-    async findAll(@Query('page') page: number): Promise<Post[]> {
+    async findAll(@Query('page') page: number): Promise<{ posts: Post[], totalCount: number }> {
         return await this.postService.findAll(page);
     }
 
@@ -35,21 +35,21 @@ export class PostController {
     @Get('categories/:categoryName')
     async findCategoryPosts(
         @Param('categoryName') categoryName: string,
-        @Query('page') page: number): Promise<Post[]> {
+        @Query('page') page: number): Promise<{ posts: Post[], totalCount: number }> {
         return await this.postService.findCategoryPosts(categoryName, page);
     }
 
     @Get('tags/:tagName')
     async findTagPosts(
         @Param('tagName') tagName: string,
-        @Query('page') page: number): Promise<Post[]> {
+        @Query('page') page: number): Promise<{ posts: Post[], totalCount: number }> {
         return await this.postService.findTagPosts(tagName, page);
     }
 
     @Get('search')
     async searchPosts(
         @Query('q') searchQuery: string, 
-        @Query('page') page: number): Promise<Post[]> {
+        @Query('page') page: number): Promise<{ posts: Post[], totalCount: number }> {
         const posts = await this.postService.searchPosts(searchQuery, page);
         return posts;
     }
