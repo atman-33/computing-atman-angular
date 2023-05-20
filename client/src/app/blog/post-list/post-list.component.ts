@@ -1,13 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { PostService } from '../shared/post.service';
-import { Post } from 'libs/src/shared/models/post.model';
-import * as utils from 'libs/src/shared/utils/index';
+import { MediaObserver } from '@angular/flex-layout';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Category } from 'libs/src/shared/models/category.model';
-import { Tag } from 'libs/src/shared/models/tag.model';
+import * as constants from 'libs/src/shared/constants';
+import { Category, Post, Tag } from 'libs/src/shared/models';
+import * as utils from 'libs/src/shared/utils/index';
 import { map } from 'rxjs';
 import Constants from '../../shared/constants';
-import { MediaObserver } from '@angular/flex-layout';
+import { PostService } from '../shared/post.service';
 
 @Component({
   selector: 'app-post-list',
@@ -19,16 +18,20 @@ export class PostListComponent implements OnInit {
   public readonly defaultThumbnail = Constants.DEFAULT_BLOG_THUMBNAIL_PATH;
   public readonly articleLeadMaxLength = 80;
 
-  public allPosts: Post[] = [];
   public posts: Post[] = [];
+  public totalPostsCount!: number;
+  public postsPerPage = constants.default.POSTS_PER_PAGE;
+
   public currentPage = 1;
-  public postsPerPage = 10;
+  public currentCategory!: string;
+  public currentTag!: string;
+  public currentSearchQuery!: string;
 
   public sidebarCategories: Category[] = [];
   public sidebarTags: Tag[] = [];
 
-  public filteredCategories: string[] = [];
-  public filteredTags: string[] = [];
+  public breadcrumbCategories: string[] = [];
+  public breadcrumbTags: string[] = [];
 
   public isGreaterThanXS!: boolean;
 
@@ -40,63 +43,71 @@ export class PostListComponent implements OnInit {
     private router: Router,
     private mediaObserver: MediaObserver,
     private changeDetectorRef: ChangeDetectorRef) {
-
-    const media$ = mediaObserver.asObservable();
-
-    media$.subscribe(() => {
-      this.isGreaterThanXS = this.mediaObserver.isActive('gt-xs');
-      this.changeDetectorRef.detectChanges();
-    });
   }
 
   /**
    * 初期化処理
-   * 1. postデータ取得
-   * 2. postデータを日付最新順で並び替え
-   * 3. 一覧表示用に記事のリード文抽出
-   * 4. サイドバーのカテゴリ、タグ一覧を更新
-   * 5. クエリパラメータ変更をsubscribe
    */
   ngOnInit() {
-    // 観測対象を取得
-    const postObservable$ = this.postService.getPosts();
-    const queryParamsObservable$ = this.route.queryParams.pipe(map(params => +params['page'] || 1));
+    console.log('run ngOnInit!');
 
-    // postデータ取得をsubscribe
-    postObservable$.subscribe({
-      next: (data) => {
+    // 1. 画面の横幅をobserve
+    const media$ = this.mediaObserver.asObservable();
+    media$.subscribe(() => {
+      this.isGreaterThanXS = this.mediaObserver.isActive('gt-xs');
+      this.changeDetectorRef.detectChanges();
+    });
 
-        // postデータを取得して日付によるソート
-        this.allPosts = data;
-        this.allPosts = utils.sortByDate(this.allPosts, 'date', 'desc');
+    // 2. クエリパラメータの変更をobserve
+    const queryParamsObservable$ = this.route.queryParams.pipe(
+      map(params => ({
+        page: +params['page'] || 1,
+        category: params['category'] || '',
+        tag: params['tag'] || '',
+        q: params['q'] || ''
+      }))
+    );
+    queryParamsObservable$.subscribe({
+      next: ({ page, category, tag, q }) => {
+        console.log('query params changed!');
 
-        // 記事のリード文抽出
-        this.allPosts = this.allPosts.map(post => {
-          return {
-            ...post,
-            article: this.extractLead(post.article, this.articleLeadMaxLength)
-          };
-        });
+        // クエリパラメーターの変更を処理
+        this.currentPage = page;
+        this.currentCategory = category;
+        this.currentTag = tag;
+        this.currentSearchQuery = q;
 
-        // サイドバーのカテゴリー一覧を設定
-        this.setSidebarCategories();
+        // breadcrumbを更新
+        if(category) {
+          this.breadcrumbCategories = [category];
+        }else{
+          this.breadcrumbCategories = [];
+        }
 
-        // サイドバーのタグ一覧を設定
-        this.setSidebarTags();
-
-        // 表示用postデータを読み込み
+        if(tag) {
+          this.breadcrumbTags = [tag];
+        }else{
+          this.breadcrumbTags = [];
+        }
+        
+        // post一覧を更新
         this.loadPosts();
-
-        // console.log(`page: ${this.currentPage}`);
       },
       error: (err) => { console.error('Error: ' + err.error); }
     });
 
-    // クエリパラメータのpage変更をsubscribe
-    queryParamsObservable$.subscribe({
-      next: (page) => {
-        this.currentPage = page;
-        this.loadPosts();
+    // サイドバーのカテゴリー一覧を設定
+    this.postService.getCategoryList().subscribe({
+      next: (data) => {
+        this.sidebarCategories = utils.sortByNumber(data, 'count', 'desc');
+      },
+      error: (err) => { console.error('Error: ' + err.error); }
+    });
+
+    // サイドバーのタグ一覧を設定
+    this.postService.getTagList().subscribe({
+      next: (data) => {
+        this.sidebarTags = utils.sortByNumber(data, 'count', 'desc');
       },
       error: (err) => { console.error('Error: ' + err.error); }
     });
@@ -106,25 +117,32 @@ export class PostListComponent implements OnInit {
    * 表示用postデータを読み込み
    */
   loadPosts() {
-    // 画面表示用のpostsに格納
-    this.posts = [...this.allPosts];
+    // postデータを更新
+    const postObservable$ = this.postService.getPosts(
+      this.currentPage, this.currentCategory, this.currentTag, this.currentSearchQuery);
+    postObservable$.subscribe({
+      next: (data) => {
 
-    // category によるフィルタリング
-    this.filterPostsByCategory();
+        this.posts = data.posts;
+        this.totalPostsCount = data.totalCount;
+        console.log('update posts! page: ' + this.currentPage);
 
-    // tag によるフィルタリング
-    this.filterPostsByTag();
-  }
+        // 記事のリード文抽出
+        this.posts = this.posts.map(post => {
+          return {
+            ...post,
+            article: this.extractLead(post.article, this.articleLeadMaxLength)
+          };
+        });
 
-  get pagedPosts(): Post[] {
-    const startIndex = (this.currentPage - 1) * this.postsPerPage;
-    const endIndex = startIndex + this.postsPerPage;
-    return this.posts.slice(startIndex, endIndex);
+        // console.log('totalPostsCount: ' + this.totalPostsCount);
+      },
+      error: (err) => { console.error('Error: ' + err.error); }
+    });
   }
 
   onChangePage(page: number) {
-    console.log(`page: ${page}`);
-    this.currentPage = page;
+    console.log(`onChangePage page: ${page}`);
 
     this.router.navigate([], {
       queryParams: { page: page },
@@ -133,7 +151,6 @@ export class PostListComponent implements OnInit {
   }
 
   onResetPosts() {
-    this.posts = [...this.allPosts];
     this.currentPage = 1;
   }
 
@@ -150,92 +167,13 @@ export class PostListComponent implements OnInit {
     return truncated;
   }
 
-  filterPostsByCategory() {
-    this.route.queryParams.subscribe(params => {
-      this.filteredCategories = [];
-      const category = params['category'];
-      if (category) {
-        this.posts = this.allPosts.filter(post => post.categories.includes(category));
-        this.filteredCategories.push(category);
-      }
-      // console.log(`category: ${category}`);
-    });
-  }
-
-  filterPostsByTag() {
-    this.route.queryParams.subscribe(params => {
-      this.filteredTags = [];
-      const tag = params['tag'];
-      if (tag) {
-        this.posts = this.allPosts.filter(post => post.tags.includes(tag));
-        this.filteredTags.push(tag);
-      }
-      // console.log(`tag: ${tag}`);
-    });
-  }
-
-  setSidebarCategories() {
-    const categories: Category[] = this.allPosts.reduce((acc, post) => {
-      post.categories.forEach((category) => {
-        const existingCategory = acc.find((c) => c.name === category);
-        if (existingCategory) {
-          existingCategory.count++;
-        } else {
-          acc.push({ name: category, count: 1 });
-        }
-      });
-      return acc;
-    }, [] as Category[]);
-
-    // console.log(categories);
-    this.sidebarCategories = utils.sortByNumber(categories, 'count', 'desc');
-  }
-
-  setSidebarTags() {
-    const tags: Tag[] = this.allPosts.reduce((acc, post) => {
-      post.tags.forEach((tag) => {
-        const existingTag = acc.find((c) => c.name === tag);
-        if (existingTag) {
-          existingTag.count++;
-        } else {
-          acc.push({ name: tag, count: 1 });
-        }
-      });
-      return acc;
-    }, [] as Tag[]);
-
-    // console.log(tags);
-    this.sidebarTags = utils.sortByNumber(tags, 'count', 'desc');
-  }
 
   search() {
     console.log('Search Text:', this.searchText);
 
-    if (!this.posts) {
-      this.posts = this.allPosts;
-      return;
-    }
-    if (!this.searchText) {
-      this.posts = this.allPosts;
-      return;
-    }
-
-    const searchTerms = this.searchText.toLowerCase().replace('　', ' ').split(' ');
-
-    this.posts = this.allPosts.filter(it => {
-      const titleMatch = searchTerms.every(term =>
-        it.title.toLowerCase().includes(term)
-      );
-      const articleMatch = searchTerms.every(term =>
-        it.article.toLowerCase().includes(term)
-      );
-      return titleMatch || articleMatch;
+    this.router.navigate([], {
+      queryParams: { q: this.searchText },
     });
-
-    console.log(`Posts count: ${this.posts.length}`);
-
-    this.filteredCategories = [];
-    this.filteredTags = [];
   }
 
   clearSearchText() {
