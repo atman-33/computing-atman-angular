@@ -9,6 +9,7 @@
     "dracula-theme.theme-dracula",
     "esbenp.prettier-vscode",
     "firsttris.vscode-jest-runner",
-    "nrwl.angular-console"
+    "nrwl.angular-console",
+    "genieai.chatgpt-vscode"
   ]
 }

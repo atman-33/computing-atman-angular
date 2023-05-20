@@ -16,8 +16,9 @@
 
         <li class="d-flex justify-content-between" *ngIf="tags.length > 0">
             <div><span class="fas fa-angle-double-right mx-2"></span></div>
-            <div class="breadcrumb-item">
-                <a class="underline-link" *ngFor="let tag of tags" [routerLink]="['/blog/posts']"
+            <div class="breadcrumb-item row">
+                <span class="col fa-solid fa-tag align-self-center pr-0"></span>
+                <a class="col pl-1 underline-link" *ngFor="let tag of tags" [routerLink]="['/blog/posts']"
                     [queryParams]="{tag: tag}">
                     {{ tag }}
                 </a>

@@ -1,4 +1,9 @@
-<div class="container mt-6">
+<!-- loading display -->
+<div *ngIf="loading" id="loading" class="fade-in">
+    <div class="loader">Loading...</div>
+</div>
+
+<div class="container mt-5">
     <div class="form-group">
         <label for="exampleInputIcon1"></label>
         <div class="input-group mb-1">
@@ -46,17 +51,25 @@
                                 </div>
                                 <div class="col-9">
                                     <div class="card-body px-3 py-2">
-                                        <div class="media d-flex align-items-center justify-content-between">
-                                            <div class="post-group">
-                                                <a class="underline-link" *ngFor="let category of post.categories"
-                                                    [routerLink]="'/blog/posts/'" [queryParams]="{category: category,  page: 1}">
-                                                    {{ category }}
-                                                </a>
-                                            </div>
-                                            <div class="d-flex align-items-center"><span class="small"><span
-                                                        class="far fa-calendar-alt mr-2"></span>{{post.date}}</span>
-                                            </div>
+                                        <div class="media">
+                                            <span class="medium">
+                                                <div class="post-group row mr-1">
+                                                    <span class="col fa-solid fa-tag align-self-center"></span>
+                                                    <div class="col px-1" *ngFor="let tag of post.tags">
+                                                        <a class="underline-link" [routerLink]="'/blog/posts/'"
+                                                            [queryParams]="{tag: tag,  page: 1}">
+                                                            {{ tag }}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </span>
                                         </div>
+                                        <div class="d-flex align-items-center justify-content-end">
+                                            <span class="small text-right mr-1">
+                                                <span class="far fa-calendar-alt mr-2"></span>{{post.date}}
+                                            </span>
+                                        </div>
+
                                         <a [routerLink]="post.id">
                                             <h6 class="card-title my-2 font-weight-bold">{{ post.title }} </h6>
                                         </a>

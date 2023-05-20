@@ -3,7 +3,7 @@ title: 【Hexo】マテリアル（material）テーマの適用・設定方法
 date: 2023-03-04 17:53:26
 tags:
 - Hexo
-- マテリアルデザイン
+- Material Design
 categories: Hexo
 thumbnail: 1.png
 ---
