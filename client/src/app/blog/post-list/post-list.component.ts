@@ -37,6 +37,8 @@ export class PostListComponent implements OnInit {
 
   public searchText = '';
 
+  public loading = true;
+
   constructor(
     private postService: PostService,
     private route: ActivatedRoute,
@@ -70,6 +72,7 @@ export class PostListComponent implements OnInit {
     queryParamsObservable$.subscribe({
       next: ({ page, category, tag, q }) => {
         console.log('query params changed!');
+        this.loading = true;
 
         // クエリパラメーターの変更を処理
         this.currentPage = page;
@@ -78,18 +81,18 @@ export class PostListComponent implements OnInit {
         this.currentSearchQuery = q;
 
         // breadcrumbを更新
-        if(category) {
+        if (category) {
           this.breadcrumbCategories = [category];
-        }else{
+        } else {
           this.breadcrumbCategories = [];
         }
 
-        if(tag) {
+        if (tag) {
           this.breadcrumbTags = [tag];
-        }else{
+        } else {
           this.breadcrumbTags = [];
         }
-        
+
         // post一覧を更新
         this.loadPosts();
       },
@@ -134,8 +137,12 @@ export class PostListComponent implements OnInit {
             article: this.extractLead(post.article, this.articleLeadMaxLength)
           };
         });
-
         // console.log('totalPostsCount: ' + this.totalPostsCount);
+
+        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, 5000); // 5秒後にloadingをfalseにする
       },
       error: (err) => { console.error('Error: ' + err.error); }
     });

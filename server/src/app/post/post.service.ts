@@ -27,6 +27,7 @@ export class PostService {
     }
 
     if (tag) {
+      // console.log(`tag: ${tag}`);
       return this.findTagPosts(tag, page);
     }
 
@@ -120,7 +121,7 @@ export class PostService {
     let allPosts = await this.getAllPosts();
 
     if (tag) {
-      allPosts = allPosts.filter(post => post.categories.includes(tag));
+      allPosts = allPosts.filter(post => post.tags.includes(tag));
     }
 
     const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
