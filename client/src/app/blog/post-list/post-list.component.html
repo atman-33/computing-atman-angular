@@ -53,14 +53,14 @@
                                     <div class="card-body px-3 py-2">
                                         <div class="media">
                                             <span class="medium">
-                                                <div class="post-group row mr-1">
-                                                    <span class="col fa-solid fa-tag align-self-center"></span>
-                                                    <div class="col px-1" *ngFor="let tag of post.tags">
+                                                <div class="post-group mr-1">
+                                                    <span class="fa-solid fa-tag align-self-center"></span>
+                                                    <span class="px-1" *ngFor="let tag of post.tags">
                                                         <a class="underline-link" [routerLink]="'/blog/posts/'"
                                                             [queryParams]="{tag: tag,  page: 1}">
                                                             {{ tag }}
                                                         </a>
-                                                    </div>
+                                                    </span>
                                                 </div>
                                             </span>
                                         </div>

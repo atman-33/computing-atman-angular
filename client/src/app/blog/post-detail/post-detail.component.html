@@ -21,15 +21,13 @@
                     </div>
 
                     <div class="container-fluid">
-                        <div class="row row-cols-auto">
-                            <div class="col-auto" *ngFor="let tag of tags">
-                                <a [routerLink]="['/blog/posts']" [queryParams]="{tag: tag}">
-                                    <div class="btn btn-pill px-2 py-1 mx-1 my-1"><span
-                                            class="fa-solid fa-tag mr-1"></span>{{tag}}
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
+                        <span class="col-auto" *ngFor="let tag of tags">
+                            <a [routerLink]="['/blog/posts']" [queryParams]="{tag: tag}">
+                                <span class="btn btn-pill px-2 py-1 mx-1 my-1"><span
+                                        class="fa-solid fa-tag mr-1"></span>{{tag}}
+                                </span>
+                            </a>
+                        </span>
                     </div>
                 </div>
             </div>
