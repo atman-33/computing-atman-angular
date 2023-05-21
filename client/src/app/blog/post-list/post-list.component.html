@@ -4,7 +4,7 @@
 </div>
 
 <div class="container mt-5">
-    <div class="form-group">
+    <div class="form-group mx-4">
         <label for="exampleInputIcon1"></label>
         <div class="input-group mb-1">
             <div class="input-group-prepend">
@@ -21,9 +21,10 @@
         <div class="ml-0">{{totalPostsCount}} results</div>
     </div>
 
-
-    <app-breadcrumb (resetPosts)="onResetPosts()" [categories]="breadcrumbCategories"
-        [tags]="breadcrumbTags"></app-breadcrumb>
+    <div class="mx-4 ">
+        <app-breadcrumb (resetPosts)="onResetPosts()" [categories]="breadcrumbCategories"
+            [tags]="breadcrumbTags"></app-breadcrumb>
+    </div>
 </div>
 
 <div class="container">
