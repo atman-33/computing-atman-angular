@@ -20,8 +20,8 @@
                                 class="far fa-calendar-alt mr-2"></span>{{date}}</span>
                     </div>
 
-                    <div class="container-fluid">
-                        <span class="col-auto" *ngFor="let tag of tags">
+                    <div class="mt-2">
+                        <span *ngFor="let tag of tags">
                             <a [routerLink]="['/blog/posts']" [queryParams]="{tag: tag}">
                                 <span class="btn btn-pill px-2 py-1 mx-1 my-1"><span
                                         class="fa-solid fa-tag mr-1"></span>{{tag}}
