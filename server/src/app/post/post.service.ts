@@ -68,16 +68,20 @@ export class PostService {
 
     const allPosts = await this.getAllPosts();
 
-    // Filter posts based on tags
-    for (const tag of post.tags) {
-      const postsWithTag = allPosts.filter(p => p.tags.includes(tag) && p.id !== post.id);
-      relatedPosts.push(...postsWithTag);
-    }
-
     // Filter posts based on categories
     for (const category of post.categories) {
-      const postsWithCategory = allPosts.filter(p => p.categories.includes(category) && p.id !== post.id);
+      const postsWithCategory = allPosts.filter(p =>
+        p.categories.includes(category) && !relatedPosts.includes(p) && p.id !== post.id
+      );
       relatedPosts.push(...postsWithCategory);
+    }
+
+    // Filter posts based on tags
+    for (const tag of post.tags) {
+      const postsWithTag = allPosts.filter(p =>
+        p.tags.includes(tag) && !relatedPosts.includes(p) && p.id !== post.id
+      );
+      relatedPosts.push(...postsWithTag);
     }
 
     // Shuffle the related posts array
