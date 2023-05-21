@@ -18,7 +18,7 @@ WPF Prismでは、Dialog画面内のContentControlに別のViewを表示させ�
 
 例えば、以下のようなXAMLコードを使用して、ContentControlを追加します。
 
-```xaml
+```xml
 <UserControl x:Class="MyNamespace.MyDialogView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -36,7 +36,7 @@ WPF Prismでは、Dialog画面内のContentControlに別のViewを表示させ�
 
 4. ダイアログ用のViewに、表示させたいViewを定義します。例えば、以下のようなXAMLコードを使用して、表示させたいViewを定義します。
 
-```xaml
+```xml
 <UserControl x:Class="MyNamespace.MyContentView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
