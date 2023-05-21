@@ -179,7 +179,7 @@ namespace Template.ViewModels
 次に、ScannerViewの実装です。
 
 ▼ScannerView.xaml
-```xaml
+```xml
 <?xml version="1.0" encoding="utf-8" ?>
 <zxing:ZXingScannerPage
     x:Class="Template.Views.ScannerView"

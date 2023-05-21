@@ -19,20 +19,20 @@ export class PostService {
    * @param searchQuery 
    * @returns 
    */
-  async findAll(page: number, category: string, tag: string, searchQuery: string): Promise<PostResponse> {
+  async getPosts(page: number, category: string, tag: string, searchQuery: string): Promise<PostResponse> {
 
     if (category) {
       // console.log(`category: ${category}`);
-      return this.findCategoryPosts(category, page);
+      return this.getCategoryPosts(category, page);
     }
 
     if (tag) {
       // console.log(`tag: ${tag}`);
-      return this.findTagPosts(tag, page);
+      return this.getTagPosts(tag, page);
     }
 
     if (searchQuery) {
-      return this.findSearchedPosts(searchQuery, page);
+      return this.getSearchedPosts(searchQuery, page);
     }
 
     const allPosts = await this.getAllPosts();
@@ -45,7 +45,7 @@ export class PostService {
    * @param id 
    * @returns 
    */
-  async findById(id: string): Promise<Post> {
+  async getPostById(id: string): Promise<Post> {
     // console.log(id);
 
     const filePath = join(process.cwd(), 'dist/server/assets/posts', id, 'index.md');
@@ -56,6 +56,39 @@ export class PostService {
       console.error(`Failed to read file: ${filePath}`);
       console.error(error);
     }
+  }
+
+  /**
+   * 関連記事を取得
+   * @param post 
+   * @returns 
+   */
+  async getRelatedPosts(post: Post): Promise<Post[]> {
+    const relatedPosts: Post[] = [];
+
+    const allPosts = await this.getAllPosts();
+
+    // Filter posts based on categories
+    for (const category of post.categories) {
+      const postsWithCategory = allPosts.filter(p =>
+        p.categories.includes(category) && !relatedPosts.includes(p) && p.id !== post.id
+      );
+      relatedPosts.push(...postsWithCategory);
+    }
+
+    // Filter posts based on tags
+    for (const tag of post.tags) {
+      const postsWithTag = allPosts.filter(p =>
+        p.tags.includes(tag) && !relatedPosts.includes(p) && p.id !== post.id
+      );
+      relatedPosts.push(...postsWithTag);
+    }
+
+    // Shuffle the related posts array
+    const shuffledPosts = utils.shuffleArray(relatedPosts);
+
+    // Return the first 5 posts (or fewer if there are less than 5)
+    return shuffledPosts.slice(0, constants.default.RELATED_ARTICLES_COUNT);
   }
 
   /**
@@ -75,7 +108,7 @@ export class PostService {
    * 記事IDの一覧を取得
    * @returns 
    */
-  async findAllIds(): Promise<string[]> {
+  async getPostIds(): Promise<string[]> {
     const folderPath = join(process.cwd(), 'dist/server/assets/posts');
     try {
       const dirents = await promisify(readdir)(
@@ -99,7 +132,7 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async findCategoryPosts(category: string, page: number): Promise<PostResponse> {
+  async getCategoryPosts(category: string, page: number): Promise<PostResponse> {
     let allPosts = await this.getAllPosts();
 
     if (category) {
@@ -117,7 +150,7 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async findTagPosts(tag: string, page: number): Promise<PostResponse> {
+  async getTagPosts(tag: string, page: number): Promise<PostResponse> {
     let allPosts = await this.getAllPosts();
 
     if (tag) {
@@ -135,7 +168,7 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async findSearchedPosts(searchQuery: string, page: number): Promise<PostResponse> {
+  async getSearchedPosts(searchQuery: string, page: number): Promise<PostResponse> {
     let allPosts = await this.getAllPosts();
 
     if (searchQuery) {
@@ -206,11 +239,11 @@ export class PostService {
    * @returns 
    */
   private async getAllPosts(): Promise<Post[]> {
-    const ids = await this.findAllIds();
+    const ids = await this.getPostIds();
 
     let allPosts: Post[] = [];
     for (const id of ids) {
-      allPosts.push(await this.findById(id));
+      allPosts.push(await this.getPostById(id));
     }
 
     allPosts = utils.sortByDate(allPosts, 'date', 'desc');  // 新規投稿順にソート

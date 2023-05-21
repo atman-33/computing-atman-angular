@@ -16,7 +16,7 @@ import { PostService } from '../shared/post.service';
 export class PostListComponent implements OnInit {
 
   public readonly defaultThumbnail = Constants.DEFAULT_BLOG_THUMBNAIL_PATH;
-  public readonly articleLeadMaxLength = 80;
+  public readonly articleLeadMaxLength = Constants.ARTICLE_LEAD_MAX_LENGTH;
 
   public posts: Post[] = [];
   public totalPostsCount!: number;
@@ -134,7 +134,7 @@ export class PostListComponent implements OnInit {
         this.posts = this.posts.map(post => {
           return {
             ...post,
-            article: this.extractLead(post.article, this.articleLeadMaxLength)
+            article: utils.extractLead(post.article, this.articleLeadMaxLength)
           };
         });
         // console.log('totalPostsCount: ' + this.totalPostsCount);
@@ -160,20 +160,6 @@ export class PostListComponent implements OnInit {
   onResetPosts() {
     this.currentPage = 1;
   }
-
-  extractLead(article: string, maxLength: number): string {
-    // HTML要素を除去する
-    const div = document.createElement('div');
-    div.innerHTML = article;
-    const text = div.textContent || div.innerText || '';
-
-    let truncated = text.substring(0, maxLength);
-    if (text.length > maxLength) {
-      truncated += '...';
-    }
-    return truncated;
-  }
-
 
   search() {
     console.log('Search Text:', this.searchText);

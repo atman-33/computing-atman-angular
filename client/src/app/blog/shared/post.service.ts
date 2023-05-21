@@ -30,6 +30,10 @@ export class PostService {
         return this.http.get<Post>(`/api/post/items/${id}`);
     }
 
+    getRelatedPosts(id: string): Observable<Post[]> {
+        return this.http.get<Post[]>(`/api/post/items/${id}/related`);
+    }
+
     getPostImage(id: string, fileName: string): Observable<Blob> {
         return this.http.get<Blob>(`/api/post/img/${id}/${fileName}`);
     }

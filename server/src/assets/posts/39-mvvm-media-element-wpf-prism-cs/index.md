@@ -81,7 +81,7 @@ public partial class DemoView : UserControl, IMediaService
 - ビューに名前を付けて、パラメーターとして渡すことができるようにします。
 - インタラクティブな名前空間をインポートしておきます。（他にも必要な名前空間は省略）
 
-```xaml
+```xml
    <UserControl x:Class="Test.DemoView"
      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
@@ -90,7 +90,7 @@ public partial class DemoView : UserControl, IMediaService
 
 - トリガーを介して Loaded イベントを接続し、コマンドを介してビュー自体（x:Name=MediaService）をビュー モデルに渡します。
 
-```xaml
+```xml
    <i:Interaction.Triggers>
          <i:EventTrigger EventName="Loaded">
              <i:InvokeCommandAction Command="{Binding MediaServiceLoaded}" CommandParameter="{Binding ElementName=MediaService}"></i:InvokeCommandAction>
@@ -98,7 +98,7 @@ public partial class DemoView : UserControl, IMediaService
      </i:Interaction.Triggers>
 ```
 - MediaElement を操作するボタン（コマンド）を準備しておきます。
-```xaml
+```xml
    <Button Command="{Binding MoviePlayButton}" Content="Play"></Button> 
    <Button Command="{Binding MovieStopButton}" Content="Stop"></Button> 
 ```

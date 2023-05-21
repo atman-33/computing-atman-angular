@@ -73,7 +73,7 @@ sqlplus / as sysdba
 ```
 
 接続先を確認
-```shell
+```sql
 SQL> show con_name
 
 ↓
@@ -85,7 +85,7 @@ CDB$ROOT
 コンテナデータベース（CDB）に接続されているため、プラガブルデータベース（PDB）に接続を切り替えます。
 
 存在するプラガブルデータベースを確認します。
-```shell
+```sql
 SQL> show pdbs
 
 ↓
@@ -98,7 +98,7 @@ SQL> show pdbs
 
 既に存在する「XEPDB1」を利用する事とします。
 
-```shell
+```sql
 SQL> ALTER SESSION SET CONTAINER=XEPDB1;
 
 ↓
@@ -106,7 +106,7 @@ SQL> ALTER SESSION SET CONTAINER=XEPDB1;
 セッションが変更されました。
 ```
 
-```shell
+```sql
 SQL> show con_name
 
 ↓
@@ -125,7 +125,7 @@ XEPDB1
 
 プロファイルは「DEFAULT」を設定してパスワード期限を無期限にします。
 
-```shell
+```sql
 SQL > 
 CREATE USER atman IDENTIFIED BY atman;
 GRANT CONNECT, RESOURCE TO atman;
@@ -134,14 +134,14 @@ ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
 ```
 
 プロファイルを確認してみます。
-```shell
+```sql
 SQL >
 select username, profile from dba_users
 where username = 'ATMAN';
 ```
 プロファイルは「DEFAULT」となっていました。
 
-```shell
+```sql
 SQL >
 SELECT * FROM DBA_PROFILES
 WHERE RESOURCE_NAME = 'PASSWORD_LIFE_TIME';
@@ -156,7 +156,7 @@ WHERE RESOURCE_NAME = 'PASSWORD_LIFE_TIME';
 - 一時表領域: TEMP
 
 確認用のSQLです。
-```shell
+```sql
 SELECT username,default_tablespace,temporary_tablespace 
 FROM DBA_USERS WHERE username='ATMAN';
 ```
@@ -192,7 +192,7 @@ ___
 
 tnsnames.oraの最後に、以下の記述を追加します。
 
-```ora
+```text
 XEPDB1=
 (DESCRIPTION=
   (LOAD_BALANCE=off) 

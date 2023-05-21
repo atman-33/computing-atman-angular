@@ -392,7 +392,7 @@ ___
 顔認識に必要なXMLファイル「haarcascade_frontalface_default.xml」は、下記のgithubからダウンロードできます。
 
 
-https://github.com/opencv/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml
+[xmlダウンロード](https://github.com/opencv/opencv/blob/master/data/haarcascades/haarcascade_frontalface_default.xml)
 
 今回のアプリケーションでは、カスケードファイルを同プロジェクトの実行フォルダに保存して扱うようにしています。
 

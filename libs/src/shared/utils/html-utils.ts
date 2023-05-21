@@ -34,3 +34,23 @@ export function addTextAfterClosingTag(html: string, tagName: string, text: stri
     });
     return doc.documentElement.innerHTML.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"');
 }
+
+/**
+ * HTML要素を除去して、指定した文字数を抽出
+ * 記事のリード文抽出などに利用
+ * @param article 
+ * @param maxLength 
+ * @returns 
+ */
+export function extractLead(article: string, maxLength: number): string {
+    // HTML要素を除去する
+    const div = document.createElement('div');
+    div.innerHTML = article;
+    const text = div.textContent || div.innerText || '';
+
+    let truncated = text.substring(0, maxLength);
+    if (text.length > maxLength) {
+        truncated += '...';
+    }
+    return truncated;
+}
