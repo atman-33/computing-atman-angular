@@ -13,6 +13,9 @@
 #### /api/post/items/:id  
 指定された記事idのデータを送信  
 
+#### /api/post/items/:id/related  
+指定された記事idに関する記事のデータを送信
+
 #### /api/post/img/:id/:file  
 記事idで利用している画像ファイルを送信  
 

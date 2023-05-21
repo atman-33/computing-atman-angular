@@ -5,6 +5,7 @@ import { PostService } from '../shared/post.service';
 import * as utils from 'libs/src/shared/utils/index';
 import { Post } from 'libs/src/shared/models/post.model';
 import Constants from '../../shared/constants';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-post-detail',
@@ -14,6 +15,7 @@ import Constants from '../../shared/constants';
 export class PostDetailComponent implements OnInit, AfterViewChecked {
 
   public readonly defaultThumbnail = Constants.DEFAULT_BLOG_THUMBNAIL_PATH;
+  public readonly articleLeadMaxLength = Constants.ARTICLE_LEAD_MAX_LENGTH;
 
   public post!: Post;
   public articleHtml: string | undefined;
@@ -26,6 +28,8 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
 
   private highlighted = false;
 
+  public relatedPosts: Post[] = [];
+
   constructor(
     private route: ActivatedRoute,
     private postService: PostService,
@@ -37,10 +41,8 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
 
       // const id = params.get('id') ?? '';
 
-      // 観測対象を取得
-      const postObservable$ = this.postService.getPostById(params.get('id') ?? '');
-
       // subscribeでファイルからデータ取得
+      const postObservable$ = this.postService.getPostById(params.get('id') ?? '');
       postObservable$.subscribe({
         next: (data) => {
           this.post = data;
@@ -54,6 +56,23 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
           this.categories = data.categories;
 
           this.articleHtml = utils.addClassToHtml(data.article, 'line-numbers', 'pre');
+
+          this.highlighted = false;
+        },
+        error: (err) => { console.error('Error: ' + err.error); }
+      });
+
+      // 関連記事を表示
+      const relatedPostsObservable$ = this.postService.getRelatedPosts(params.get('id') ?? '');
+      relatedPostsObservable$.subscribe({
+        next: (data) => {
+          this.relatedPosts = data;
+          this.relatedPosts = this.relatedPosts.map(post => {
+            return {
+              ...post,
+              article: utils.extractLead(post.article, this.articleLeadMaxLength)
+            };
+          });
         },
         error: (err) => { console.error('Error: ' + err.error); }
       });
@@ -61,9 +80,16 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked() {
+    console.log('ngAfterViewChecked!');
     if (!this.highlighted && this.articleHtml) {
-      this.prismService.highlightAll();
-      this.highlighted = true;
+      console.log('ハイライト!');
+
+      this.highlightAll();
     }
+  }
+
+  private highlightAll() {
+    this.prismService.highlightAll();
+    this.highlighted = true;
   }
 }
