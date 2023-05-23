@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { PostModule } from './post/post.module';
+import { PostsModule } from './posts/posts.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 // import { ItemsModule } from './items/items.module';
 // import { AuthModule } from './auth/auth.module';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { dataSourceOptions } from '../../data-source';
-import { UserModule } from './user/user.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,8 +17,8 @@ import { UserModule } from './user/user.module';
     // ItemsModule,
     // AuthModule,
     // TypeOrmModule.forRoot(dataSourceOptions),
-    PostModule,
-    UserModule,
+    PostsModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],

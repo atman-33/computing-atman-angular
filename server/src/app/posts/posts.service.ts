@@ -9,7 +9,7 @@ import { join } from 'path';
 import { promisify } from 'util';
 
 @Injectable()
-export class PostService {
+export class PostsService {
 
   /**
    * ページに対応した記事データを取得
@@ -301,13 +301,13 @@ export class PostService {
 
   private addPrefixTothumbnail(post: Post): Post {
     if (post.thumbnail) {
-      post.thumbnail = join('/api/post/img', post.id, post.thumbnail);
+      post.thumbnail = join('/api/posts/img', post.id, post.thumbnail);
     }
     return post;
   }
 
   private addPrefixToImageSource(post: Post): Post {
-    post.article = helpers.addMdPrefixToImageSource(post.article, './api/post/img/' + post.id + '/');
+    post.article = helpers.addMdPrefixToImageSource(post.article, './api/posts/img/' + post.id + '/');
     return post;
   }
 }

@@ -7,7 +7,7 @@ import { NgModule } from '@angular/core';
 import { PrismService } from '../shared/services/prism.service';
 import { PostService } from './shared/post.service';
 import { PaginationComponent } from './pagination/pagination.component';
-import { BreadcrumbComponent } from './breadcrumb/breadcrumb.component';
+import { BreadcrumbsComponent } from './breadcrumbs/breadcrumbs.component';
 import { CategoryListComponent } from './sidebar/category-list/category-list.component';
 import { TagListComponent } from './sidebar/tag-list/tag-list.component';
 import { FormsModule } from '@angular/forms';
@@ -34,7 +34,7 @@ const routes: Routes = [
         BlogComponent,
         PostListComponent,
         PostDetailComponent,
-        BreadcrumbComponent,
+        BreadcrumbsComponent,
         PaginationComponent,
         CategoryListComponent,
         TagListComponent
