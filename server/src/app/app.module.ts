@@ -6,17 +6,19 @@ import { join } from 'path';
 // import { AuthModule } from './auth/auth.module';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { dataSourceOptions } from '../../data-source';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
-      exclude: ['/api*']
+      exclude: ['/api*'],
     }),
     // ItemsModule,
     // AuthModule,
     // TypeOrmModule.forRoot(dataSourceOptions),
-    PostModule
+    PostModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
