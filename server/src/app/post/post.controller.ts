@@ -10,31 +10,31 @@ export class PostController {
     }
 
     @Get()
-    async getPosts(
+    async findPosts(
         @Query('page') page: number,
         @Query('category') category: string,
         @Query('tag') tag: string,
         @Query('q') searchQuery: string
         ): Promise<PostResponse> {
-        return await this.postService.getPosts(page, category, tag, searchQuery);
+        return await this.postService.findPosts(page, category, tag, searchQuery);
     }
 
     @Get('items/:id')
-    async getPostById(@Param('id') id: string): Promise<Post> {
-        return await this.postService.getPostById(id);
+    async findPostById(@Param('id') id: string): Promise<Post> {
+        return await this.postService.findPostById(id);
     }
 
     @Get('items/:id/related')
-    async getRelatedPosts(@Param('id') id: string): Promise<Post[]> {
+    async findRelatedPosts(@Param('id') id: string): Promise<Post[]> {
       // Assuming you have a method to retrieve a single post by its ID
-      const post: Post = await this.postService.getPostById(id);
+      const post: Post = await this.postService.findPostById(id);
   
       if (!post) {
         // Handle the case when the post is not found
         throw new NotFoundException('Post not found');
       }
   
-      const relatedPosts: Post[] = await this.postService.getRelatedPosts(post);
+      const relatedPosts: Post[] = await this.postService.findRelatedPosts(post);
   
       return relatedPosts;
     }
@@ -48,39 +48,39 @@ export class PostController {
     }
 
     @Get('ids')
-    async getPostIds(): Promise<string[]> {
-        return await this.postService.getPostIds();
+    async findPostIds(): Promise<string[]> {
+        return await this.postService.findPostIds();
     }
 
     @Get('categories/:category')
-    async getCategoryPosts(
+    async findCategoryPosts(
         @Param('category') category: string,
         @Query('page') page: number): Promise<PostResponse> {
-        return await this.postService.getCategoryPosts(category, page);
+        return await this.postService.findCategoryPosts(category, page);
     }
 
     @Get('tags/:tag')
-    async getTagPosts(
+    async findTagPosts(
         @Param('tag') tag: string,
         @Query('page') page: number): Promise<PostResponse> {
-        return await this.postService.getTagPosts(tag, page);
+        return await this.postService.findTagPosts(tag, page);
     }
 
     @Get('search')
     async searchPosts(
         @Query('q') searchQuery: string, 
         @Query('page') page: number): Promise<PostResponse> {
-        const posts = await this.postService.getSearchedPosts(searchQuery, page);
+        const posts = await this.postService.searchPosts(searchQuery, page);
         return posts;
     }
 
     @Get('category-list')
-    async getCagegoryList(): Promise<Category[]> {
-        return await this.postService.getCagegoryList();
+    async findCagegoryList(): Promise<Category[]> {
+        return await this.postService.findCagegoryList();
     }
 
     @Get('tag-list')
-    async getTagList(): Promise<Tag[]> {
-        return await this.postService.getTagList();
+    async findTagList(): Promise<Tag[]> {
+        return await this.postService.findTagList();
     }
 }
