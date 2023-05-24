@@ -7,6 +7,8 @@ import { join } from 'path';
 // import { TypeOrmModule } from '@nestjs/typeorm';
 // import { dataSourceOptions } from '../../data-source';
 import { UsersModule } from './users/users.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +21,10 @@ import { UsersModule } from './users/users.module';
     // TypeOrmModule.forRoot(dataSourceOptions),
     PostsModule,
     UsersModule,
+    MongooseModule.forRoot(
+      'mongodb://atman:atman@ac-uczspzk-shard-00-00.jkfgop3.mongodb.net:27017,ac-uczspzk-shard-00-01.jkfgop3.mongodb.net:27017,ac-uczspzk-shard-00-02.jkfgop3.mongodb.net:27017/nest?ssl=true&replicaSet=atlas-nbs1wj-shard-0&authSource=admin&retryWrites=true&w=majority'
+    ),
+    AuthModule,
   ],
   controllers: [],
   providers: [],
