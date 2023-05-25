@@ -1,8 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto } from '../users/dto/create-user.dto';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/create-user.dto';
+import { User } from '../users/interfaces/user.interface';
+import { UsersService } from '../users/users.service';
+import { CredentialsDto } from './dto/credentials.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,21 +17,31 @@ export class AuthService {
         private readonly usersService: UsersService) {
     }
 
-    async validateUser({username, password}: CreateUserDto) {
-        const user = await this.usersService.findOne(username);
-        const isValid = await bcrypt.compare(password, user.password);
-        if(!isValid){
-            throw new UnauthorizedException('Invalid credentials');
-        }
-        return isValid;
+    /**
+     * ユーザー登録
+     * @param createUserDto 
+     * @returns 
+     */
+    async signUp(createUserDto: CreateUserDto): Promise<User> {
+        return await this.usersService.createUser(createUserDto);
     }
 
-    async login(user: CreateUserDto) {
-        if (await this.validateUser(user)) {
+    /**
+     * ユーザーログイン
+     * @param credentialsDto 
+     * @returns 
+     */
+    async signIn(credentialsDto: CredentialsDto): Promise<{ accessToken: string; }> {
+        const { username, password } = credentialsDto;
+        const user = await this.usersService.findOne(username);
+
+        if (user && (await bcrypt.compare(password, user.password))) {
             const payload = { username: user.username };
-            return {
-                'access_token': this.jwtService.sign(payload)
-            };
+            const accessToken = await this.jwtService.sign(payload);
+            console.log(`sign in: ${user.username}`);
+
+            return { accessToken };
         }
+        throw new UnauthorizedException('Please confirm your username or password');
     }
 }

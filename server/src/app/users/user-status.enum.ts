@@ -1,4 +1,4 @@
 export enum UserStatus {
-    FREE = 'FREE',
-    PREMIUM = 'PREMIUM'
+    MEMBER = 'MEMBER',
+    ADMINISTRATOR = 'ADMINISTRATOR'
 }

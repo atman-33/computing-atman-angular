@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
-import { UserStatus } from '../user-status.enum';
+import { UserStatus } from '../../users/user-status.enum';
 export class CreateUserDto {
     @IsString()
     @IsNotEmpty()

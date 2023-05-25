@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './interfaces/user.interface';
@@ -14,31 +14,66 @@ export class UsersService {
     constructor(@InjectModel('User') private readonly userModel: Model<User>) {
     }
 
-    async create(user: CreateUserDto) {
-        const createdUser = new this.userModel({
-            username: user.username,
-            password: await bcrypt.hash(user.password, 12)
+    /**
+     * ユーザー作成
+     * @param createUserDto 
+     * @returns 
+     */
+    async createUser(createUserDto: CreateUserDto): Promise<User> {
+        const { username, password, status } = createUserDto;
+
+        const hashPassword = await this.generateHashedPassword(password);
+        const user = new this.userModel({
+            username,
+            password: hashPassword,
+            status: status
         });
-        return await createdUser.save();
+        return await user.save();
     }
 
-    async findAll() {
+    async findAll(): Promise<User[]> {
         return await this.userModel.find().exec();
     }
 
-    async findOne(username: string) {
+    async findOne(username: string): Promise<User> {
         const user = await this.userModel.findOne({ username }).exec();
-        if (!user){
+        if (!user) {
             throw new NotFoundException('Could not find user');
         }
         return user;
     }
 
-    async delete(username: string) {
+    async updatePassword(username: string, password: string): Promise<User> {
+        const user = await this.userModel.findOne({ username }).exec();
+
+        if (!user) {
+            throw new NotFoundException(`User with username '${username}' not found`);
+        }
+
+        const hashPassword = await this.generateHashedPassword(password);
+        const updatedUser = await this.userModel.findOneAndUpdate(
+            { username },
+            { password: hashPassword },
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            throw new NotFoundException(`Could not update password for user '${username}'`);
+        }
+
+        return updatedUser;
+    }
+
+    async delete(username: string): Promise<void> {
         const response = await this.userModel.deleteOne({ username }).exec();
-        if (response.deletedCount === 0){
+        if (response.deletedCount === 0) {
             throw new NotFoundException('Could not find user');
         }
-        return response;
+    }
+
+    private async generateHashedPassword(password: string): Promise<string> {
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+        return hashedPassword;
     }
 }

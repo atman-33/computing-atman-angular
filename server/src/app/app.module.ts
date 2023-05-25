@@ -1,24 +1,18 @@
 import { Module } from '@nestjs/common';
-import { PostsModule } from './posts/posts.module';
+import { MongooseModule } from '@nestjs/mongoose';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-// import { ItemsModule } from './items/items.module';
-// import { AuthModule } from './auth/auth.module';
-// import { TypeOrmModule } from '@nestjs/typeorm';
-// import { dataSourceOptions } from '../../data-source';
-import { UsersModule } from './users/users.module';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './posts/posts.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
+    // TypeOrmModule.forRoot(dataSourceOptions),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'client'),
       exclude: ['/api*'],
     }),
-    // ItemsModule,
-    // AuthModule,
-    // TypeOrmModule.forRoot(dataSourceOptions),
     PostsModule,
     UsersModule,
     MongooseModule.forRoot(

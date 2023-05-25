@@ -1,32 +1,38 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards, ValidationPipe, Request } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Body, Controller, Delete, Get, Param, UseGuards, Patch } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { AuthGuard } from '@nestjs/passport';
+import { User } from './interfaces/user.interface';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CredentialsDto } from '../auth/dto/credentials.dto';
 
 @Controller('users')
 export class UsersController {
 
-    constructor(private readonly usersService: UsersService){
+    constructor(private readonly usersService: UsersService) {
     }
 
     @Get()
-    findAll(){
-        return this.usersService.findAll();
+    async findAll(): Promise<User[]> {
+        return await this.usersService.findAll();
     }
 
     @Get(':username')
-    @UseGuards(AuthGuard('jwt'))
-    findOne(@Param('username') username: string){
-        return this.usersService.findOne(username);
+    async findOne(@Param('username') username: string): Promise<User> {
+        return await this.usersService.findOne(username);
     }
 
-    @Post()
-    create(@Body(ValidationPipe) createUser: CreateUserDto) {
-        return this.usersService.create(createUser);
+    @Patch(':username/password')
+    @UseGuards(JwtAuthGuard)
+    async updatePassword(
+        @Param('username') username: string,
+        @Body() credentialsDto: CredentialsDto,
+    ): Promise<User> {
+        const { password } = credentialsDto;
+        return await this.usersService.updatePassword(username, password);
     }
 
     @Delete(':username')
-    delete(@Param('username') username: string){
-        return this.usersService.delete(username);
+    @UseGuards(JwtAuthGuard)
+    async delete(@Param('username') username: string): Promise<void> {
+        return await this.usersService.delete(username);
     }
 }
