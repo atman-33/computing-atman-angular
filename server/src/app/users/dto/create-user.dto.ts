@@ -1,12 +1,15 @@
-import { IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { UserStatus } from '../user-status.enum';
 export class CreateUserDto {
     @IsString()
-    @MinLength(1)
-    @MaxLength(20)
-    readonly username!: string;
+    @IsNotEmpty()
+    username: string;
 
     @IsString()
     @MinLength(8)
-    @MaxLength(20)
-    readonly password!: string;
+    @MaxLength(32)
+    password: string;
+
+    @IsEnum(UserStatus)
+    status: UserStatus;
 }
