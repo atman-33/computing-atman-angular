@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Get, Param, UseGuards, Patch } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { User } from './interfaces/user.interface';
+import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { CredentialsDto } from '../auth/dto/credentials.dto';
+import { ChangePasswordDto } from './dtos/change-password-dto';
+import { User } from './interfaces/user.interface';
+import { UsersService } from './users.service';
+import { UserStatus } from './user-status.enum';
+import { Role } from '../auth/decorators/role.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('users')
 export class UsersController {
@@ -24,15 +27,20 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     async updatePassword(
         @Param('username') username: string,
-        @Body() credentialsDto: CredentialsDto,
+        @Body() changePasswordDto: ChangePasswordDto,
     ): Promise<User> {
-        const { password } = credentialsDto;
+        const { password } = changePasswordDto;
         return await this.usersService.updatePassword(username, password);
     }
 
     @Delete(':username')
-    @UseGuards(JwtAuthGuard)
-    async delete(@Param('username') username: string): Promise<void> {
+    @Role(UserStatus.ADMINISTRATOR)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    async delete(
+        @Param('username') username: string,
+        // @GetUser() user: User,
+    ): Promise<void> {
+        // console.log(user);
         return await this.usersService.delete(username);
     }
 }
