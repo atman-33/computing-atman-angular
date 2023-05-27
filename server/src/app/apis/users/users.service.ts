@@ -3,7 +3,7 @@ import { CreateUserDto } from '../auth/dtos/create-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './interfaces/user.interface';
-import * as bcrypt from 'bcrypt';
+import * as bcryptHelper from '../../shared/bcrypt-helper';
 
 @Injectable()
 export class UsersService {
@@ -22,7 +22,7 @@ export class UsersService {
     async createUser(createUserDto: CreateUserDto): Promise<User> {
         const { username, password, status } = createUserDto;
 
-        const hashPassword = await this.generateHashedPassword(password);
+        const hashPassword = await bcryptHelper.generateHashedPassword(password);
         const user = new this.userModel({
             username,
             password: hashPassword,
@@ -50,7 +50,7 @@ export class UsersService {
             throw new NotFoundException(`User with username '${username}' not found`);
         }
 
-        const hashPassword = await this.generateHashedPassword(password);
+        const hashPassword = await bcryptHelper.generateHashedPassword(password);
         const updatedUser = await this.userModel.findOneAndUpdate(
             { username },
             { password: hashPassword },
@@ -69,11 +69,5 @@ export class UsersService {
         if (response.deletedCount === 0) {
             throw new NotFoundException('Could not find user');
         }
-    }
-
-    private async generateHashedPassword(password: string): Promise<string> {
-        const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(password, salt);
-        return hashedPassword;
     }
 }
