@@ -1,12 +1,12 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppComponent } from './app.component';
-import { NavbarComponent } from './common/navbar/navbar.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { FooterComponent } from './common/footer/footer.component';
-import { HttpClientModule } from '@angular/common/http';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { NavbarComponent } from './common/navbar/navbar.component';
 
 @NgModule({
   // 利用するコンポーネントを登録
@@ -15,7 +15,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     NavbarComponent,
     FooterComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, NgbModule, HttpClientModule, FlexLayoutModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    NgbModule,
+    HttpClientModule,
+    FlexLayoutModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
