@@ -1,9 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ChangePasswordDto } from './dtos/change-password-dto';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 import { User } from './interfaces/user.interface';
 import { UsersService } from './users.service';
-import { UserRole } from './user-role.enum';
+import { UserRole } from 'libs/src/shared/enums/user-role.enum';
 import { Role } from '../auth/decorators/role.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
