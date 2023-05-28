@@ -5,6 +5,8 @@ import { join } from 'path';
 import { AuthModule } from './apis/auth/auth.module';
 import { PostsModule } from './apis/posts/posts.module';
 import { UsersModule } from './apis/users/users.module';
+import { EnvModule } from './config/env.module';
+import { EnvService } from './config/env.service';
 
 @Module({
   imports: [
@@ -13,14 +15,19 @@ import { UsersModule } from './apis/users/users.module';
       rootPath: join(__dirname, '..', 'client'),
       exclude: ['/api*'],
     }),
-    PostsModule,
+    EnvModule,
+    MongooseModule.forRootAsync({
+      imports: [EnvModule],
+      useFactory: (envService: EnvService) => ({
+        uri: envService.dbUri
+      }),
+      inject: [EnvService]
+    }),
     UsersModule,
-    MongooseModule.forRoot(
-      'mongodb://atman:atman@ac-uczspzk-shard-00-00.jkfgop3.mongodb.net:27017,ac-uczspzk-shard-00-01.jkfgop3.mongodb.net:27017,ac-uczspzk-shard-00-02.jkfgop3.mongodb.net:27017/nest?ssl=true&replicaSet=atlas-nbs1wj-shard-0&authSource=admin&retryWrites=true&w=majority'
-    ),
     AuthModule,
+    PostsModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from '../auth/dtos/create-user.dto';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from './interfaces/user.interface';
 import * as bcryptHelper from '../../shared/bcrypt-helper';
+import { CreateUserDto } from '../auth/dtos/create-user.dto';
+import { User } from './interfaces/user.interface';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +11,8 @@ export class UsersService {
     /**
      * コンストラクタ
      */
-    constructor(@InjectModel('User') private readonly userModel: Model<User>) {
+    constructor(
+        @InjectModel('User') private readonly userModel: Model<User>) {
     }
 
     /**
@@ -20,11 +21,16 @@ export class UsersService {
      * @returns 
      */
     async createUser(createUserDto: CreateUserDto): Promise<User> {
-        const { username, password, status } = createUserDto;
+        const { username, email, password, status } = createUserDto;
+
+        if(this.findOne(username)) {
+            throw new ConflictException('Username already exists');
+        }
 
         const hashPassword = await bcryptHelper.generateHashedPassword(password);
         const user = new this.userModel({
             username,
+            email,
             password: hashPassword,
             status: status
         });

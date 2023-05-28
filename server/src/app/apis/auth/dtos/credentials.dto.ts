@@ -9,5 +9,4 @@ export class CredentialsDto {
     @MinLength(8)
     @MaxLength(32)
     password: string;
-
 }
