@@ -9,7 +9,7 @@
                             <h2 class="h4">Sign in to our platform</h2>
                         </div>
                         <div class="card-body">
-                            <form action="#" class="mt-4">
+                            <form #signinForm="ngForm" (ngSubmit)="signin(signinForm)" class="mt-4">
                                 <!-- Form -->
                                 <div class="form-group">
                                     <label for="inputName">Your account name</label>
@@ -17,8 +17,8 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><span class="fas fa-user"></span></span>
                                         </div>
-                                        <input class="form-control" id="inputName"
-                                            placeholder="Name" type="text" aria-label="name">
+                                        <input class="form-control" id="inputName" placeholder="Name" type="text"
+                                            aria-label="name" ngModel name="username" required>
                                     </div>
                                 </div>
                                 <!-- End of Form -->
@@ -32,7 +32,9 @@
                                                         class="fas fa-unlock-alt"></span></span>
                                             </div>
                                             <input class="form-control" id="inputPassword"
-                                                placeholder="Password" type="password" aria-label="Password" required>
+                                                placeholder="Password must be between 8 and 32 characters"
+                                                type="password" aria-label="Password" required ngModel name="password"
+                                                minlength="8" maxlength="32">
                                         </div>
                                     </div>
                                     <!-- End of Form -->
@@ -46,7 +48,16 @@
                                         <div><a href="#" class="small text-right">Lost password?</a></div>
                                     </div> -->
                                 </div>
-                                <button type="submit" class="btn btn-block btn-primary">Sign in</button>
+                                <button [disabled]="!signinForm.valid" type="submit"
+                                    class="btn btn-block btn-primary">Sign in</button>
+
+                                <div *ngIf="errors && errors.length>0"
+                                    class="alert alert-danger alert-dismissible shadow-soft fade show mt-4">
+                                    <p *ngFor="let error of errors">
+                                        <span class="alert-inner--icon"><span class="fas fa-fire"></span></span>
+                                        <span class="alert-inner--text"><strong>{{error}}</strong></span>
+                                    </p>
+                                </div>
                             </form>
                             <!-- <div class="mt-3 mb-4 text-center">
                                 <span class="font-weight-normal">or login with</span>

@@ -43,3 +43,7 @@
 
 #### /api/posts/tag-list
 タグ一覧を取得（タグ毎の記事数）
+
+#### /api/auth/signup
+
+#### /api/auth/signin
