@@ -3,7 +3,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ChangePasswordDto } from './dtos/change-password-dto';
 import { User } from './interfaces/user.interface';
 import { UsersService } from './users.service';
-import { UserStatus } from './user-status.enum';
+import { UserRole } from './user-role.enum';
 import { Role } from '../auth/decorators/role.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
@@ -34,7 +34,7 @@ export class UsersController {
     }
 
     @Delete(':username')
-    @Role(UserStatus.ADMINISTRATOR)
+    @Role(UserRole.ADMINISTRATOR)
     @UseGuards(JwtAuthGuard, RolesGuard)
     async delete(
         @Param('username') username: string,

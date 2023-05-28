@@ -16,7 +16,7 @@ export const UserSchema = new mongoose.Schema({
         min: [8, 'Please enter password at least 8 characters.'],
         max: [32, 'Please enter password no more than 32 characters.']
     },
-    status: {
+    role: {
         type: String,
         required: true
     }

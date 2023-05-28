@@ -21,9 +21,9 @@ export class UsersService {
      * @returns 
      */
     async createUser(createUserDto: CreateUserDto): Promise<User> {
-        const { username, email, password, status } = createUserDto;
+        const { username, email, password, role } = createUserDto;
 
-        if(this.findOne(username)) {
+        if(await this.findOne(username)) {
             throw new ConflictException('Username already exists');
         }
 
@@ -32,7 +32,7 @@ export class UsersService {
             username,
             email,
             password: hashPassword,
-            status: status
+            role: role
         });
         return await user.save();
     }
@@ -43,9 +43,6 @@ export class UsersService {
 
     async findOne(username: string): Promise<User> {
         const user = await this.userModel.findOne({ username }).exec();
-        if (!user) {
-            throw new NotFoundException('Could not find user');
-        }
         return user;
     }
 

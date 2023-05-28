@@ -1,5 +1,5 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength, Validate } from 'class-validator';
-import { UserStatus } from '../../users/user-status.enum';
+import { UserRole } from '../../users/user-role.enum';
 import { EqualToProperty } from '../validators/equal-to-property.validator';
 export class CreateUserDto {
     @IsString()
@@ -21,6 +21,6 @@ export class CreateUserDto {
     @Validate(EqualToProperty, ['password'])
     confirmPassword: string;
 
-    @IsEnum(UserStatus)
-    status: UserStatus;
+    @IsEnum(UserRole)
+    role: UserRole;
 }

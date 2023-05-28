@@ -15,18 +15,18 @@ export class RolesGuard implements CanActivate {
     }
 
     canActivate(ctx: ExecutionContext): boolean {
-        const requiredStatuses = this.reflector.get<string[]>(
-            'statuses',
+        const requiredRoles = this.reflector.get<string[]>(
+            'roles',
             ctx.getHandler(),
         );
 
         // デコレーターに何も指定されていない場合は実行を許可
-        if (!requiredStatuses) {
+        if (!requiredRoles) {
             return true;
         }
 
-        // ユーザーのstatusが、メタデータから取得したstatusのいずれかに一致すれば実行を許可
+        // ユーザーのroleが、メタデータから取得したroleaのいずれかに一致すれば実行を許可
         const { user } = ctx.switchToHttp().getRequest() as { user: User; };
-        return requiredStatuses.some((status) => user.status.includes(status));
+        return requiredRoles.some((role) => user.role.includes(role));
     }
 }
