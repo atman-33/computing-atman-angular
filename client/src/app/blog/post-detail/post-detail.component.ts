@@ -1,11 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Post } from 'libs/src/shared/models/post.model';
+import * as utils from 'libs/src/shared/utils/index';
+import Constants from '../../shared/constants';
 import { PrismService } from '../../shared/services/prism.service';
 import { PostService } from '../shared/post.service';
-import * as utils from 'libs/src/shared/utils/index';
-import { Post } from 'libs/src/shared/models/post.model';
-import Constants from '../../shared/constants';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-post-detail',
@@ -59,7 +59,7 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
 
           this.highlighted = false;
         },
-        error: (err) => { console.error('Error: ' + err.error); }
+        error: (err: HttpErrorResponse) => console.error(err)
       });
 
       // 関連記事を表示
@@ -74,7 +74,7 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
             };
           });
         },
-        error: (err) => { console.error('Error: ' + err.error); }
+        error: (err: HttpErrorResponse) => console.error(err)
       });
     });
   }

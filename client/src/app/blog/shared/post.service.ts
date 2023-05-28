@@ -14,35 +14,35 @@ export class PostService {
         const encodedTag = encodeURIComponent(tag);
         const encodedSearchQuery = encodeURIComponent(searchQuery);
 
-        console.log(`/api/post?page=${page}&category=${encodedCategory}&tag=${encodedTag}&q=${encodedSearchQuery}`);
-        return this.http.get<PostResponse>(`/api/post?page=${page}&category=${encodedCategory}&tag=${encodedTag}&q=${encodedSearchQuery}`);
+        console.log(`/api/posts?page=${page}&category=${encodedCategory}&tag=${encodedTag}&q=${encodedSearchQuery}`);
+        return this.http.get<PostResponse>(`/api/posts?page=${page}&category=${encodedCategory}&tag=${encodedTag}&q=${encodedSearchQuery}`);
     }
 
     getPostsByCategory(category: string, page: number): Observable<PostResponse> {
-        return this.http.get<PostResponse>(`/api/post/categories/${category}?page=${page}`);
+        return this.http.get<PostResponse>(`/api/posts/categories/${category}?page=${page}`);
     }
 
     getPostsByTag(tag: string, page: number): Observable<PostResponse> {
-        return this.http.get<PostResponse>(`/api/post/tags/${tag}?page=${page}`);
+        return this.http.get<PostResponse>(`/api/posts/tags/${tag}?page=${page}`);
     }
 
     getPostById(id: string): Observable<Post> {
-        return this.http.get<Post>(`/api/post/items/${id}`);
+        return this.http.get<Post>(`/api/posts/items/${id}`);
     }
 
     getRelatedPosts(id: string): Observable<Post[]> {
-        return this.http.get<Post[]>(`/api/post/items/${id}/related`);
+        return this.http.get<Post[]>(`/api/posts/items/${id}/related`);
     }
 
     getPostImage(id: string, fileName: string): Observable<Blob> {
-        return this.http.get<Blob>(`/api/post/img/${id}/${fileName}`);
+        return this.http.get<Blob>(`/api/posts/img/${id}/${fileName}`);
     }
 
     getCategoryList(): Observable<Category[]> {
-        return this.http.get<Category[]>('/api/post/category-list');
+        return this.http.get<Category[]>('/api/posts/category-list');
     }
 
     getTagList(): Observable<Tag[]> {
-        return this.http.get<Tag[]>('/api/post/tag-list');
+        return this.http.get<Tag[]>('/api/posts/tag-list');
     }
 }

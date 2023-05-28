@@ -1,6 +1,10 @@
+/**
+ * TypeORM用の設定ファイル
+ */
+
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { Item } from './src/app/entities/item.entity';
-import { User } from './src/app/entities/user.entity';
+import { Item } from './src/app/_samples/postgresql-typeorm/entities/item.entity';
+import { User } from './src/app/_samples/postgresql-typeorm/entities/user.entity';
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',

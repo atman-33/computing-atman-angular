@@ -11,7 +11,8 @@
 			"pkief.material-icon-theme",
 			"formulahendry.auto-rename-tag",
 			"github.github-vscode-theme",
-			"dracula-theme.theme-dracula"
+			"dracula-theme.theme-dracula",
+			"codeium.codeium"
 		]
 	}
 }

@@ -81,7 +81,7 @@ export function getMetadataArray(str: string, key: string): string[] {
     const value = metadata.slice(keyStartIndex + key.length, keyEndIndex);
 
     const lines = value.split('\n').filter(line => line.startsWith('-'));
-    const values = lines.map(v => v.slice(2, v.indexOf('\n')).trim());
+    const values = lines.map(v => v.slice(1).trim());
 
     return values;
 }

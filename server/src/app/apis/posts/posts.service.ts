@@ -9,7 +9,7 @@ import { join } from 'path';
 import { promisify } from 'util';
 
 @Injectable()
-export class PostService {
+export class PostsService {
 
   /**
    * ページに対応した記事データを取得
@@ -19,24 +19,24 @@ export class PostService {
    * @param searchQuery 
    * @returns 
    */
-  async getPosts(page: number, category: string, tag: string, searchQuery: string): Promise<PostResponse> {
+  async findPosts(page: number, category: string, tag: string, searchQuery: string): Promise<PostResponse> {
 
     if (category) {
       // console.log(`category: ${category}`);
-      return this.getCategoryPosts(category, page);
+      return this.findCategoryPosts(category, page);
     }
 
     if (tag) {
       // console.log(`tag: ${tag}`);
-      return this.getTagPosts(tag, page);
+      return this.findTagPosts(tag, page);
     }
 
     if (searchQuery) {
-      return this.getSearchedPosts(searchQuery, page);
+      return this.searchPosts(searchQuery, page);
     }
 
-    const allPosts = await this.getAllPosts();
-    const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
+    const allPosts = await this.findAllPosts();
+    const posts = this.findPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
     return { posts: posts, totalCount: allPosts.length };
   }
 
@@ -45,7 +45,7 @@ export class PostService {
    * @param id 
    * @returns 
    */
-  async getPostById(id: string): Promise<Post> {
+  async findPostById(id: string): Promise<Post> {
     // console.log(id);
 
     const filePath = join(process.cwd(), 'dist/server/assets/posts', id, 'index.md');
@@ -63,10 +63,10 @@ export class PostService {
    * @param post 
    * @returns 
    */
-  async getRelatedPosts(post: Post): Promise<Post[]> {
+  async findRelatedPosts(post: Post): Promise<Post[]> {
     const relatedPosts: Post[] = [];
 
-    const allPosts = await this.getAllPosts();
+    const allPosts = await this.findAllPosts();
 
     // Filter posts based on categories
     for (const category of post.categories) {
@@ -108,7 +108,7 @@ export class PostService {
    * 記事IDの一覧を取得
    * @returns 
    */
-  async getPostIds(): Promise<string[]> {
+  async findPostIds(): Promise<string[]> {
     const folderPath = join(process.cwd(), 'dist/server/assets/posts');
     try {
       const dirents = await promisify(readdir)(
@@ -132,14 +132,14 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async getCategoryPosts(category: string, page: number): Promise<PostResponse> {
-    let allPosts = await this.getAllPosts();
+  async findCategoryPosts(category: string, page: number): Promise<PostResponse> {
+    let allPosts = await this.findAllPosts();
 
     if (category) {
       allPosts = allPosts.filter(post => post.categories.includes(category));
     }
 
-    const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
+    const posts = this.findPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
 
     return { posts: posts, totalCount: allPosts.length };
   }
@@ -150,14 +150,14 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async getTagPosts(tag: string, page: number): Promise<PostResponse> {
-    let allPosts = await this.getAllPosts();
+  async findTagPosts(tag: string, page: number): Promise<PostResponse> {
+    let allPosts = await this.findAllPosts();
 
     if (tag) {
       allPosts = allPosts.filter(post => post.tags.includes(tag));
     }
 
-    const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
+    const posts = this.findPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
 
     return { posts: posts, totalCount: allPosts.length };
   }
@@ -168,8 +168,8 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  async getSearchedPosts(searchQuery: string, page: number): Promise<PostResponse> {
-    let allPosts = await this.getAllPosts();
+  async searchPosts(searchQuery: string, page: number): Promise<PostResponse> {
+    let allPosts = await this.findAllPosts();
 
     if (searchQuery) {
       const searchTerms = searchQuery.toLowerCase().replace('　', ' ').split(' ');
@@ -186,7 +186,7 @@ export class PostService {
     }
 
     // console.log(`Posts count: ${allPosts.length}`);
-    const posts = this.getPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
+    const posts = this.findPagePosts(allPosts, page, constants.default.POSTS_PER_PAGE);
     return { posts: posts, totalCount: allPosts.length };
   }
 
@@ -194,8 +194,8 @@ export class PostService {
    * 各カテゴリとその登録数を取得
    * @returns 
    */
-  async getCagegoryList(): Promise<Category[]> {
-    const allPosts = await this.getAllPosts();
+  async findCagegoryList(): Promise<Category[]> {
+    const allPosts = await this.findAllPosts();
 
     const categories: Category[] = allPosts.reduce((acc, post) => {
       post.categories.forEach((category) => {
@@ -216,8 +216,8 @@ export class PostService {
    * 各タグとその登録数を取得
    * @returns 
    */
-  async getTagList(): Promise<Tag[]> {
-    const allPosts = await this.getAllPosts();
+  async findTagList(): Promise<Tag[]> {
+    const allPosts = await this.findAllPosts();
 
     const tags: Tag[] = allPosts.reduce((acc, post) => {
       post.tags.forEach((tag) => {
@@ -238,12 +238,12 @@ export class PostService {
    * 記事を全て取得
    * @returns 
    */
-  private async getAllPosts(): Promise<Post[]> {
-    const ids = await this.getPostIds();
+  private async findAllPosts(): Promise<Post[]> {
+    const ids = await this.findPostIds();
 
     let allPosts: Post[] = [];
     for (const id of ids) {
-      allPosts.push(await this.getPostById(id));
+      allPosts.push(await this.findPostById(id));
     }
 
     allPosts = utils.sortByDate(allPosts, 'date', 'desc');  // 新規投稿順にソート
@@ -257,7 +257,7 @@ export class PostService {
    * @param page 
    * @returns 
    */
-  private getPagePosts(allPosts: Post[], page: number, pageSize: number): Post[] {
+  private findPagePosts(allPosts: Post[], page: number, pageSize: number): Post[] {
     if (page === undefined) {
       page = 1;
     }
@@ -301,13 +301,13 @@ export class PostService {
 
   private addPrefixTothumbnail(post: Post): Post {
     if (post.thumbnail) {
-      post.thumbnail = join('/api/post/img', post.id, post.thumbnail);
+      post.thumbnail = join('/api/posts/img', post.id, post.thumbnail);
     }
     return post;
   }
 
   private addPrefixToImageSource(post: Post): Post {
-    post.article = helpers.addMdPrefixToImageSource(post.article, './api/post/img/' + post.id + '/');
+    post.article = helpers.addMdPrefixToImageSource(post.article, './api/posts/img/' + post.id + '/');
     return post;
   }
 }
