@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MediaObserver } from '@angular/flex-layout';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -96,7 +97,7 @@ export class PostListComponent implements OnInit {
         // post一覧を更新
         this.loadPosts();
       },
-      error: (err) => { console.error('Error: ' + err.error); }
+      error: (err: HttpErrorResponse) => console.error(err)
     });
 
     // サイドバーのカテゴリー一覧を設定
@@ -104,7 +105,7 @@ export class PostListComponent implements OnInit {
       next: (data) => {
         this.sidebarCategories = utils.sortByNumber(data, 'count', 'desc');
       },
-      error: (err) => { console.error('Error: ' + err.error); }
+      error: (err: HttpErrorResponse) => console.error(err)
     });
 
     // サイドバーのタグ一覧を設定
@@ -112,7 +113,7 @@ export class PostListComponent implements OnInit {
       next: (data) => {
         this.sidebarTags = utils.sortByNumber(data, 'count', 'desc');
       },
-      error: (err) => { console.error('Error: ' + err.error); }
+      error: (err: HttpErrorResponse) => console.error(err)
     });
   }
 
