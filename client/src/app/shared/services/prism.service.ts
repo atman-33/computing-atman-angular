@@ -20,6 +20,7 @@ import 'prismjs/components/prism-sass';
 import 'prismjs/components/prism-scss';
 import 'prismjs/components/prism-sql';
 import 'prismjs/components/prism-xml-doc';
+import 'prismjs/components/prism-json';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 declare const Prism: any;
