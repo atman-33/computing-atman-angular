@@ -3,7 +3,8 @@
         class="navbar navbar-main navbar-expand-lg navbar-theme-primary bg-light shadow py-1">
         <div class="container position-relative">
 
-            <a class="navbar-brand py-2 px-3 rounded border-light font-weight-bold" [routerLink]="['/']" (click)="closeNavbarDialog()">
+            <a class="navbar-brand py-2 px-3 rounded border-light font-weight-bold" [routerLink]="['/']"
+                (click)="closeNavbarDialog()">
                 Computing Atman
             </a>
 
@@ -73,15 +74,17 @@
                         </a>
                     </li>
 
-                    <li class="nav-item d-flex justify-content-center" >
-                        <a href="#">
-                            <div class="navbar-btn btn btn-pill"><span class="fa-solid fa-user mr-1"></span>Login</div>
+                    <li class="nav-item d-flex justify-content-center">
+                        <a routerLink="/signin" (click)="closeNavbarDialog()">
+                            <div class="navbar-btn btn btn-pill"><span class="fa-solid fa-user mr-1"></span>Sign in
+                            </div>
                         </a>
                     </li>
 
                     <li class="nav-item d-flex justify-content-center">
-                        <a href="#">
-                            <div class="sign-up-btn navbar-btn btn btn-pill"><span class="fa fa-sign-in mr-1"></span>Sign Up</div>
+                        <a routerLink="/signup" (click)="closeNavbarDialog()">
+                            <div class="sign-up-btn navbar-btn btn btn-pill"><span
+                                    class="fa fa-sign-in mr-1"></span>Sign up</div>
                         </a>
                     </li>
                 </ul>

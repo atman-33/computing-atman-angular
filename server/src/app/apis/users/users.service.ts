@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from '../auth/dto/create-user.dto';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import * as bcryptHelper from '../../shared/bcrypt-helper';
+import { CreateUserDto } from '../auth/dtos/create-user.dto';
 import { User } from './interfaces/user.interface';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -11,7 +11,8 @@ export class UsersService {
     /**
      * コンストラクタ
      */
-    constructor(@InjectModel('User') private readonly userModel: Model<User>) {
+    constructor(
+        @InjectModel('User') private readonly userModel: Model<User>) {
     }
 
     /**
@@ -20,11 +21,16 @@ export class UsersService {
      * @returns 
      */
     async createUser(createUserDto: CreateUserDto): Promise<User> {
-        const { username, password, status } = createUserDto;
+        const { username, email, password, status } = createUserDto;
 
-        const hashPassword = await this.generateHashedPassword(password);
+        if(this.findOne(username)) {
+            throw new ConflictException('Username already exists');
+        }
+
+        const hashPassword = await bcryptHelper.generateHashedPassword(password);
         const user = new this.userModel({
             username,
+            email,
             password: hashPassword,
             status: status
         });
@@ -50,7 +56,7 @@ export class UsersService {
             throw new NotFoundException(`User with username '${username}' not found`);
         }
 
-        const hashPassword = await this.generateHashedPassword(password);
+        const hashPassword = await bcryptHelper.generateHashedPassword(password);
         const updatedUser = await this.userModel.findOneAndUpdate(
             { username },
             { password: hashPassword },
@@ -69,11 +75,5 @@ export class UsersService {
         if (response.deletedCount === 0) {
             throw new NotFoundException('Could not find user');
         }
-    }
-
-    private async generateHashedPassword(password: string): Promise<string> {
-        const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(password, salt);
-        return hashedPassword;
     }
 }

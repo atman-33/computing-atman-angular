@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/interfaces/user.interface';
+import { EnvService } from '../../config/env.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -11,18 +12,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     /**
      *
      */
-    constructor(private userService: UsersService) {
+    constructor(
+        private readonly userService: UsersService,
+        private readonly envService: EnvService) {
+            
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: 'secretKey123'
+            secretOrKey: envService.jwtSecret
         });
     }
 
     async validate(payload: JwtPayload): Promise<User> {
         const { username } = payload;
         const user = await this.userService.findOne(username);
-        console.log(username);
+        // console.log(username);
 
         if (user) {
             return user;
