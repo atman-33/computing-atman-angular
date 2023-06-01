@@ -73,33 +73,20 @@
                             <p class="d-lg-none">GitHub</p>
                         </a>
                     </li>
-                    <!-- サインイン後 -->
-                    <ng-container *ngIf="auth.isAuthenticated()">
-                        <li class="nav-item d-flex justify-content-center">
-                            <a (click)="signout()" (click)="closeNavbarDialog()">
-                                <div class="navbar-btn btn btn-pill"><span class="fa-solid fa-user mr-1"></span>Sign out
-                                </div>
-                            </a>
-                        </li>
-                    </ng-container>
 
-                    <!-- サインイン前 -->
-                    <ng-container *ngIf="!auth.isAuthenticated()">
-                        <li class="nav-item d-flex justify-content-center">
-                            <a routerLink="/signin" (click)="closeNavbarDialog()">
-                                <div class="navbar-btn btn btn-pill"><span class="fa-solid fa-user mr-1"></span>Sign in
-                                </div>
-                            </a>
-                        </li>
+                    <li class="nav-item d-flex justify-content-center">
+                        <a routerLink="/signin" (click)="closeNavbarDialog()">
+                            <div class="navbar-btn btn btn-pill"><span class="fa-solid fa-user mr-1"></span>Sign in
+                            </div>
+                        </a>
+                    </li>
 
-                        <li class="nav-item d-flex justify-content-center">
-                            <a routerLink="/signup" (click)="closeNavbarDialog()">
-                                <div class="sign-up-btn navbar-btn btn btn-pill"><span
-                                        class="fa fa-sign-in mr-1"></span>Sign up</div>
-                            </a>
-                        </li>
-                    </ng-container>
-
+                    <li class="nav-item d-flex justify-content-center">
+                        <a routerLink="/signup" (click)="closeNavbarDialog()">
+                            <div class="sign-up-btn navbar-btn btn btn-pill"><span
+                                    class="fa fa-sign-in mr-1"></span>Sign up</div>
+                        </a>
+                    </li>
                 </ul>
             </div>
 

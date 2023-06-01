@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../../auth/shared/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -10,9 +9,9 @@ import { AuthService } from '../../auth/shared/auth.service';
 export class NavbarComponent {
   public isNavbarDialogOpen = false;
 
-  constructor(
-    public auth: AuthService) {
-  }
+  // constructor(
+  //   public auth: AuthService) {
+  // }
 
   toggleNavbarDialog() {
     console.log('Toggle clicked!');
@@ -24,7 +23,7 @@ export class NavbarComponent {
     this.isNavbarDialogOpen = false;
   }
 
-  signout() {
-    this.auth.signout();
+  logout() {
+    // this.auth.logout();
   }
 }
