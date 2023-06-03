@@ -45,7 +45,7 @@
                                                         class="fas fa-unlock-alt"></span></span>
                                             </div>
                                             <input class="form-control" id="inputPassword"
-                                                placeholder="Password must be between 8 and 32 characters"
+                                                placeholder="between 8 and 32 characters"
                                                 type="password" aria-label="Password" required ngModel name="password"
                                                 minlength="8" maxlength="32">
                                         </div>
@@ -93,7 +93,7 @@
 
                                 <div *ngIf="errors && errors.length>0"
                                     class="alert alert-danger alert-dismissible shadow-soft fade show mt-4">
-                                    <p *ngFor="let error of errors">
+                                    <p *ngFor="let error of errors" class="my-0">
                                         <span class="alert-inner--icon"><span class="fas fa-fire"></span></span>
                                         <span class="alert-inner--text"><strong>{{error}}</strong></span>
                                     </p>
