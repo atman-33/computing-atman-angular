@@ -25,6 +25,7 @@
             </div>
 
             <div class="row mt-5 mb-5">
+
                 <div class="col-md-4 col-lg-4 text-center">
                     <div class="icon-box mb-4">
                         <a routerLink="/blog">
@@ -40,34 +41,45 @@
                         </span>
                     </div>
                 </div>
+
                 <div class="col-md-4 col-lg-4 text-center">
-                    <div class="icon-box mb-4">
-                        <a href="">
-                            <div class="icon icon-shape shadow-soft border-light rounded-circle mb-4"><span
-                                    class="fas fa-pager"></span></div>
+                    <div class="icon-box mb-4" ngbDropdown>
+
+                        <a class="icon icon-shape shadow-soft border-light rounded-circle mb-4" ngbDropdownToggle>
+                            <span class="fas fa-pager"></span>
                         </a>
                         <h2 class="h5 icon-box-title">Template Sites</h2>
                         <span>
                             Various template sites.<br>
                             Please feel free to use it as a reference if you like.
                         </span>
+                        <ul class="dropdown-menu" ngbDropdownMenu>
+                            <li><a class="dropdown-item" [routerLink]="['/user-management']">1. User table management</a></li>
+                            <li><a class="dropdown-item" href="#">Template2</a></li>
+                            <li><a class="dropdown-item" href="#">Template3</a></li>
+                        </ul>
                     </div>
                 </div>
+
                 <div class="col-md-4 col-lg-4 text-center">
-                    <div class="icon-box mb-4">
-                        <a href="">
-                            <div class="icon icon-shape shadow-soft border-light rounded-circle mb-4"><span
-                                    class="	fas fa-gamepad"></span></div>
+                    <div class="icon-box mb-4" ngbDropdown>
+                        <a class="icon icon-shape shadow-soft border-light rounded-circle mb-4" ngbDropdownToggle>
+                            <span class="	fas fa-gamepad"></span>
                         </a>
                         <h2 class="h5 icon-box-title">Games</h2>
                         <span>
                             Game made with Javascript.<br>
                             Please enjoy it if you like.
                         </span>
+                        <ul class="dropdown-menu" ngbDropdownMenu>
+                            <li><a class="dropdown-item" href="#">Game1</a></li>
+                            <li><a class="dropdown-item" href="#">Game2</a></li>
+                            <li><a class="dropdown-item" href="#">Game3</a></li>
+                        </ul>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </section>
 </main>
