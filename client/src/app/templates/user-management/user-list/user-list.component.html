@@ -17,12 +17,9 @@
         <tr *ngFor="let user of users">
           <td>{{ user.username }}</td>
           <td>{{ user.role }}</td>
-          <td><button (click)="deleteUser(user)">Delete</button></td>
-          <!-- <td><button (click)="deleteUser(user)">Delete</button></td> -->
+          <td><button class="btn btn-primary text-danger font-weight-bold" (click)="openConfirmationDialog(user)">Delete</button></td>
         </tr>
       </table>
-      <div>aaa</div>
-      <button (click)="openConfirmationDialog()">Delete</button>
     </div>
   </section>
 </main>

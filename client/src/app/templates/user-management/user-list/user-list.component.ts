@@ -34,15 +34,16 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  openConfirmationDialog(): void {
+  openConfirmationDialog(user: User): void {
     const message = 'Are you sure you want to delete?';
     this.dialogService.openConfirmationDialog(this.viewContainerRef, message).then(result => {
       if (result === true) {
         // 「はい」が選択された場合の処理
-        console.log('削除します');
+        console.log('delete user');
+        this.deleteUser(user);
       } else {
         // 「いいえ」が選択された場合の処理
-        console.log('削除をキャンセルします');
+        console.log('cancel delete user');
       }
     });
   }
