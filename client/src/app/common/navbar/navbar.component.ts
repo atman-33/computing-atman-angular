@@ -26,5 +26,6 @@ export class NavbarComponent {
 
   signout() {
     this.auth.signout();
+    this.isNavbarDialogOpen = false;
   }
 }

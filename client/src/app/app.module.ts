@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DialogService } from './common/confirmation-dialog/dialog.service';
 import { FooterComponent } from './common/footer/footer.component';
 import { NavbarComponent } from './common/navbar/navbar.component';
 
@@ -22,7 +23,7 @@ import { NavbarComponent } from './common/navbar/navbar.component';
     HttpClientModule,
     FlexLayoutModule,
   ],
-  providers: [],
+  providers: [DialogService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
