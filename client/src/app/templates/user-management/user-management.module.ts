@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DialogService } from '../../common/confirmation-dialog/dialog.service';
 import { UserService } from './shared/user.service';
 import { UserListComponent } from './user-list/user-list.component';
 import { UserManagementComponent } from './user-management.component';
@@ -26,7 +25,7 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         CommonModule,
     ],
-    providers: [UserService, DialogService],
+    providers: [UserService],
     bootstrap: []
 })
 export class UserManagementModule { }
