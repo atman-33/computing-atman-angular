@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { User } from 'libs/src/shared/models/user.model';
+import { DialogService } from '../../../common/confirmation-dialog/dialog.service';
 import * as httpErrorHelper from '../../../shared/helpers/http-error-helper';
 import { UserService } from '../shared/user.service';
 
@@ -17,7 +18,8 @@ export class UserListComponent implements OnInit {
    *
    */
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private dialogService: DialogService
   ) {
   }
 
@@ -28,6 +30,19 @@ export class UserListComponent implements OnInit {
         this.users = data;
       },
       error: (err: HttpErrorResponse) => console.error(err)
+    });
+  }
+
+  openConfirmationDialog(): void {
+    const message = 'Are you sure you want to delete?';
+    this.dialogService.openConfirmationDialog(message).then(result => {
+      if (result === true) {
+        // 「はい」が選択された場合の処理
+        console.log('削除します');
+      } else {
+        // 「いいえ」が選択された場合の処理
+        console.log('削除をキャンセルします');
+      }
     });
   }
 

@@ -3,10 +3,18 @@
         class="navbar navbar-main navbar-expand-lg navbar-theme-primary bg-light shadow py-1">
         <div class="container position-relative">
 
-            <a class="navbar-brand py-2 px-3 rounded border-light font-weight-bold" [routerLink]="['/']"
-                (click)="closeNavbarDialog()">
-                Computing Atman
-            </a>
+            <div>
+                <a class="navbar-brand py-2 px-1 rounded border-light font-weight-bold" [routerLink]="['/']"
+                    (click)="closeNavbarDialog()">
+                    Computing Atman
+                </a>
+                <ng-container *ngIf="auth.isAuthenticated()">
+                    <span>
+                        <span class="text-success fa-solid fa-user mx-1"></span>
+                        <span class="text-success font-weight-bold">{{auth.getAuthenticatedUsername()}}</span>
+                    </span>
+                </ng-container>
+            </div>
 
             <div class="navbar-collapse collapse" [class.show]="isNavbarDialogOpen">
 
@@ -39,7 +47,8 @@
                             <span class="fas fa-angle-down nav-link-arrow ml-2 text-secondary"></span>
                         </div>
                         <ul class="dropdown-menu" ngbDropdownMenu>
-                            <li><a class="dropdown-item" [routerLink]="['/user-management']">1. User table management</a></li>
+                            <li><a class="dropdown-item" [routerLink]="['/user-management']"
+                                    (click)="closeNavbarDialog()">1. User table management</a></li>
                             <li><a class="dropdown-item" href="#">Template2</a></li>
                             <li><a class="dropdown-item" href="#">Template3</a></li>
                         </ul>
@@ -73,29 +82,33 @@
                             <p class="d-lg-none">GitHub</p>
                         </a>
                     </li>
-                    <!-- サインイン後 -->
-                    <ng-container *ngIf="auth.isAuthenticated()">
-                        <li class="nav-item d-flex justify-content-center">
-                            <a (click)="signout()" (click)="closeNavbarDialog()">
-                                <div class="navbar-btn btn btn-pill"><span class="fa-solid fa-user mr-1"></span>Sign out
-                                </div>
-                            </a>
-                        </li>
-                    </ng-container>
 
                     <!-- サインイン前 -->
                     <ng-container *ngIf="!auth.isAuthenticated()">
                         <li class="nav-item d-flex justify-content-center">
                             <a routerLink="/signin" (click)="closeNavbarDialog()">
-                                <div class="navbar-btn btn btn-pill"><span class="fa-solid fa-user mr-1"></span>Sign in
+                                <div class="navbar-btn btn btn-pill">
+                                    <span class="fa-solid fa-user mr-1"></span>Sign in
                                 </div>
                             </a>
                         </li>
 
                         <li class="nav-item d-flex justify-content-center">
                             <a routerLink="/signup" (click)="closeNavbarDialog()">
-                                <div class="sign-up-btn navbar-btn btn btn-pill"><span
-                                        class="fa fa-sign-in mr-1"></span>Sign up</div>
+                                <div class="sign-up-btn navbar-btn btn btn-pill">
+                                    <span class="fa fa-sign-in mr-1"></span>Sign up
+                                </div>
+                            </a>
+                        </li>
+                    </ng-container>
+
+                    <!-- サインイン後 -->
+                    <ng-container *ngIf="auth.isAuthenticated()">
+                        <li class="nav-item d-flex justify-content-center">
+                            <a (click)="signout()" (click)="closeNavbarDialog()">
+                                <div class="navbar-btn btn btn-pill">
+                                    <span class="fa-solid fa-user mr-1"></span>Sign out
+                                </div>
                             </a>
                         </li>
                     </ng-container>

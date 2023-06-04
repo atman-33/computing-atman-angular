@@ -23,15 +23,25 @@ export class AuthService {
      */
     constructor(private http: HttpClient) {
         const meta = localStorage.getItem('app-meta');
-        if(meta){
+        if (meta) {
             this.decodedToken = JSON.parse(meta);
-        }else{
-            this.decodedToken =new DecodedToken();
+        } else {
+            this.decodedToken = new DecodedToken();
         }
     }
 
-    isAuthenticated(): boolean{
+    isAuthenticated(): boolean {
         return moment().isBefore(moment.unix(this.decodedToken.exp));
+    }
+
+    getAuthenticatedUsername(): string | null {
+        //debugger
+        const meta = localStorage.getItem('app-meta');
+        if (meta) {
+            const token: { username: string, exp: number, iat: number; } = JSON.parse(meta);
+            return token.username;
+        }
+        return null;
     }
 
     signup(userData: User): Observable<User> {
@@ -54,5 +64,4 @@ export class AuthService {
         localStorage.removeItem('app-meta');
         this.decodedToken = new DecodedToken();
     }
-    
 }

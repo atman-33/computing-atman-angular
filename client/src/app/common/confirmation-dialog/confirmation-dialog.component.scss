@@ -1,0 +1,21 @@
+.dialog-container {
+    display: flex;
+
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 100vw;
+    height: 100vh;
+    transition: all 1s;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+.message {
+    margin: auto;
+}
+
+.confirm-button,
+.cancel-button {
+    margin: auto;
+}
