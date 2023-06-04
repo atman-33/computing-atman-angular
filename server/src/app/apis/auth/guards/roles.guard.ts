@@ -25,7 +25,7 @@ export class RolesGuard implements CanActivate {
             return true;
         }
 
-        // ユーザーのroleが、メタデータから取得したroleaのいずれかに一致すれば実行を許可
+        // ユーザーのroleが、メタデータから取得したrolesのいずれかに一致すれば実行を許可
         const { user } = ctx.switchToHttp().getRequest() as { user: User; };
         return requiredRoles.some((role) => user.role.includes(role));
     }
