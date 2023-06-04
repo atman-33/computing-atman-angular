@@ -21,11 +21,12 @@ export class SigninComponent {
 
   signin(signinForm: NgForm) {
     const userCredentials: UserCredentials = signinForm.value;
-    console.log(userCredentials);
+    // console.log(userCredentials);
 
     this.authService.signin(userCredentials).subscribe({
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       next: (token) => {
-        console.log(token);
+        // console.log(token);
         this.router.navigate(['/']);
       },
       error: (err: HttpErrorResponse) => {
