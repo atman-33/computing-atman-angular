@@ -105,7 +105,7 @@
                     <!-- サインイン後 -->
                     <ng-container *ngIf="auth.isAuthenticated()">
                         <li class="nav-item d-flex justify-content-center">
-                            <a (click)="signout()" (click)="closeNavbarDialog()">
+                            <a (click)="signout()">
                                 <div class="navbar-btn btn btn-pill">
                                     <span class="fa-solid fa-user mr-1"></span>Sign out
                                 </div>

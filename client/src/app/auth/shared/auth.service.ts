@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { UserCredentials } from 'libs/src/shared/models/user-credentials.model';
 import { User } from 'libs/src/shared/models/user.model';
@@ -21,13 +22,17 @@ export class AuthService {
     /**
      *
      */
-    constructor(private http: HttpClient) {
+    constructor(private http: HttpClient, private router : Router) {
         const meta = localStorage.getItem('app-meta');
         if (meta) {
             this.decodedToken = JSON.parse(meta);
         } else {
             this.decodedToken = new DecodedToken();
         }
+    }
+
+    getToken(): string | null {
+        return localStorage.getItem('app-auth');
     }
 
     isAuthenticated(): boolean {
@@ -63,5 +68,7 @@ export class AuthService {
         localStorage.removeItem('app-auth');
         localStorage.removeItem('app-meta');
         this.decodedToken = new DecodedToken();
+
+        this.router.navigate(['/signin']);
     }
 }
