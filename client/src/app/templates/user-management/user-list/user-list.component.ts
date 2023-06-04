@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { User } from 'libs/src/shared/models/user.model';
 import { DialogService } from '../../../common/confirmation-dialog/dialog.service';
 import * as httpErrorHelper from '../../../shared/helpers/http-error-helper';
@@ -19,7 +19,8 @@ export class UserListComponent implements OnInit {
    */
   constructor(
     private userService: UserService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private viewContainerRef: ViewContainerRef
   ) {
   }
 
@@ -35,7 +36,7 @@ export class UserListComponent implements OnInit {
 
   openConfirmationDialog(): void {
     const message = 'Are you sure you want to delete?';
-    this.dialogService.openConfirmationDialog(message).then(result => {
+    this.dialogService.openConfirmationDialog(this.viewContainerRef, message).then(result => {
       if (result === true) {
         // 「はい」が選択された場合の処理
         console.log('削除します');
