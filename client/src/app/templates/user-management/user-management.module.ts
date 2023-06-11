@@ -10,8 +10,8 @@ const routes: Routes = [
     {
         path: 'user-management', component: UserManagementComponent,
         children: [
-            { path: '', redirectTo: 'user-list', pathMatch: 'full' },
-            { path: 'user-list', component: UserListComponent, canActivate: [AuthGuard] }
+            { path: '', redirectTo: 'user-list', pathMatch: 'full', title: 'User list | Computing Atman' },
+            { path: 'user-list', component: UserListComponent, canActivate: [AuthGuard], title: 'User list | Computing Atman' }
         ]
     },
 ];

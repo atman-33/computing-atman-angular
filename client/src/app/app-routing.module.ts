@@ -12,8 +12,8 @@ import { TopPageComponent } from './top-page/top-page.component';
  * @remark pathの先頭に/は不要（OK:detail NG:/detail）
  */
 const routes: Routes = [
-    { path: 'top-page', component: TopPageComponent },
-    { path: '', component: TopPageComponent, pathMatch: 'full' }
+    { path: 'top-page', component: TopPageComponent, title: 'Computing Atman' },
+    { path: '', component: TopPageComponent, pathMatch: 'full', title: 'Computing Atman' }
 ];
 
 /**
