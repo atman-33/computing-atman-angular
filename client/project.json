@@ -21,7 +21,8 @@
         "tsConfig": "client/tsconfig.app.json",
         "assets": [
           "client/src/favicon.ico",
-          "client/src/assets"
+          "client/src/assets",
+          "client/src/sitemap.xml"
         ],
         "styles": [
           "node_modules/bootstrap/dist/css/bootstrap.min.css",
