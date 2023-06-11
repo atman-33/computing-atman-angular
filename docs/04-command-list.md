@@ -45,11 +45,6 @@ nx g @nx/nest:service app/__name__ --project=server
 npm run create-nest-module-controller-service --name=__name__
 
 4. Docker（DB）構築
-- 1. dockerをインストール
-- 2. docker-compose.yamlを準備
-- 3. docker-compose.yamlが存在するフォルダに移動
-- 4. docker-compose up -d コマンドを実行
-- 5. ブラウザ（http://localhost:81）でpgAdminにログインし、postgres サーバーを作成
 
 5. マイグレーション
 **---- TypeORM ver0.3.X ----**
