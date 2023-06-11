@@ -43,9 +43,9 @@
                 </div>
 
                 <div class="col-md-4 col-lg-4 text-center">
-                    <div class="icon-box mb-4" ngbDropdown>
-
-                        <a class="icon icon-shape shadow-soft border-light rounded-circle mb-4" ngbDropdownToggle>
+                    <div class="icon-box">
+                        <a class="icon icon-shape shadow-soft border-light rounded-circle mb-4"
+                            data-bs-toggle="collapse" data-bs-target="#collapseSites" aria-expanded="true">
                             <span class="fas fa-pager"></span>
                         </a>
                         <h2 class="h5 icon-box-title">Template Sites</h2>
@@ -53,33 +53,44 @@
                             Various template sites.<br>
                             Please feel free to use it as a reference if you like.
                         </span>
-                        <ul class="dropdown-menu" ngbDropdownMenu>
-                            <li><a class="dropdown-item" [routerLink]="['/user-management']">1. User table management</a></li>
-                            <li><a class="dropdown-item" href="#">Template2</a></li>
-                            <li><a class="dropdown-item" href="#">Template3</a></li>
-                        </ul>
+                        <div id="collapseSites" class="accordion-collapse collapse">
+                            <ul class="footer-links list-unstyled mt-4">
+                                <li class="text-secondary font-weight-bold">
+                                    <a href="https://atman-33.github.io/template-blog-hexo/" target="_blank">Hexo
+                                        Material</a>
+                                </li>
+                                <li class="text-secondary font-weight-bold">
+                                    <a [routerLink]="['/user-management']">User table management</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
                 <div class="col-md-4 col-lg-4 text-center">
-                    <div class="icon-box mb-4" ngbDropdown>
-                        <a class="icon icon-shape shadow-soft border-light rounded-circle mb-4" ngbDropdownToggle>
-                            <span class="	fas fa-gamepad"></span>
+                    <div class="icon-box">
+                        <a class="icon icon-shape shadow-soft border-light rounded-circle mb-4"
+                            data-bs-toggle="collapse" data-bs-target="#collapseGames" aria-expanded="true">
+                            <span class="fas fa-gamepad"></span>
                         </a>
                         <h2 class="h5 icon-box-title">Games</h2>
                         <span>
-                            Game made with Javascript.<br>
+                            Game made with Javascript etc.<br>
                             Please enjoy it if you like.
                         </span>
-                        <ul class="dropdown-menu" ngbDropdownMenu>
-                            <li><a class="dropdown-item" href="#">Game1</a></li>
-                            <li><a class="dropdown-item" href="#">Game2</a></li>
-                            <li><a class="dropdown-item" href="#">Game3</a></li>
-                        </ul>
+                        <div id="collapseGames" class="accordion-collapse collapse">
+                            <ul class="footer-links list-unstyled mt-4">
+                                <li class="text-secondary font-weight-bold">
+                                    <a href="https://atman-33.github.io/phaser3-webpack-starter-ts/" target="_blank">
+                                        Infinite Runner</a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div>
+
     </section>
 </main>
