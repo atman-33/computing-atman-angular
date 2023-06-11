@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { Post } from 'libs/src/shared/models/post.model';
 import * as utils from 'libs/src/shared/utils/index';
@@ -18,9 +19,9 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
   public readonly articleLeadMaxLength = Constants.ARTICLE_LEAD_MAX_LENGTH;
 
   public post!: Post;
-  public articleHtml: string | undefined;
+  public articleHtml!: string;
 
-  public title: string | undefined;
+  public title!: string;
   public date: string | undefined;
   public thumbnail: string | undefined;
   public tags: string[] | undefined;
@@ -33,7 +34,8 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
   constructor(
     private route: ActivatedRoute,
     private postService: PostService,
-    private prismService: PrismService) {
+    private prismService: PrismService,
+    private titleService: Title) {
   }
 
   ngOnInit() {
@@ -48,6 +50,8 @@ export class PostDetailComponent implements OnInit, AfterViewChecked {
           this.post = data;
 
           this.title = data.title;
+          this.titleService.setTitle(`${this.title} | Computing Atman`);
+          
           console.log(this.title);
 
           this.date = data.date;

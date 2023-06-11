@@ -66,6 +66,14 @@ $post-code-line-height: 1.4rem;
         text-decoration: underline;
     }
 
+    /* Image */
+    img {
+        width: 100%;
+        height: auto;
+        max-width: 100vh;
+        max-height: 100vh;
+    }
+
     /* Blockquote */
     blockquote {
         position: relative;
