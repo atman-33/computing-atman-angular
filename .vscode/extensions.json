@@ -10,6 +10,7 @@
     "esbenp.prettier-vscode",
     "firsttris.vscode-jest-runner",
     "nrwl.angular-console",
-    "genieai.chatgpt-vscode"
+    "genieai.chatgpt-vscode",
+    "redhat.vscode-xml"
   ]
 }
